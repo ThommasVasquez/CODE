@@ -4,12 +4,32 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Scan, Share2, Pencil, ArrowUpRight } from 'lucide-react';
+import { Scan, Share2, Pencil, ArrowUpRight, Camera } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const ProfileScreen: React.FC = () => {
-  const { profile, diaryEntries, pushView, showToast } = useApp();
+  const { profile, diaryEntries, pushView, showToast, setAvatarUrl } = useApp();
   const containerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Por favor selecciona un archivo de imagen');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (result) {
+        setAvatarUrl(result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   useGSAP(
     () => {
@@ -51,7 +71,7 @@ export const ProfileScreen: React.FC = () => {
       }
     } else {
       navigator.clipboard.writeText(
-        `CODE® Salud: Paciente ${profile.name} (ID: ${profile.deviceId}), Póliza: ${profile.policy}`
+        `CODE® Salud: Paciente ${profile.name} (ID: ${profile.deviceId}), Residencia: ${profile.residence}`
       );
       showToast('Enlace e informe copiado al portapapeles');
     }
@@ -69,6 +89,15 @@ export const ProfileScreen: React.FC = () => {
         height: '100%',
       }}
     >
+      {/* Hidden File Input for Avatar Change */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleAvatarChange}
+        accept="image/*"
+        style={{ display: 'none' }}
+      />
+
       {/* Top Header with Scan & Share Icons */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
         <h1
@@ -168,12 +197,10 @@ export const ProfileScreen: React.FC = () => {
           </button>
         </div>
 
-        {/* Central Portrait with Halo Backdrop */}
+        {/* Central Portrait with Halo Backdrop & Camera Button */}
         <div style={{ display: 'flex', justifyContent: 'center', margin: '6px 0 16px 0' }}>
           <div
-            onClick={() => pushView('edit-profile')}
-            style={{ position: 'relative', width: '106px', height: '106px', cursor: 'pointer' }}
-            title="Toca para editar avatar y datos"
+            style={{ position: 'relative', width: '106px', height: '106px' }}
           >
             <div
               style={{
@@ -184,6 +211,7 @@ export const ProfileScreen: React.FC = () => {
               }}
             />
             <div
+              onClick={() => fileInputRef.current?.click()}
               style={{
                 position: 'relative',
                 width: '100%',
@@ -192,10 +220,12 @@ export const ProfileScreen: React.FC = () => {
                 overflow: 'hidden',
                 border: '3px solid #FFFFFF',
                 boxShadow: '0 6px 20px rgba(48, 164, 168, 0.28)',
+                cursor: 'pointer',
               }}
+              title="Haz clic para cambiar la foto de perfil"
             >
               <Image
-                src="/avatar.jpg"
+                src={profile.avatarUrl}
                 alt={profile.name}
                 fill
                 sizes="110px"
@@ -203,6 +233,31 @@ export const ProfileScreen: React.FC = () => {
                 priority
               />
             </div>
+
+            {/* Camera Floating Badge Button */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              style={{
+                position: 'absolute',
+                bottom: '0',
+                right: '0',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                backgroundColor: '#12161C',
+                border: '2.5px solid #FFFFFF',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 3px 8px rgba(0,0,0,0.25)',
+                transition: 'transform 0.2s ease',
+              }}
+              title="Cambiar foto de perfil"
+            >
+              <Camera size={14} color="#FFFFFF" />
+            </button>
           </div>
         </div>
 
@@ -231,12 +286,12 @@ export const ProfileScreen: React.FC = () => {
             </div>
           </div>
 
-          {/* Bottom Triple White Chips */}
+          {/* Bottom Dual White Chips (Policy removed, spacious 2 columns) */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '6px',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '8px',
               marginTop: '12px',
             }}
           >
@@ -244,13 +299,13 @@ export const ProfileScreen: React.FC = () => {
               style={{
                 backgroundColor: '#FFFFFF',
                 borderRadius: '12px',
-                padding: '6px 4px',
+                padding: '7px 8px',
                 textAlign: 'center',
                 boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)',
               }}
             >
-              <div style={{ fontSize: '9px', color: '#688288', fontWeight: 600 }}>ID</div>
-              <div style={{ fontSize: '10px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
+              <div style={{ fontSize: '9.5px', color: '#688288', fontWeight: 600 }}>ID Paciente</div>
+              <div style={{ fontSize: '11px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
                 {profile.deviceId}
               </div>
             </div>
@@ -259,28 +314,13 @@ export const ProfileScreen: React.FC = () => {
               style={{
                 backgroundColor: '#FFFFFF',
                 borderRadius: '12px',
-                padding: '6px 4px',
+                padding: '7px 8px',
                 textAlign: 'center',
                 boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)',
               }}
             >
-              <div style={{ fontSize: '9px', color: '#688288', fontWeight: 600 }}>Policy</div>
-              <div style={{ fontSize: '10px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
-                {profile.policy}
-              </div>
-            </div>
-
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '12px',
-                padding: '6px 4px',
-                textAlign: 'center',
-                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)',
-              }}
-            >
-              <div style={{ fontSize: '9px', color: '#688288', fontWeight: 600 }}>Residence</div>
-              <div style={{ fontSize: '10px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
+              <div style={{ fontSize: '9.5px', color: '#688288', fontWeight: 600 }}>Residencia</div>
+              <div style={{ fontSize: '11px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
                 {profile.residence}
               </div>
             </div>

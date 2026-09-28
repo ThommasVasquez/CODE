@@ -187,7 +187,7 @@ export const HomeScreen: React.FC = () => {
               }}
             >
               <Image
-                src="/avatar.jpg"
+                src={profile.avatarUrl}
                 alt={profile.name}
                 fill
                 sizes="80px"

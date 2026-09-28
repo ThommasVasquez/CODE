@@ -21,8 +21,8 @@ export interface PatientProfile {
   age: number;
   email: string;
   phone: string;
-  policy: string;
   residence: string;
+  avatarUrl: string;
 }
 
 export interface DiaryEntry {
@@ -46,6 +46,7 @@ interface AppContextType {
   // Patient Profile
   profile: PatientProfile;
   updateProfile: (updated: Partial<PatientProfile>) => void;
+  setAvatarUrl: (url: string) => void;
 
   // Medication State
   adherenceRate: number;
@@ -81,8 +82,8 @@ const defaultProfile: PatientProfile = {
   age: 56,
   email: 'hannah@email.com',
   phone: '+ 971 4234 4112',
-  policy: 'CA3117128',
   residence: 'California',
+  avatarUrl: '/avatar.jpg',
 };
 
 const initialDiary: DiaryEntry[] = [
@@ -181,6 +182,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Perfil actualizado correctamente');
   };
 
+  const setAvatarUrl = (url: string) => {
+    setProfile((prev) => ({ ...prev, avatarUrl: url }));
+    showToast('Foto de perfil actualizada');
+  };
+
   const toggleBottle = (index: number) => {
     const updated = [...bottles];
     const willBeConsumed = !updated[index];
@@ -257,6 +263,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         popView,
         profile,
         updateProfile,
+        setAvatarUrl,
         adherenceRate,
         pillsRemain,
         totalPills,
