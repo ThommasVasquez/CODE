@@ -11,6 +11,14 @@ export const metadata: Metadata = {
     description: 'Minimalist, fluid iOS interface powered by Next.js and GSAP.',
     type: 'website',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/icon.svg',
+  },
 };
 
 export const viewport: Viewport = {
