@@ -36,6 +36,7 @@ export const FastingDetailView: React.FC = () => {
         stagger: 0.08,
         duration: 0.5,
         ease: 'power3.out',
+        clearProps: 'transform,opacity',
       });
 
       if (circleProgressRef.current) {
@@ -132,6 +133,7 @@ export const FastingDetailView: React.FC = () => {
             flexDirection: 'column',
             alignItems: 'center',
             position: 'relative',
+            flexShrink: 0,
           }}
         >
           {/* SVG Radial Clock */}
@@ -235,6 +237,7 @@ export const FastingDetailView: React.FC = () => {
             borderRadius: '24px',
             padding: '18px 20px',
             border: '1px solid var(--card-cyan-border)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -257,6 +260,7 @@ export const FastingDetailView: React.FC = () => {
             padding: '18px 20px',
             boxShadow: 'var(--shadow-card)',
             border: '1px solid rgba(220, 226, 230, 0.35)',
+            flexShrink: 0,
           }}
         >
           <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '14px' }}>
@@ -363,6 +367,7 @@ export const FastingDetailView: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
+            flexShrink: 0,
           }}
         >
           <Info size={18} color="var(--accent-green)" />

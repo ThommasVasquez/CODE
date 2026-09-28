@@ -22,7 +22,14 @@
   --card-peach: #FFF5F0;
   --card-peach-border: rgba(249, 115, 22, 0.22);
 
-  /* Apple Fitness Accents */
+  /* Apple Fitness & Modern AI Accents */
+  --accent-purple: #9D7BFF;
+  --accent-purple-bright: #A855F7;
+  --accent-purple-light: #EBE5FF;
+  --accent-purple-gradient: linear-gradient(135deg, #B794F6 0%, #9D7BFF 50%, #805AD5 100%);
+  --accent-rainbow-stripe: linear-gradient(90deg, #FDE047 0%, #F472B6 35%, #38BDF8 70%, #A855F7 100%);
+  --card-purple: #F7F3FF;
+  --card-purple-border: rgba(157, 123, 255, 0.25);
   --accent-green: #16A34A;
   --accent-green-bright: #22C55E;
   --accent-green-dark: #15803D;
@@ -65,6 +72,13 @@
   --card-peach-border: rgba(249, 115, 22, 0.3);
 
   /* Accents */
+  --accent-purple: #C084FC;
+  --accent-purple-bright: #D8B4FE;
+  --accent-purple-light: #2E1A47;
+  --accent-purple-gradient: linear-gradient(135deg, #A855F7 0%, #8B5CF6 50%, #6D28D9 100%);
+  --accent-rainbow-stripe: linear-gradient(90deg, #FDE047 0%, #F472B6 35%, #38BDF8 70%, #A855F7 100%);
+  --card-purple: #1B132B;
+  --card-purple-border: rgba(192, 132, 252, 0.3);
   --accent-green: #22C55E;
   --accent-green-bright: #4ADE80;
   --accent-green-dark: #16A34A;

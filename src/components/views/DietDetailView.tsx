@@ -37,6 +37,7 @@ export const DietDetailView: React.FC = () => {
         stagger: 0.08,
         duration: 0.5,
         ease: 'power3.out',
+        clearProps: 'transform,opacity',
       });
     },
     { scope: containerRef, dependencies: [selectedPlan.id] }
@@ -119,6 +120,7 @@ export const DietDetailView: React.FC = () => {
             padding: '20px',
             boxShadow: 'var(--shadow-card)',
             border: '1px solid rgba(230, 235, 240, 0.35)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -199,6 +201,7 @@ export const DietDetailView: React.FC = () => {
             borderRadius: '24px',
             padding: '18px 20px',
             border: '1px solid rgba(255, 106, 67, 0.25)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

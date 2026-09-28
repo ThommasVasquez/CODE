@@ -39,9 +39,10 @@ export const WorkoutRemindersView: React.FC = () => {
         stagger: 0.08,
         duration: 0.5,
         ease: 'power3.out',
+        clearProps: 'transform,opacity',
       });
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [] }
   );
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +82,7 @@ export const WorkoutRemindersView: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -146,6 +148,7 @@ export const WorkoutRemindersView: React.FC = () => {
             padding: '20px',
             boxShadow: 'var(--shadow-card)',
             border: '1px solid rgba(230, 235, 240, 0.35)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
@@ -205,6 +208,7 @@ export const WorkoutRemindersView: React.FC = () => {
             padding: '20px',
             boxShadow: 'var(--shadow-card)',
             border: '1px solid rgba(230, 235, 240, 0.35)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
@@ -256,6 +260,7 @@ export const WorkoutRemindersView: React.FC = () => {
             borderRadius: '24px',
             padding: '16px 18px',
             border: '1px solid var(--card-lime-border)',
+            flexShrink: 0,
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
@@ -308,6 +313,7 @@ export const WorkoutRemindersView: React.FC = () => {
             cursor: 'pointer',
             boxShadow: '0 6px 18px rgba(115, 169, 50, 0.35)',
             transition: 'transform 0.15s ease',
+            flexShrink: 0,
           }}
         >
           <CheckCircle2 size={18} />

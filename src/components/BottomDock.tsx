@@ -1,42 +1,17 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { Home, Activity, User } from 'lucide-react';
-import { useApp, MainTab } from '@/context/AppContext';
+import React from 'react';
+import { Home, BarChart2, Sparkles, Utensils, Settings } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 export const BottomDock: React.FC = () => {
-  const { activeTab, setActiveTab, activeSubView, theme } = useApp();
-  const pillIndicatorRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const tabIndexMap: Record<MainTab, number> = {
-    home: 0,
-    statistics: 1,
-    options: 2,
-  };
-
-  const currentIdx = tabIndexMap[activeTab] ?? 0;
-
-  useEffect(() => {
-    if (!pillIndicatorRef.current || !containerRef.current) return;
-
-    // Perfectly centered positions for 3 slots in 192px dock (slot width = 64px, pill = 50px, margin = 7px)
-    const positions = [7, 71, 135];
-    const targetX = positions[currentIdx] ?? 7;
-
-    gsap.to(pillIndicatorRef.current, {
-      x: targetX,
-      duration: 0.4,
-      ease: 'back.out(1.5)',
-    });
-  }, [currentIdx]);
+  const { activeTab, setActiveTab, activeSubView, pushView, theme } = useApp();
 
   return (
     <div
       style={{
         position: 'absolute',
-        bottom: '16px',
+        bottom: '12px',
         left: '0',
         right: '0',
         display: 'flex',
@@ -49,130 +24,163 @@ export const BottomDock: React.FC = () => {
         transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease',
       }}
     >
-      {/* Floating Pill Dock */}
+      {/* Floating 5-Item Pill Dock (Matching Reference Image) */}
       <div
-        ref={containerRef}
         className="glass-dock"
         style={{
           pointerEvents: 'auto',
           position: 'relative',
-          width: '192px',
-          height: '60px',
-          backgroundColor: theme === 'dark' ? 'rgba(18, 23, 32, 0.82)' : 'rgba(255, 255, 255, 0.88)',
+          width: '272px',
+          height: '58px',
+          backgroundColor: theme === 'dark' ? 'rgba(19, 23, 34, 0.88)' : 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           borderRadius: '35px',
           boxShadow: theme === 'dark'
-            ? '0 16px 36px -4px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
-            : '0 16px 36px -4px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.85) inset',
+            ? '0 16px 36px -4px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
+            : '0 16px 36px -4px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.85) inset',
           display: 'flex',
           alignItems: 'center',
-          padding: '0',
-          transition: 'background-color 0.3s ease',
+          justifyContent: 'space-between',
+          padding: '0 8px',
+          transition: 'all 0.3s ease',
         }}
       >
-        {/* Animated Pill Indicator Slider */}
-        <div
-          ref={pillIndicatorRef}
-          style={{
-            position: 'absolute',
-            top: '5px',
-            left: '0',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            backgroundColor: theme === 'dark' ? '#222A38' : '#0F172A',
-            zIndex: 1,
-            boxShadow: theme === 'dark'
-              ? '0 4px 14px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08) inset'
-              : '0 6px 16px rgba(15, 23, 42, 0.3)',
-            transition: 'background-color 0.3s ease',
-          }}
-        />
-
-        {/* Tab 0: Home */}
+        {/* Item 1: Home */}
         <button
           onClick={() => setActiveTab('home')}
           style={{
-            width: '64px',
-            height: '100%',
-            background: 'none',
+            width: activeTab === 'home' ? '46px' : '38px',
+            height: '38px',
+            borderRadius: '20px',
+            background: activeTab === 'home' ? 'var(--accent-purple)' : 'none',
             border: 'none',
-            zIndex: 2,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'color 0.25s ease',
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxShadow: activeTab === 'home' ? '0 4px 12px rgba(157, 123, 255, 0.4)' : 'none',
           }}
-          aria-label="Home Dashboard"
-          title="Panel Principal"
+          title="Inicio"
+          aria-label="Inicio"
         >
           <Home
-            size={22}
-            color={activeTab === 'home' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#64748B')}
+            size={19}
+            color={activeTab === 'home' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#475569')}
             strokeWidth={activeTab === 'home' ? 2.5 : 2}
           />
         </button>
 
-        {/* Tab 1: Stats */}
+        {/* Item 2: Statistics */}
         <button
           onClick={() => setActiveTab('statistics')}
           style={{
-            width: '64px',
-            height: '100%',
-            background: 'none',
+            width: activeTab === 'statistics' ? '46px' : '38px',
+            height: '38px',
+            borderRadius: '20px',
+            background: activeTab === 'statistics' ? 'var(--accent-purple)' : 'none',
             border: 'none',
-            zIndex: 2,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'color 0.25s ease',
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxShadow: activeTab === 'statistics' ? '0 4px 12px rgba(157, 123, 255, 0.4)' : 'none',
           }}
-          aria-label="Statistics Report"
-          title="Reporte Estadístico"
+          title="Estadísticas"
+          aria-label="Estadísticas"
         >
-          <Activity
-            size={22}
-            color={activeTab === 'statistics' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#64748B')}
+          <BarChart2
+            size={19}
+            color={activeTab === 'statistics' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#475569')}
             strokeWidth={activeTab === 'statistics' ? 2.5 : 2}
           />
         </button>
 
-        {/* Tab 2: Profile / Settings */}
+        {/* Item 3: Center AI Coach Button (Glow Circle) */}
         <button
-          onClick={() => setActiveTab('options')}
+          onClick={() => pushView('workout-detail')}
           style={{
-            width: '64px',
-            height: '100%',
-            background: 'none',
+            width: '42px',
+            height: '42px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #B794F6 0%, #9D7BFF 50%, #7C3AED 100%)',
             border: 'none',
-            zIndex: 2,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'color 0.25s ease',
+            boxShadow: '0 4px 14px rgba(157, 123, 255, 0.5)',
+            transition: 'transform 0.15s ease',
           }}
-          aria-label="Perfil y Ajustes"
-          title="Perfil y Ajustes"
+          title="Entrenador IA"
+          aria-label="Entrenador IA"
         >
-          <User
-            size={22}
-            color={activeTab === 'options' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#64748B')}
+          <Sparkles size={20} color="#FFFFFF" />
+        </button>
+
+        {/* Item 4: Diet & Nutrition */}
+        <button
+          onClick={() => pushView('diet-detail')}
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '20px',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.25s ease',
+          }}
+          title="Planes de Dieta"
+          aria-label="Planes de Dieta"
+        >
+          <Utensils
+            size={19}
+            color={theme === 'dark' ? '#94A3B8' : '#475569'}
+            strokeWidth={2}
+          />
+        </button>
+
+        {/* Item 5: Settings / Profile */}
+        <button
+          onClick={() => setActiveTab('options')}
+          style={{
+            width: activeTab === 'options' ? '46px' : '38px',
+            height: '38px',
+            borderRadius: '20px',
+            background: activeTab === 'options' ? 'var(--accent-purple)' : 'none',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxShadow: activeTab === 'options' ? '0 4px 12px rgba(157, 123, 255, 0.4)' : 'none',
+          }}
+          title="Ajustes de Perfil"
+          aria-label="Ajustes de Perfil"
+        >
+          <Settings
+            size={19}
+            color={activeTab === 'options' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#475569')}
             strokeWidth={activeTab === 'options' ? 2.5 : 2}
           />
         </button>
       </div>
 
-      {/* iOS Home Indicator */}
+      {/* iOS Home Indicator Bar */}
       <div
         style={{
           width: '136px',
           height: '4px',
           backgroundColor: theme === 'dark' ? '#FFFFFF' : '#0F172A',
-          opacity: theme === 'dark' ? 0.45 : 0.9,
+          opacity: theme === 'dark' ? 0.45 : 0.85,
           borderRadius: '10px',
-          marginTop: '10px',
+          marginTop: '8px',
         }}
       />
     </div>
