@@ -236,12 +236,12 @@ export const ProfileScreen: React.FC = () => {
               title={t('changePhoto')}
             >
               <Image
-                src={profile.avatarUrl}
-                alt={profile.name}
+                src={profile.avatarUrl && profile.avatarUrl.trim() !== '' ? profile.avatarUrl : '/avatar.jpg'}
+                alt={profile.name || 'Usuario'}
                 fill
                 sizes="110px"
                 style={{ objectFit: 'cover' }}
-                priority
+                unoptimized
               />
             </div>
 

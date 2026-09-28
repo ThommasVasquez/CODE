@@ -210,12 +210,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateProfile = (updated: Partial<PatientProfile>) => {
-    setProfile((prev) => ({ ...prev, ...updated }));
+    setProfile((prev) => {
+      const next = { ...prev, ...updated };
+      if (!next.avatarUrl || next.avatarUrl.trim() === '') {
+        next.avatarUrl = '/avatar.jpg';
+      }
+      return next;
+    });
     showToast('Perfil actualizado correctamente');
   };
 
   const setAvatarUrl = (url: string) => {
-    setProfile((prev) => ({ ...prev, avatarUrl: url }));
+    const validUrl = url && url.trim() !== '' ? url : '/avatar.jpg';
+    setProfile((prev) => ({ ...prev, avatarUrl: validUrl }));
     showToast('Foto de perfil actualizada');
   };
 

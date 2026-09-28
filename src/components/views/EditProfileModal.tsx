@@ -110,11 +110,12 @@ export const EditProfileModal: React.FC = () => {
               }}
             >
               <Image
-                src={currentAvatar}
-                alt={name}
+                src={currentAvatar && currentAvatar.trim() !== '' ? currentAvatar : '/avatar.jpg'}
+                alt={name || 'Usuario'}
                 fill
                 sizes="92px"
                 style={{ objectFit: 'cover' }}
+                unoptimized
               />
             </div>
 
