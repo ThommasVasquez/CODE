@@ -4,21 +4,19 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Clock, Disc, Moon, Check, Sparkles } from 'lucide-react';
+import { Disc, Moon, Sparkles, ChevronRight } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
-interface HomeScreenProps {
-  onNavigateToStats: () => void;
-  adherenceRate?: number;
-  pillsRemain?: number;
-  totalPills?: number;
-}
+export const HomeScreen: React.FC = () => {
+  const {
+    profile,
+    adherenceRate,
+    pillsRemain,
+    totalPills,
+    setActiveTab,
+    pushView,
+  } = useApp();
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({
-  onNavigateToStats,
-  adherenceRate = 65,
-  pillsRemain = 40,
-  totalPills = 120,
-}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroCardRef = useRef<HTMLDivElement>(null);
   const medCardRef = useRef<HTMLDivElement>(null);
@@ -83,7 +81,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               gap: '6px',
             }}
           >
-            Hello Shohan <span>👋</span>
+            Hello {profile.name} <span>👋</span>
           </h1>
           <p
             className="fade-header"
@@ -94,13 +92,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               fontWeight: 500,
             }}
           >
-            Here&apos;s how &quot;Shohan&quot; is doing!
+            Here&apos;s how &quot;{profile.name}&quot; is doing!
           </p>
         </div>
 
         {/* Orange Pill Badge (1:30 Hour) */}
         <div
           className="fade-header"
+          onClick={() => pushView('medication-detail')}
           style={{
             backgroundColor: '#FFF0EA',
             border: '1px solid #FFE0D3',
@@ -111,7 +110,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             boxShadow: '0 2px 6px rgba(255, 106, 67, 0.08)',
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease',
           }}
+          title="Ver próxima toma"
         >
           <span style={{ fontSize: '13px', fontWeight: 800, color: '#FF5E36', lineHeight: 1.1 }}>
             1:30
@@ -137,22 +139,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       >
         {/* Top Section with Device Info & Avatar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
+          <div
+            onClick={() => setActiveTab('options')}
+            style={{ cursor: 'pointer' }}
+            title="Ir al perfil"
+          >
             <span style={{ fontSize: '13px', fontWeight: 600, color: '#27313D' }}>
-              Shohan&apos;s Device
+              {profile.name}&apos;s Device
             </span>
             <div style={{ marginTop: '3px' }}>
               <span style={{ fontSize: '12px', color: '#6A7888', fontWeight: 500 }}>
                 Device ID:{' '}
               </span>
               <span style={{ fontSize: '12px', color: '#73A932', fontWeight: 700 }}>
-                4564856
+                {profile.deviceId}
               </span>
             </div>
           </div>
 
           {/* Avatar with Soft Teal Circle Backdrop */}
-          <div style={{ position: 'relative', width: '84px', height: '84px' }}>
+          <div
+            onClick={() => setActiveTab('options')}
+            style={{ position: 'relative', width: '84px', height: '84px', cursor: 'pointer' }}
+            title="Ver opciones de perfil"
+          >
             <div
               style={{
                 position: 'absolute',
@@ -178,7 +188,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             >
               <Image
                 src="/avatar.jpg"
-                alt="Shohan"
+                alt={profile.name}
                 fill
                 sizes="80px"
                 style={{ objectFit: 'cover' }}
@@ -200,13 +210,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         >
           {/* Left Column: Avg. Adherence */}
           <div
-            onClick={onNavigateToStats}
+            onClick={() => setActiveTab('statistics')}
             style={{ cursor: 'pointer' }}
-            title="Click to view full statistics report"
+            title="Ver reporte estadístico detallado"
           >
-            <span style={{ fontSize: '10.5px', color: '#6B7A8B', fontWeight: 600 }}>
-              Avg. Adherence
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '10.5px', color: '#6B7A8B', fontWeight: 600 }}>
+                Avg. Adherence
+              </span>
+              <ChevronRight size={12} color="#8E9DAE" />
+            </div>
             <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B', margin: '1px 0 6px 0' }}>
               {adherenceRate}%
             </div>
@@ -234,10 +247,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           {/* Right Column: Pills remain */}
-          <div>
-            <span style={{ fontSize: '10.5px', color: '#6B7A8B', fontWeight: 600 }}>
-              Pills remain in the Pack
-            </span>
+          <div
+            onClick={() => pushView('medication-detail')}
+            style={{ cursor: 'pointer' }}
+            title="Ver calendario de dosis"
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '10.5px', color: '#6B7A8B', fontWeight: 600 }}>
+                Pills remain in the Pack
+              </span>
+              <ChevronRight size={12} color="#8E9DAE" />
+            </div>
             <div style={{ fontSize: '24px', fontWeight: 800, color: '#0E141B', margin: '2px 0 6px 0' }}>
               {pillsRemain}
               <span style={{ fontSize: '14px', fontWeight: 500, color: '#7E8C9C' }}>
@@ -264,7 +284,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     height: '3.5px',
                     borderRadius: '50%',
                     backgroundColor: i < (pillsRemain / totalPills) * 36 ? '#30A4A8' : '#DDE6ED',
-                    transition: 'transform 0.2s ease',
+                    transition: 'all 0.2s ease',
                   }}
                 />
               ))}
@@ -276,14 +296,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* Medication Card (Pale Mint/Teal) */}
       <div
         ref={medCardRef}
+        onClick={() => pushView('medication-detail')}
         style={{
           backgroundColor: '#DEF1F2',
           borderRadius: '26px',
           padding: '18px 20px',
           border: '1px solid #CFEBEB',
           position: 'relative',
+          cursor: 'pointer',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         }}
+        title="Abrir detalles de medicación"
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
@@ -295,7 +318,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </h3>
           </div>
 
-          {/* White Circular Badge with Interconnected icon */}
+          {/* White Circular Badge */}
           <div
             style={{
               width: '36px',
@@ -321,7 +344,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             fontWeight: 500,
           }}
         >
-          &quot;Shohan&quot; has taken his medication and is due for their next intake in time{' '}
+          &quot;{profile.name}&quot; has taken his medication and is due for their next intake in time{' '}
           <strong style={{ color: '#133538', fontWeight: 700 }}>12 hours and 16 minutes!</strong>
         </p>
       </div>
@@ -329,14 +352,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* Wellness Card (Pale Lime Green) */}
       <div
         ref={wellnessCardRef}
+        onClick={() => pushView('wellness-detail')}
         style={{
           backgroundColor: '#EAF4DC',
           borderRadius: '26px',
           padding: '18px 20px',
           border: '1px solid #DDEEC7',
           position: 'relative',
+          cursor: 'pointer',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         }}
+        title="Abrir historias y relajación"
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
@@ -374,12 +400,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             fontWeight: 500,
           }}
         >
-          &quot;Shohan&quot; has perform his wellness check today
+          &quot;{profile.name}&quot; has perform his wellness check today
         </p>
       </div>
 
-      {/* Bottom Peek Image Card (Wellness atmosphere) */}
+      {/* Bottom Peek Image Card */}
       <div
+        onClick={() => pushView('health-base')}
         style={{
           width: '100%',
           height: '110px',
@@ -387,7 +414,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           position: 'relative',
           overflow: 'hidden',
           boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.05)',
+          cursor: 'pointer',
         }}
+        title="Ver métricas de ambiente y salud"
       >
         <Image
           src="/wellness.jpg"
@@ -400,14 +429,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, rgba(14,20,27,0.7) 0%, transparent 60%)',
+            background: 'linear-gradient(to top, rgba(14,20,27,0.75) 0%, transparent 60%)',
             display: 'flex',
             alignItems: 'flex-end',
             padding: '12px 18px',
           }}
         >
           <span style={{ color: '#FFFFFF', fontSize: '11.5px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <Sparkles size={12} color="#A2E285" /> Environment Sensor: 21°C • Quiet
+            <Sparkles size={12} color="#A2E285" /> Environment Sensor: 21°C • Quiet (Ver más)
           </span>
         </div>
       </div>

@@ -3,29 +3,34 @@
 import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { Home, Activity, LayoutGrid } from 'lucide-react';
+import { useApp, MainTab } from '@/context/AppContext';
 
-interface BottomDockProps {
-  activeTab: number;
-  setActiveTab: (tab: number) => void;
-}
-
-export const BottomDock: React.FC<BottomDockProps> = ({ activeTab, setActiveTab }) => {
+export const BottomDock: React.FC = () => {
+  const { activeTab, setActiveTab, activeSubView } = useApp();
   const pillIndicatorRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const tabIndexMap: Record<MainTab, number> = {
+    home: 0,
+    statistics: 1,
+    options: 2,
+  };
+
+  const currentIdx = tabIndexMap[activeTab] ?? 0;
 
   useEffect(() => {
     if (!pillIndicatorRef.current || !containerRef.current) return;
 
-    // Calculate position for indicator (3 buttons, width is ~180px, each button slot is ~54px)
+    // Positions for 3 buttons in 180px width dock
     const positions = [6, 62, 118];
-    const targetX = positions[activeTab] ?? 6;
+    const targetX = positions[currentIdx] ?? 6;
 
     gsap.to(pillIndicatorRef.current, {
       x: targetX,
       duration: 0.45,
       ease: 'back.out(1.4)',
     });
-  }, [activeTab]);
+  }, [currentIdx]);
 
   return (
     <div style={{
@@ -38,6 +43,8 @@ export const BottomDock: React.FC<BottomDockProps> = ({ activeTab, setActiveTab 
       alignItems: 'center',
       zIndex: 60,
       pointerEvents: 'none',
+      opacity: activeSubView === 'scan' ? 0 : 1,
+      transition: 'opacity 0.2s ease',
     }}>
       {/* Floating Pill Bar */}
       <div
@@ -74,7 +81,7 @@ export const BottomDock: React.FC<BottomDockProps> = ({ activeTab, setActiveTab 
 
         {/* Tab 0: Home */}
         <button
-          onClick={() => setActiveTab(0)}
+          onClick={() => setActiveTab('home')}
           style={{
             flex: 1,
             height: '100%',
@@ -91,14 +98,14 @@ export const BottomDock: React.FC<BottomDockProps> = ({ activeTab, setActiveTab 
         >
           <Home
             size={21}
-            color={activeTab === 0 ? '#FFFFFF' : '#4A5568'}
-            strokeWidth={activeTab === 0 ? 2.5 : 2}
+            color={activeTab === 'home' ? '#FFFFFF' : '#4A5568'}
+            strokeWidth={activeTab === 'home' ? 2.5 : 2}
           />
         </button>
 
         {/* Tab 1: Stats */}
         <button
-          onClick={() => setActiveTab(1)}
+          onClick={() => setActiveTab('statistics')}
           style={{
             flex: 1,
             height: '100%',
@@ -115,14 +122,14 @@ export const BottomDock: React.FC<BottomDockProps> = ({ activeTab, setActiveTab 
         >
           <Activity
             size={22}
-            color={activeTab === 1 ? '#FFFFFF' : '#4A5568'}
-            strokeWidth={activeTab === 1 ? 2.5 : 2}
+            color={activeTab === 'statistics' ? '#FFFFFF' : '#4A5568'}
+            strokeWidth={activeTab === 'statistics' ? 2.5 : 2}
           />
         </button>
 
         {/* Tab 2: Profile / More Options */}
         <button
-          onClick={() => setActiveTab(2)}
+          onClick={() => setActiveTab('options')}
           style={{
             flex: 1,
             height: '100%',
@@ -139,8 +146,8 @@ export const BottomDock: React.FC<BottomDockProps> = ({ activeTab, setActiveTab 
         >
           <LayoutGrid
             size={20}
-            color={activeTab === 2 ? '#FFFFFF' : '#4A5568'}
-            strokeWidth={activeTab === 2 ? 2.5 : 2}
+            color={activeTab === 'options' ? '#FFFFFF' : '#4A5568'}
+            strokeWidth={activeTab === 'options' ? 2.5 : 2}
           />
         </button>
       </div>

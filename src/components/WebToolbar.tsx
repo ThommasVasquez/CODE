@@ -1,13 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Smartphone, Columns, RotateCcw, Cloud, Sparkles } from 'lucide-react';
+import { Smartphone, Columns, RotateCcw, Cloud, ChevronRight } from 'lucide-react';
+import { useApp, MainTab } from '@/context/AppContext';
 
 interface WebToolbarProps {
   viewMode: 'device' | 'showcase';
   setViewMode: (mode: 'device' | 'showcase') => void;
-  activeTab: number;
-  setActiveTab: (tab: number) => void;
   onReplayAnimations: () => void;
   onOpenDeployModal: () => void;
 }
@@ -15,29 +14,41 @@ interface WebToolbarProps {
 export const WebToolbar: React.FC<WebToolbarProps> = ({
   viewMode,
   setViewMode,
-  activeTab,
-  setActiveTab,
   onReplayAnimations,
   onOpenDeployModal,
 }) => {
+  const { activeTab, setActiveTab, activeSubView, popView } = useApp();
+
+  const subViewNames: Record<string, string> = {
+    'medication-detail': 'Medicación',
+    'wellness-detail': 'Bienestar',
+    'diary': 'Bitácora',
+    'settings': 'Ajustes',
+    'subscriptions': 'Suscripciones',
+    'health-base': 'Health Base',
+    'scan': 'Escáner',
+    'edit-profile': 'Editar Perfil',
+  };
+
   return (
     <header
       style={{
         width: '100%',
-        maxWidth: '1200px',
+        maxWidth: '1240px',
         margin: '0 auto',
-        padding: '16px 24px',
+        padding: '16px 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '14px',
+        gap: '12px',
         zIndex: 50,
       }}
     >
-      {/* Brand Identity */}
+      {/* Brand Identity & Breadcrumb */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <div
+          onClick={() => setActiveTab('home')}
           style={{
             background: 'linear-gradient(135deg, #101419 0%, #252D37 100%)',
             color: '#FFFFFF',
@@ -50,18 +61,33 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
+            cursor: 'pointer',
           }}
         >
           CODE<span>®</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#161F28' }}>
-            iOS Vital & Medication OS
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#161F28' }}>
+              iOS Vital & Medication OS
+            </span>
+            {activeSubView && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#73A932', fontWeight: 700 }}>
+                <ChevronRight size={13} color="#8898A8" />
+                <span
+                  onClick={popView}
+                  style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                  title="Volver"
+                >
+                  {subViewNames[activeSubView] || activeSubView}
+                </span>
+              </div>
+            )}
+          </div>
           <span style={{ fontSize: '11px', color: '#637384', display: 'flex', alignItems: 'center', gap: '5px' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#73A932' }} />
-            GSAP Powered • Cloudflare Pages Ready
+            Totalmente Interactivo • Cloudflare Pages Ready
           </span>
         </div>
       </div>

@@ -3,12 +3,10 @@
 import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { Pill, CheckCircle2, Clock, Activity } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
-interface DynamicIslandProps {
-  onDoseTaken?: () => void;
-}
-
-export const DynamicIsland: React.FC<DynamicIslandProps> = ({ onDoseTaken }) => {
+export const DynamicIsland: React.FC = () => {
+  const { takeDose } = useApp();
   const [isExpanded, setIsExpanded] = useState(false);
   const islandRef = useRef<HTMLDivElement>(null);
 
@@ -61,7 +59,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ onDoseTaken }) => 
         userSelect: 'none',
         transition: 'box-shadow 0.2s ease',
       }}
-      title="Click to interact with Dynamic Island"
+      title="Toca para interactuar con la Dynamic Island"
     >
       {!isExpanded ? (
         <>
@@ -109,10 +107,10 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ onDoseTaken }) => 
             </div>
             <div>
               <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF' }}>
-                Next Intake
+                Próxima Toma
               </div>
               <div style={{ fontSize: '11px', color: '#9E9EA7', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Clock size={11} /> Cardiovit • 1h 30m
+                <Clock size={11} /> Cardiovit • en 1h 30m
               </div>
             </div>
           </div>
@@ -120,7 +118,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ onDoseTaken }) => 
           <button
             onClick={(e) => {
               e.stopPropagation();
-              if (onDoseTaken) onDoseTaken();
+              takeDose('Cardiovit 50mg');
               toggleExpand();
             }}
             style={{
@@ -138,7 +136,7 @@ export const DynamicIsland: React.FC<DynamicIslandProps> = ({ onDoseTaken }) => 
             }}
           >
             <CheckCircle2 size={13} />
-            Take
+            Tomar
           </button>
         </div>
       )}

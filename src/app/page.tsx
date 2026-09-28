@@ -1,42 +1,60 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { AppProvider, useApp } from '@/context/AppContext';
 import { StatusBar } from '@/components/StatusBar';
 import { DynamicIsland } from '@/components/DynamicIsland';
 import { BottomDock } from '@/components/BottomDock';
+import { IOSToast } from '@/components/IOSToast';
 import { HomeScreen } from '@/components/HomeScreen';
 import { StatisticsScreen } from '@/components/StatisticsScreen';
 import { ProfileScreen } from '@/components/ProfileScreen';
 import { WebToolbar } from '@/components/WebToolbar';
 import { CloudflareModal } from '@/components/CloudflareModal';
 
-export default function Page() {
-  const [activeTab, setActiveTab] = useState<number>(0);
+// Subviews
+import { MedicationDetailView } from '@/components/views/MedicationDetailView';
+import { WellnessView } from '@/components/views/WellnessView';
+import { DiaryView } from '@/components/views/DiaryView';
+import { SettingsView } from '@/components/views/SettingsView';
+import { SubscriptionsView } from '@/components/views/SubscriptionsView';
+import { HealthBaseView } from '@/components/views/HealthBaseView';
+import { ScanModal } from '@/components/views/ScanModal';
+import { EditProfileModal } from '@/components/views/EditProfileModal';
+
+function AppContent() {
+  const { activeTab, activeSubView } = useApp();
   const [viewMode, setViewMode] = useState<'device' | 'showcase'>('device');
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
 
-  // Health state
-  const [adherenceRate, setAdherenceRate] = useState<number>(65);
-  const [pillsRemain, setPillsRemain] = useState<number>(40);
-
   const screenContainerRef = useRef<HTMLDivElement>(null);
   const showcaseRef = useRef<HTMLDivElement>(null);
 
-  // GSAP transition when changing tabs in single device mode
+  // GSAP transition when changing tabs or pushing subviews
   useGSAP(
     () => {
       if (screenContainerRef.current) {
-        gsap.fromTo(
-          screenContainerRef.current,
-          { opacity: 0.6, y: 10, scale: 0.985 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'power2.out' }
-        );
+        if (activeSubView) {
+          // Push slide in from right
+          gsap.fromTo(
+            screenContainerRef.current,
+            { x: '25%', opacity: 0.5 },
+            { x: '0%', opacity: 1, duration: 0.38, ease: 'power2.out' }
+          );
+        } else {
+          // Tab fade and subtle scale
+          gsap.fromTo(
+            screenContainerRef.current,
+            { opacity: 0.6, y: 10, scale: 0.985 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.35, ease: 'power2.out' }
+          );
+        }
       }
     },
-    { dependencies: [activeTab, animationKey] }
+    { dependencies: [activeTab, activeSubView, animationKey] }
   );
 
   // GSAP entrance for 3-screen showcase mode
@@ -55,13 +73,27 @@ export default function Page() {
     { dependencies: [viewMode, animationKey] }
   );
 
-  const handleDoseTaken = () => {
-    setPillsRemain((prev) => Math.max(0, prev - 1));
-    setAdherenceRate((prev) => Math.min(100, prev + 1));
-  };
-
   const replayAnimations = () => {
     setAnimationKey((k) => k + 1);
+  };
+
+  const renderActiveScreen = () => {
+    // If a subview is active in navigation stack
+    if (activeSubView === 'medication-detail') return <MedicationDetailView />;
+    if (activeSubView === 'wellness-detail') return <WellnessView />;
+    if (activeSubView === 'diary') return <DiaryView />;
+    if (activeSubView === 'settings') return <SettingsView />;
+    if (activeSubView === 'subscriptions') return <SubscriptionsView />;
+    if (activeSubView === 'health-base') return <HealthBaseView />;
+    if (activeSubView === 'scan') return <ScanModal />;
+    if (activeSubView === 'edit-profile') return <EditProfileModal />;
+
+    // Otherwise render active tab
+    if (activeTab === 'home') return <HomeScreen />;
+    if (activeTab === 'statistics') return <StatisticsScreen />;
+    if (activeTab === 'options') return <ProfileScreen />;
+
+    return <HomeScreen />;
   };
 
   return (
@@ -80,8 +112,6 @@ export default function Page() {
       <WebToolbar
         viewMode={viewMode}
         setViewMode={setViewMode}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
         onReplayAnimations={replayAnimations}
         onOpenDeployModal={() => setIsDeployModalOpen(true)}
       />
@@ -114,7 +144,6 @@ export default function Page() {
             />
 
             {/* Hardware Side Buttons */}
-            {/* Volume Up */}
             <div
               style={{
                 position: 'absolute',
@@ -126,7 +155,6 @@ export default function Page() {
                 borderRadius: '3px 0 0 3px',
               }}
             />
-            {/* Volume Down */}
             <div
               style={{
                 position: 'absolute',
@@ -138,7 +166,6 @@ export default function Page() {
                 borderRadius: '3px 0 0 3px',
               }}
             />
-            {/* Power Button */}
             <div
               style={{
                 position: 'absolute',
@@ -154,15 +181,18 @@ export default function Page() {
             {/* Inner iOS Screen */}
             <div className="iphone-screen">
               {/* Dynamic Island */}
-              <DynamicIsland onDoseTaken={handleDoseTaken} />
+              <DynamicIsland />
 
               {/* Status Bar */}
               <StatusBar />
 
+              {/* Drop-down iOS Toast / Banner Alert */}
+              <IOSToast />
+
               {/* Screen Content Switcher with GSAP animation */}
               <div
                 ref={screenContainerRef}
-                key={`screen-${activeTab}-${animationKey}`}
+                key={`screen-${activeTab}-${activeSubView}-${animationKey}`}
                 style={{
                   flex: 1,
                   position: 'relative',
@@ -171,29 +201,15 @@ export default function Page() {
                   flexDirection: 'column',
                 }}
               >
-                {activeTab === 0 && (
-                  <HomeScreen
-                    onNavigateToStats={() => setActiveTab(1)}
-                    adherenceRate={adherenceRate}
-                    pillsRemain={pillsRemain}
-                  />
-                )}
-                {activeTab === 1 && (
-                  <StatisticsScreen
-                    onBackToHome={() => setActiveTab(0)}
-                  />
-                )}
-                {activeTab === 2 && (
-                  <ProfileScreen />
-                )}
+                {renderActiveScreen()}
               </div>
 
               {/* Floating Bottom Navigation Dock */}
-              <BottomDock activeTab={activeTab} setActiveTab={setActiveTab} />
+              <BottomDock />
             </div>
           </div>
         ) : (
-          /* 3-Screen Mockup Showcase Mode (matching attached reference image) */
+          /* 3-Screen Mockup Showcase Mode */
           <div
             ref={showcaseRef}
             style={{
@@ -209,40 +225,36 @@ export default function Page() {
             {/* Screen 1: Home */}
             <div className="iphone-frame showcase-device" style={{ transform: 'scale(0.92)' }}>
               <div className="iphone-screen">
-                <DynamicIsland onDoseTaken={handleDoseTaken} />
+                <DynamicIsland />
                 <StatusBar />
                 <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <HomeScreen
-                    onNavigateToStats={() => {}}
-                    adherenceRate={adherenceRate}
-                    pillsRemain={pillsRemain}
-                  />
+                  <HomeScreen />
                 </div>
-                <BottomDock activeTab={0} setActiveTab={() => {}} />
+                <BottomDock />
               </div>
             </div>
 
             {/* Screen 2: Statistics */}
             <div className="iphone-frame showcase-device" style={{ transform: 'scale(0.92)' }}>
               <div className="iphone-screen">
-                <DynamicIsland onDoseTaken={handleDoseTaken} />
+                <DynamicIsland />
                 <StatusBar />
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <StatisticsScreen />
                 </div>
-                <BottomDock activeTab={1} setActiveTab={() => {}} />
+                <BottomDock />
               </div>
             </div>
 
             {/* Screen 3: More Options */}
             <div className="iphone-frame showcase-device" style={{ transform: 'scale(0.92)' }}>
               <div className="iphone-screen">
-                <DynamicIsland onDoseTaken={handleDoseTaken} />
+                <DynamicIsland />
                 <StatusBar />
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <ProfileScreen />
                 </div>
-                <BottomDock activeTab={2} setActiveTab={() => {}} />
+                <BottomDock />
               </div>
             </div>
           </div>
@@ -255,5 +267,13 @@ export default function Page() {
         onClose={() => setIsDeployModalOpen(false)}
       />
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }

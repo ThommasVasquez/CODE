@@ -3,39 +3,23 @@
 import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ChevronRight, TrendingUp, Calendar, Check } from 'lucide-react';
+import { ChevronRight, Calendar, ArrowUpRight } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
-interface StatisticsScreenProps {
-  onBackToHome?: () => void;
-}
+export const StatisticsScreen: React.FC = () => {
+  const {
+    bottles,
+    toggleBottle,
+    consumedToday,
+    adherenceRate,
+    pushView,
+  } = useApp();
 
-export const StatisticsScreen: React.FC<StatisticsScreenProps> = () => {
   const [filterPeriod, setFilterPeriod] = useState<'Daily' | 'Weekly' | 'Monthly'>('Daily');
-  const [consumedCount, setConsumedCount] = useState<number>(8);
-  const [bottles, setBottles] = useState<boolean[]>([
-    true, true, true, true,
-    true, true, true, true,
-    false, false, false, false,
-  ]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const chartPathRef = useRef<SVGPathElement>(null);
   const stripedBarRef = useRef<HTMLDivElement>(null);
-
-  const toggleBottle = (index: number) => {
-    const updated = [...bottles];
-    updated[index] = !updated[index];
-    setBottles(updated);
-    const newCount = updated.filter(Boolean).length;
-    setConsumedCount(newCount);
-
-    // GSAP pop animation on click
-    gsap.fromTo(
-      `#bottle-${index}`,
-      { scale: 0.8 },
-      { scale: 1, duration: 0.35, ease: 'back.out(2)' }
-    );
-  };
 
   useGSAP(
     () => {
@@ -142,6 +126,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = () => {
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
               cursor: 'pointer',
             }}
+            title="Cambiar intervalo temporal"
           >
             {filterPeriod}
             <ChevronRight size={13} color="#60767C" />
@@ -171,8 +156,9 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
+                  transformOrigin: 'center',
                 }}
-                title={isConsumed ? 'Taken (click to toggle)' : 'Scheduled (click to take)'}
+                title={isConsumed ? `Pastilla #${idx + 1} tomada (clic para desmarcar)` : `Pastilla #${idx + 1} pendiente (clic para tomar)`}
               >
                 {/* Bottle Cap */}
                 <div
@@ -209,7 +195,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = () => {
           {/* Right Counter */}
           <div style={{ textAlign: 'right', paddingLeft: '8px' }}>
             <div style={{ fontSize: '32px', fontWeight: 800, color: '#0F2126', lineHeight: 1 }}>
-              {String(consumedCount).padStart(2, '0')}
+              {String(consumedToday).padStart(2, '0')}
               <span style={{ fontSize: '15px', fontWeight: 600, color: '#4B6B72', marginLeft: '2px' }}>
                 Pcs
               </span>
@@ -234,7 +220,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = () => {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <div style={{ fontSize: '28px', fontWeight: 800, color: '#0E141B' }}>
-            65<span style={{ fontSize: '18px', fontWeight: 600 }}>%</span>
+            {adherenceRate}<span style={{ fontSize: '18px', fontWeight: 600 }}>%</span>
           </div>
           <div style={{ fontSize: '12px', fontWeight: 600, color: '#667585', textAlign: 'right' }}>
             Avg. Medication<br />Intake Rate
@@ -261,9 +247,10 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = () => {
             ref={stripedBarRef}
             className="striped-green-bar"
             style={{
-              width: '65%',
+              width: `${adherenceRate}%`,
               height: '100%',
               borderRadius: '12px',
+              transition: 'width 0.4s ease',
             }}
           />
         </div>
@@ -272,25 +259,31 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = () => {
       {/* Avg Adherence Card with Smooth Spline Wave Chart */}
       <div
         className="stat-card"
+        onClick={() => pushView('health-base')}
         style={{
           backgroundColor: '#FFFFFF',
           borderRadius: '28px',
           padding: '18px 20px 14px 20px',
           boxShadow: '0 8px 30px rgba(16, 24, 40, 0.04)',
           border: '1px solid rgba(230, 235, 240, 0.8)',
+          cursor: 'pointer',
         }}
+        title="Ver desglose completo de vitales"
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#0E141B' }}>
-              Avg. Adherence
-            </h4>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#0E141B' }}>
+                Avg. Adherence
+              </h4>
+              <ArrowUpRight size={14} color="#7E8E9E" />
+            </div>
             <p style={{ fontSize: '11px', color: '#748394', marginTop: '2px', fontWeight: 500 }}>
               Last 30 days trailing avg.
             </p>
           </div>
           <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B' }}>
-            65%
+            {adherenceRate}%
           </div>
         </div>
 

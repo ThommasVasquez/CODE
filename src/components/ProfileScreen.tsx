@@ -4,9 +4,11 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Scan, Share2, Pencil, ArrowUpRight, ShieldCheck, Heart, BookOpen, SlidersHorizontal } from 'lucide-react';
+import { Scan, Share2, Pencil, ArrowUpRight } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 export const ProfileScreen: React.FC = () => {
+  const { profile, diaryEntries, pushView, showToast } = useApp();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -33,6 +35,27 @@ export const ProfileScreen: React.FC = () => {
     },
     { scope: containerRef }
   );
+
+  const handleShare = async () => {
+    const shareData = {
+      title: `CODE® - Informe de ${profile.name}`,
+      text: `Paciente: ${profile.name} | ID: ${profile.deviceId} | Residencia: ${profile.residence}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        // Ignored if cancelled
+      }
+    } else {
+      navigator.clipboard.writeText(
+        `CODE® Salud: Paciente ${profile.name} (ID: ${profile.deviceId}), Póliza: ${profile.policy}`
+      );
+      showToast('Enlace e informe copiado al portapapeles');
+    }
+  };
 
   return (
     <div
@@ -63,6 +86,7 @@ export const ProfileScreen: React.FC = () => {
         <div className="profile-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {/* Scan button */}
           <button
+            onClick={() => pushView('scan')}
             style={{
               width: '38px',
               height: '38px',
@@ -75,13 +99,14 @@ export const ProfileScreen: React.FC = () => {
               cursor: 'pointer',
               boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
             }}
-            title="Scan QR or Device"
+            title="Escanear código de barras o dispositivo"
           >
             <Scan size={18} color="#181D23" />
           </button>
 
           {/* Share button */}
           <button
+            onClick={handleShare}
             style={{
               width: '38px',
               height: '38px',
@@ -94,7 +119,7 @@ export const ProfileScreen: React.FC = () => {
               cursor: 'pointer',
               boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
             }}
-            title="Export Health Data"
+            title="Compartir informe de salud"
           >
             <Share2 size={17} color="#181D23" />
           </button>
@@ -117,14 +142,15 @@ export const ProfileScreen: React.FC = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A232C' }}>
-              Shohan&apos;s Device
+              {profile.name}&apos;s Device
             </h3>
             <p style={{ fontSize: '11px', color: '#68798A', fontWeight: 500, marginTop: '2px' }}>
-              Pat_43546
+              {profile.patientId}
             </p>
           </div>
 
           <button
+            onClick={() => pushView('edit-profile')}
             style={{
               width: '32px',
               height: '32px',
@@ -136,7 +162,7 @@ export const ProfileScreen: React.FC = () => {
               justifyContent: 'center',
               cursor: 'pointer',
             }}
-            title="Edit Profile"
+            title="Editar Perfil"
           >
             <Pencil size={15} color="#455464" />
           </button>
@@ -144,7 +170,11 @@ export const ProfileScreen: React.FC = () => {
 
         {/* Central Portrait with Halo Backdrop */}
         <div style={{ display: 'flex', justifyContent: 'center', margin: '6px 0 16px 0' }}>
-          <div style={{ position: 'relative', width: '106px', height: '106px' }}>
+          <div
+            onClick={() => pushView('edit-profile')}
+            style={{ position: 'relative', width: '106px', height: '106px', cursor: 'pointer' }}
+            title="Toca para editar avatar y datos"
+          >
             <div
               style={{
                 position: 'absolute',
@@ -166,7 +196,7 @@ export const ProfileScreen: React.FC = () => {
             >
               <Image
                 src="/avatar.jpg"
-                alt="Shohan's Profile"
+                alt={profile.name}
                 fill
                 sizes="110px"
                 style={{ objectFit: 'cover' }}
@@ -189,15 +219,15 @@ export const ProfileScreen: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
               <span style={{ color: '#556D73', fontWeight: 500 }}>Age :</span>
-              <span style={{ color: '#102025', fontWeight: 700 }}>56 years</span>
+              <span style={{ color: '#102025', fontWeight: 700 }}>{profile.age} years</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
               <span style={{ color: '#556D73', fontWeight: 500 }}>Email :</span>
-              <span style={{ color: '#102025', fontWeight: 700 }}>hannah@email.com</span>
+              <span style={{ color: '#102025', fontWeight: 700 }}>{profile.email}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
               <span style={{ color: '#556D73', fontWeight: 500 }}>Phone number :</span>
-              <span style={{ color: '#102025', fontWeight: 700 }}>+ 971 4234 4112</span>
+              <span style={{ color: '#102025', fontWeight: 700 }}>{profile.phone}</span>
             </div>
           </div>
 
@@ -221,7 +251,7 @@ export const ProfileScreen: React.FC = () => {
             >
               <div style={{ fontSize: '9px', color: '#688288', fontWeight: 600 }}>ID</div>
               <div style={{ fontSize: '10px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
-                311097152
+                {profile.deviceId}
               </div>
             </div>
 
@@ -236,7 +266,7 @@ export const ProfileScreen: React.FC = () => {
             >
               <div style={{ fontSize: '9px', color: '#688288', fontWeight: 600 }}>Policy</div>
               <div style={{ fontSize: '10px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
-                CA3117128
+                {profile.policy}
               </div>
             </div>
 
@@ -251,7 +281,7 @@ export const ProfileScreen: React.FC = () => {
             >
               <div style={{ fontSize: '9px', color: '#688288', fontWeight: 600 }}>Residence</div>
               <div style={{ fontSize: '10px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
-                California
+                {profile.residence}
               </div>
             </div>
           </div>
@@ -269,6 +299,7 @@ export const ProfileScreen: React.FC = () => {
         {/* Diary */}
         <div
           className="action-card"
+          onClick={() => pushView('diary')}
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '24px',
@@ -282,6 +313,7 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
+          title="Abrir bitácora de salud"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
@@ -304,7 +336,7 @@ export const ProfileScreen: React.FC = () => {
 
           <div>
             <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B', lineHeight: 1 }}>
-              15
+              {diaryEntries.length}
             </div>
             <div style={{ fontSize: '11px', fontWeight: 500, color: '#7E8C9C', marginTop: '3px' }}>
               Total
@@ -315,6 +347,7 @@ export const ProfileScreen: React.FC = () => {
         {/* Settings */}
         <div
           className="action-card"
+          onClick={() => pushView('settings')}
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '24px',
@@ -328,6 +361,7 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
+          title="Abrir ajustes de la aplicación"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
@@ -361,6 +395,7 @@ export const ProfileScreen: React.FC = () => {
         {/* Subscriptions */}
         <div
           className="action-card"
+          onClick={() => pushView('subscriptions')}
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '24px',
@@ -374,6 +409,7 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
+          title="Ver suscripciones y recargas"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
@@ -407,6 +443,7 @@ export const ProfileScreen: React.FC = () => {
         {/* Health Base */}
         <div
           className="action-card"
+          onClick={() => pushView('health-base')}
           style={{
             backgroundColor: '#FFFFFF',
             borderRadius: '24px',
@@ -420,6 +457,7 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
+          title="Ver métricas de actividad y vitales"
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
