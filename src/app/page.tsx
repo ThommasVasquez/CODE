@@ -26,9 +26,10 @@ import { DietDetailView } from '@/components/views/DietDetailView';
 import { FastingDetailView } from '@/components/views/FastingDetailView';
 import { CalorieCalculatorView } from '@/components/views/CalorieCalculatorView';
 import { WorkoutRemindersView } from '@/components/views/WorkoutRemindersView';
+import { OnboardingView } from '@/components/views/OnboardingView';
 
 function AppContent() {
-  const { activeTab, activeSubView, theme } = useApp();
+  const { activeTab, activeSubView, popView, theme } = useApp();
   const screenContainerRef = useRef<HTMLDivElement>(null);
 
   // GSAP transition when changing tabs or pushing subviews
@@ -57,6 +58,7 @@ function AppContent() {
 
   const renderActiveScreen = () => {
     // If a subview is active in navigation stack
+    if (activeSubView === 'onboarding') return <OnboardingView onStart={popView} />;
     if (activeSubView === 'medication-detail') return <MedicationDetailView />;
     if (activeSubView === 'wellness-detail') return <WellnessView />;
     if (activeSubView === 'diary') return <DiaryView />;
@@ -149,11 +151,13 @@ function AppContent() {
         />
 
         {/* Inner iOS Screen */}
-        <div className="iphone-screen">
-          {/* Dynamic Island */}
-          <DynamicIsland />
-
-          {/* Status Bar */}
+        <div
+          className="iphone-screen"
+          style={{
+            backgroundColor: activeSubView === 'onboarding' ? '#05070A' : undefined,
+          }}
+        >
+          {/* Status Bar (Ultra clean matching reference image) */}
           <StatusBar />
 
           {/* Drop-down iOS Toast / Banner Alert */}

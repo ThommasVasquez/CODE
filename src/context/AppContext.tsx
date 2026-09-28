@@ -6,6 +6,7 @@ import { Language, translations } from '@/utils/translations';
 export type MainTab = 'home' | 'statistics' | 'options';
 export type SubView = 
   | null 
+  | 'onboarding'
   | 'medication-detail' 
   | 'wellness-detail' 
   | 'diary' 
@@ -335,13 +336,13 @@ const initialDietPlans: DietPlan[] = [
 ];
 
 const defaultProfile: PatientProfile = {
-  name: 'Shohan',
+  name: 'Sophia Rose',
   deviceId: '4564856',
   patientId: 'Pat_43546',
-  age: 34,
-  email: 'hannah@email.com',
-  phone: '+ 971 4234 4112',
-  residence: 'California',
+  age: 26,
+  email: 'sophia.rose@fitness.ai',
+  phone: '+1 (555) 382-9012',
+  residence: 'California, USA',
   avatarUrl: '/avatar.jpg',
 };
 

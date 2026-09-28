@@ -41,23 +41,23 @@ export const DynamicIsland: React.FC = () => {
       onClick={toggleExpand}
       style={{
         position: 'absolute',
-        top: '11px',
+        top: '8px',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: '126px',
-        height: '35px',
+        width: isExpanded ? '310px' : '108px',
+        height: isExpanded ? '78px' : '28px',
         backgroundColor: '#000000',
-        borderRadius: '22px',
+        borderRadius: isExpanded ? '36px' : '18px',
         zIndex: 50,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: isExpanded ? '12px 18px' : '0 11px',
+        padding: isExpanded ? '12px 18px' : '0 10px',
         cursor: 'pointer',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(255, 255, 255, 0.08) inset',
+        boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45)',
         overflow: 'hidden',
         userSelect: 'none',
-        transition: 'box-shadow 0.2s ease',
+        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
       title="Dynamic Island CODE®"
     >

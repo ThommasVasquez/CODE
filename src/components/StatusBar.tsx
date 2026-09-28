@@ -8,26 +8,10 @@ interface StatusBarProps {
 }
 
 export const StatusBar: React.FC<StatusBarProps> = ({ useLiveTime = false }) => {
-  const [time, setTime] = useState('9:41');
-  const { theme } = useApp();
-
-  useEffect(() => {
-    if (!useLiveTime) {
-      setTime('9:41');
-      return;
-    }
-    const updateTime = () => {
-      const now = new Date();
-      setTime(
-        now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false })
-      );
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 10000);
-    return () => clearInterval(interval);
-  }, [useLiveTime]);
-
-  const iconColor = theme === 'dark' ? '#F4F6F8' : '#121820';
+  const [time, setTime] = useState('9:40 PM');
+  const { theme, activeSubView } = useApp();
+  const isDarkBackground = theme === 'dark' || activeSubView === 'onboarding';
+  const iconColor = isDarkBackground ? '#F4F6F8' : '#121820';
 
   return (
     <div style={{

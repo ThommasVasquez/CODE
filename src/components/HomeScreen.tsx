@@ -45,6 +45,7 @@ export const HomeScreen: React.FC = () => {
   const [selectedDateIdx, setSelectedDateIdx] = useState<number>(3); // Wednesday 16 default
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [showQuickMenu, setShowQuickMenu] = useState<boolean>(false);
 
   const todayWorkout = selectedRoutine || workoutRoutines[0];
   const fastingPercent = Math.min(100, Math.round((fastingState.elapsedHours / fastingState.targetHours) * 100));
@@ -122,8 +123,8 @@ export const HomeScreen: React.FC = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '14px',
-        padding: '12px 18px 105px 18px',
+        gap: '12px',
+        padding: '10px 18px 105px 18px',
         overflowY: 'auto',
         height: '100%',
         color: 'var(--text-primary)',
@@ -217,25 +218,120 @@ export const HomeScreen: React.FC = () => {
           </button>
 
           {/* Settings / Menu */}
-          <button
-            onClick={() => setActiveTab('options')}
-            style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '50%',
-              backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.08)' : '#FFFFFF',
-              border: '1px solid rgba(220, 226, 230, 0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-              color: 'var(--text-primary)',
-            }}
-            title="Ajustes de Perfil"
-          >
-            <Menu size={17} />
-          </button>
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setShowQuickMenu(!showQuickMenu)}
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.08)' : '#FFFFFF',
+                border: '1px solid rgba(220, 226, 230, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                color: 'var(--text-primary)',
+              }}
+              title="Menú & Pantallas"
+            >
+              <Menu size={17} />
+            </button>
+
+            {/* iOS Floating Context Menu */}
+            {showQuickMenu && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '46px',
+                  right: '0',
+                  width: '210px',
+                  backgroundColor: theme === 'dark' ? 'rgba(24, 28, 38, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  borderRadius: '18px',
+                  boxShadow: '0 12px 32px rgba(0,0,0,0.18), 0 0 0 1px rgba(220, 226, 230, 0.4)',
+                  padding: '6px',
+                  zIndex: 80,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '2px',
+                }}
+              >
+                <button
+                  onClick={() => {
+                    setShowQuickMenu(false);
+                    pushView('onboarding');
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 12px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'none',
+                    color: 'var(--text-primary)',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span>🚀</span> Ver Onboarding (Pantalla 1)
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowQuickMenu(false);
+                    pushView('workout-detail');
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 12px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'none',
+                    color: 'var(--text-primary)',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span>🏋️‍♀️</span> Workout Details (Pantalla 3)
+                </button>
+
+                <div style={{ height: '1px', backgroundColor: 'rgba(200, 210, 225, 0.3)', margin: '4px 0' }} />
+
+                <button
+                  onClick={() => {
+                    setShowQuickMenu(false);
+                    setActiveTab('options');
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 12px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'none',
+                    color: 'var(--text-primary)',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <span>⚙️</span> Ajustes de Perfil
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -434,44 +530,60 @@ export const HomeScreen: React.FC = () => {
         ref={heroCardRef}
         onClick={() => pushView('workout-detail')}
         style={{
-          backgroundColor: '#131722',
+          backgroundColor: '#1C1D24',
           borderRadius: '28px',
           position: 'relative',
           overflow: 'hidden',
-          boxShadow: '0 12px 32px rgba(10, 14, 25, 0.35)',
+          boxShadow: '0 14px 34px rgba(10, 14, 25, 0.38)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
           cursor: 'pointer',
           flexShrink: 0,
+          minHeight: '315px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
         title="Ver entrenamiento completo"
       >
-        {/* Top Multi-color Rainbow Gradient Line */}
+        {/* Layered Rainbow Stepped Border Header (Matching Reference Screen 2) */}
         <div
           style={{
-            height: '4px',
+            height: '6px',
             width: '100%',
-            background: 'linear-gradient(90deg, #FDE047 0%, #F472B6 35%, #38BDF8 70%, #A855F7 100%)',
+            background: 'linear-gradient(90deg, #FDE047 0%, #F472B6 33%, #38BDF8 66%, #A855F7 100%)',
+            boxShadow: '0 2px 8px rgba(244, 114, 182, 0.4)',
           }}
         />
 
-        <div style={{ padding: '20px 20px 22px 20px', position: 'relative' }}>
+        {/* Card Interior */}
+        <div
+          style={{
+            padding: '18px 20px 22px 20px',
+            position: 'relative',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            flex: 1,
+          }}
+        >
           {/* Top Row: Time Badge + Favorite Heart */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
             <div
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '5px',
-                backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                backdropFilter: 'blur(8px)',
-                padding: '5px 11px',
+                backgroundColor: 'rgba(255, 255, 255, 0.16)',
+                backdropFilter: 'blur(10px)',
+                padding: '6px 13px',
                 borderRadius: '16px',
                 fontSize: '11px',
                 fontWeight: 700,
                 color: '#FFFFFF',
               }}
             >
-              <Timer size={13} /> {todayWorkout.durationMin || 25} min
+              <Timer size={13} /> 25 min
             </div>
 
             <button
@@ -480,94 +592,111 @@ export const HomeScreen: React.FC = () => {
                 setIsFavorite(!isFavorite);
               }}
               style={{
-                background: 'none',
+                background: 'rgba(255, 255, 255, 0.12)',
                 border: 'none',
-                color: isFavorite ? '#F43F5E' : 'rgba(255, 255, 255, 0.8)',
+                borderRadius: '50%',
+                width: '34px',
+                height: '34px',
+                color: isFavorite ? '#F43F5E' : '#FFFFFF',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '4px',
               }}
               title="Guardar favorito"
             >
-              <Heart size={18} fill={isFavorite ? '#F43F5E' : 'none'} />
+              <Heart size={16} fill={isFavorite ? '#F43F5E' : 'none'} />
             </button>
           </div>
 
-          {/* Athlete Cutout Photography Positioned Right */}
+          {/* Full-Height Athlete Cutout Photography Positioned Right (Matching Reference) */}
           <div
             style={{
               position: 'absolute',
-              right: '0',
+              right: '-10px',
+              top: '0',
               bottom: '0',
-              width: '150px',
-              height: '170px',
+              width: '58%',
               pointerEvents: 'none',
               overflow: 'hidden',
+              zIndex: 1,
             }}
           >
             <Image
               src="/hero_athlete.jpg"
               alt="Fitness Athlete"
               fill
-              sizes="150px"
+              sizes="280px"
               unoptimized
               priority
               style={{
                 objectFit: 'cover',
-                objectPosition: 'center top',
+                objectPosition: 'center 12%',
+                transform: 'scale(1.18)',
               }}
             />
-            {/* Soft dark gradient fade on the left edge */}
+            {/* Smooth left-edge gradient blend into dark slate */}
             <div
               style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(to right, #131722 0%, rgba(19, 23, 34, 0.4) 30%, transparent 65%)',
+                background: 'linear-gradient(to right, #1C1D24 0%, rgba(28, 29, 36, 0.85) 18%, rgba(28, 29, 36, 0.25) 45%, transparent 75%)',
+                pointerEvents: 'none',
+              }}
+            />
+            {/* Subtle bottom fade */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '20%',
+                background: 'linear-gradient(to top, #1C1D24 0%, transparent 100%)',
                 pointerEvents: 'none',
               }}
             />
           </div>
 
-          {/* Left Hero Typography */}
-          <div style={{ maxWidth: '62%', marginTop: '16px' }}>
+          {/* Left Hero Typography & CTA Button */}
+          <div style={{ maxWidth: '58%', marginTop: '16px', zIndex: 10 }}>
             <h2
               style={{
-                fontSize: '22px',
+                fontSize: '26px',
                 fontWeight: 900,
                 color: '#FFFFFF',
-                lineHeight: 1.15,
+                lineHeight: 1.12,
                 letterSpacing: '-0.3px',
               }}
             >
-              AI <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.9)' }}>Powers</span>
+              AI <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.92)' }}>Powers</span>
               <br />
               Your Muscle
               <br />
               Growth
             </h2>
 
-            <p style={{ fontSize: '11.5px', color: 'rgba(255, 255, 255, 0.65)', marginTop: '6px' }}>
+            <p style={{ fontSize: '12px', color: '#94A3B8', marginTop: '6px', fontWeight: 500 }}>
               Smarter Muscle Growth.
             </p>
 
             {/* Bottom-left Arrow Button */}
             <div
               style={{
-                marginTop: '18px',
-                width: '38px',
-                height: '38px',
+                marginTop: '24px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '50%',
                 backgroundColor: '#FFFFFF',
                 color: '#0F172A',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
+                transition: 'transform 0.15s ease',
               }}
             >
-              <ArrowUpRight size={18} />
+              <ArrowUpRight size={20} strokeWidth={2.5} />
             </div>
           </div>
         </div>

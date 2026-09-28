@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Home, BarChart2, Sparkles, Utensils, Settings } from 'lucide-react';
+import { Home, BarChart2, Sparkles, BookOpen, Settings } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const BottomDock: React.FC = () => {
@@ -120,7 +120,7 @@ export const BottomDock: React.FC = () => {
           <Sparkles size={20} color="#FFFFFF" />
         </button>
 
-        {/* Item 4: Diet & Nutrition */}
+        {/* Item 4: Routines / Diets Book */}
         <button
           onClick={() => pushView('diet-detail')}
           style={{
@@ -135,10 +135,10 @@ export const BottomDock: React.FC = () => {
             justifyContent: 'center',
             transition: 'all 0.25s ease',
           }}
-          title="Planes de Dieta"
-          aria-label="Planes de Dieta"
+          title="Planes de Dieta & Guías"
+          aria-label="Planes de Dieta & Guías"
         >
-          <Utensils
+          <BookOpen
             size={19}
             color={theme === 'dark' ? '#94A3B8' : '#475569'}
             strokeWidth={2}
