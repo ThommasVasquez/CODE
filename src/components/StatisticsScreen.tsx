@@ -3,11 +3,28 @@
 import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ChevronRight, ArrowUpRight } from 'lucide-react';
+import {
+  ChevronRight,
+  ArrowUpRight,
+  Dumbbell,
+  Utensils,
+  Timer,
+  Flame,
+  CheckCircle2,
+  TrendingUp,
+  Disc,
+  Calendar,
+  Zap,
+} from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const StatisticsScreen: React.FC = () => {
   const {
+    workoutComplianceRate,
+    dietComplianceRate,
+    fastingComplianceRate,
+    workoutSchedule,
+    calorieMetrics,
     bottles,
     toggleBottle,
     consumedToday,
@@ -17,11 +34,13 @@ export const StatisticsScreen: React.FC = () => {
     theme,
   } = useApp();
 
-  const [filterPeriod, setFilterPeriod] = useState<'Daily' | 'Weekly' | 'Monthly'>('Daily');
+  const [filterPeriod, setFilterPeriod] = useState<'Daily' | 'Weekly' | 'Monthly'>('Weekly');
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const workoutBarRef = useRef<HTMLDivElement>(null);
+  const dietBarRef = useRef<HTMLDivElement>(null);
   const chartPathRef = useRef<SVGPathElement>(null);
-  const stripedBarRef = useRef<HTMLDivElement>(null);
+  const chartBurnedPathRef = useRef<SVGPathElement>(null);
 
   useGSAP(
     () => {
@@ -35,27 +54,25 @@ export const StatisticsScreen: React.FC = () => {
       .from('.stat-card', {
         y: 20,
         opacity: 0,
-        stagger: 0.12,
-        duration: 0.55,
+        stagger: 0.1,
+        duration: 0.5,
       }, '-=0.2')
-      .from(stripedBarRef.current, {
+      .from([workoutBarRef.current, dietBarRef.current], {
         width: '0%',
         duration: 0.8,
         ease: 'power2.out',
       }, '-=0.3');
 
-      // Animate SVG wave path
-      if (chartPathRef.current) {
-        const length = chartPathRef.current.getTotalLength();
-        gsap.set(chartPathRef.current, {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-        });
-        tl.to(chartPathRef.current, {
-          strokeDashoffset: 0,
-          duration: 1.2,
-          ease: 'power2.inOut',
-        }, '-=0.5');
+      // Animate SVG wave paths
+      if (chartPathRef.current && chartBurnedPathRef.current) {
+        const len1 = chartPathRef.current.getTotalLength();
+        const len2 = chartBurnedPathRef.current.getTotalLength();
+
+        gsap.set(chartPathRef.current, { strokeDasharray: len1, strokeDashoffset: len1 });
+        gsap.set(chartBurnedPathRef.current, { strokeDasharray: len2, strokeDashoffset: len2 });
+
+        tl.to(chartPathRef.current, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, '-=0.5');
+        tl.to(chartBurnedPathRef.current, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, '-=0.9');
       }
     },
     { scope: containerRef, dependencies: [filterPeriod] }
@@ -67,11 +84,16 @@ export const StatisticsScreen: React.FC = () => {
     return t('monthly');
   };
 
-  const getConsumedSubtitle = () => {
-    if (filterPeriod === 'Daily') return t('medicinesConsumedToday');
-    if (filterPeriod === 'Weekly') return t('medicinesConsumedWeek');
-    return t('medicinesConsumedMonth');
-  };
+  // Weekly data comparison (Mon - Sun)
+  const weekDays = [
+    { day: 'Lun', consumed: 2100, burned: 580 },
+    { day: 'Mar', consumed: 1980, burned: 620 },
+    { day: 'Mié', consumed: 2250, burned: 450 },
+    { day: 'Jue', consumed: 2050, burned: 520 },
+    { day: 'Vie', consumed: 2180, burned: 600 },
+    { day: 'Sáb', consumed: 2300, burned: 690 },
+    { day: 'Dom', consumed: 1950, burned: 350 },
+  ];
 
   return (
     <div
@@ -86,266 +108,440 @@ export const StatisticsScreen: React.FC = () => {
         color: 'var(--text-primary)',
       }}
     >
-      {/* Top Title */}
-      <div style={{ marginTop: '4px' }}>
-        <h1
-          className="stat-title"
-          style={{
-            fontSize: '24px',
-            fontWeight: 800,
-            color: 'var(--text-primary)',
-            letterSpacing: '-0.5px',
+      {/* Top Title & Period Switcher */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+        <div>
+          <h1
+            className="stat-title"
+            style={{
+              fontSize: '24px',
+              fontWeight: 800,
+              color: 'var(--text-primary)',
+              letterSpacing: '-0.5px',
+            }}
+          >
+            {t('statisticsReport')}
+          </h1>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+            Cumplimiento de metas, dietas y balance
+          </p>
+        </div>
+
+        {/* Filter Period Toggle */}
+        <button
+          onClick={() => {
+            const next = filterPeriod === 'Daily' ? 'Weekly' : filterPeriod === 'Weekly' ? 'Monthly' : 'Daily';
+            setFilterPeriod(next);
           }}
+          style={{
+            backgroundColor: 'var(--card-white)',
+            border: '1px solid rgba(220, 226, 230, 0.5)',
+            borderRadius: '20px',
+            padding: '6px 12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            fontSize: '11.5px',
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            boxShadow: 'var(--shadow-subtle)',
+            cursor: 'pointer',
+          }}
+          title="Cambiar intervalo temporal"
         >
-          {t('statisticsReport')}
-        </h1>
+          {getFilterLabel(filterPeriod)}
+          <ChevronRight size={13} color="var(--text-muted)" />
+        </button>
       </div>
 
-      {/* Medication Status Card (Soft Cyan/Dark Elevated) */}
+      {/* Dual Compliance Highlight Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        {/* Card 1: Workout Goals Compliance */}
+        <div
+          className="stat-card"
+          onClick={() => pushView('workout-detail')}
+          style={{
+            backgroundColor: 'var(--card-lime)',
+            borderRadius: '24px',
+            padding: '16px 14px',
+            border: '1px solid var(--card-lime-border)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+          }}
+          title="Ver entrenamientos"
+        >
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, color: 'var(--accent-green)', textTransform: 'uppercase' }}>
+                {t('workoutCompliance')}
+              </span>
+              <Dumbbell size={15} color="var(--accent-green)" />
+            </div>
+
+            <div style={{ fontSize: '28px', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
+              {workoutComplianceRate}%
+            </div>
+            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              {workoutSchedule.completedThisWeek} de {workoutSchedule.weeklyTarget} sesiones esta semana
+            </div>
+          </div>
+
+          <div style={{ marginTop: '12px' }}>
+            <div
+              style={{
+                width: '100%',
+                height: '8px',
+                backgroundColor: theme === 'dark' ? '#1E293B' : 'rgba(255,255,255,0.7)',
+                borderRadius: '4px',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                ref={workoutBarRef}
+                style={{
+                  width: `${workoutComplianceRate}%`,
+                  height: '100%',
+                  backgroundColor: 'var(--accent-green)',
+                  borderRadius: '4px',
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: 'var(--accent-green)', fontWeight: 700, marginTop: '4px' }}>
+              <span>🔥 Meta en camino</span>
+              <ChevronRight size={10} />
+            </div>
+          </div>
+        </div>
+
+        {/* Card 2: Diet Compliance */}
+        <div
+          className="stat-card"
+          onClick={() => pushView('diet-detail')}
+          style={{
+            backgroundColor: 'var(--card-peach)',
+            borderRadius: '24px',
+            padding: '16px 14px',
+            border: '1px solid rgba(255, 106, 67, 0.25)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+          }}
+          title="Ver nutrición"
+        >
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '10.5px', fontWeight: 800, color: 'var(--accent-orange)', textTransform: 'uppercase' }}>
+                {t('dietCompliance')}
+              </span>
+              <Utensils size={15} color="var(--accent-orange)" />
+            </div>
+
+            <div style={{ fontSize: '28px', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
+              {dietComplianceRate}%
+            </div>
+            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Adherencia a macros y calorías diarias
+            </div>
+          </div>
+
+          <div style={{ marginTop: '12px' }}>
+            <div
+              style={{
+                width: '100%',
+                height: '8px',
+                backgroundColor: theme === 'dark' ? '#1E293B' : 'rgba(255,255,255,0.7)',
+                borderRadius: '4px',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                ref={dietBarRef}
+                style={{
+                  width: `${dietComplianceRate}%`,
+                  height: '100%',
+                  backgroundColor: 'var(--accent-orange)',
+                  borderRadius: '4px',
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: 'var(--accent-orange)', fontWeight: 700, marginTop: '4px' }}>
+              <span>🥗 Superavit/Déficit controlado</span>
+              <ChevronRight size={10} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Energy Balance Chart: Calories Burned vs. Consumed */}
       <div
         className="stat-card"
         style={{
-          backgroundColor: 'var(--card-cyan)',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '28px',
-          padding: '20px 18px',
-          border: '1px solid var(--card-cyan-border)',
+          padding: '20px',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(230, 235, 240, 0.35)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>
-              {t('medicationStatus')}
+            <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-cyan)', textTransform: 'uppercase' }}>
+              {t('energyBalance')}
+            </span>
+            <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              {t('caloriesBurnedVsConsumed')}
             </h3>
-            <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '3px', maxWidth: '190px', lineHeight: 1.35 }}>
-              {t('medicationStatusDesc')}
-            </p>
           </div>
 
-          {/* Daily filter pill toggle */}
-          <button
-            onClick={() => {
-              const next = filterPeriod === 'Daily' ? 'Weekly' : filterPeriod === 'Weekly' ? 'Monthly' : 'Daily';
-              setFilterPeriod(next);
-            }}
+          <div
+            onClick={() => pushView('calorie-calc')}
             style={{
-              backgroundColor: 'var(--card-white)',
-              border: 'none',
-              borderRadius: '20px',
-              padding: '6px 12px',
+              padding: '5px 10px',
+              borderRadius: '14px',
+              backgroundColor: 'var(--card-cyan)',
+              color: 'var(--accent-cyan)',
+              fontSize: '11px',
+              fontWeight: 800,
+              cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
+              gap: '3px',
+            }}
+          >
+            Calculadora <ChevronRight size={12} />
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'flex', gap: '14px', marginTop: '12px', fontSize: '11.5px', fontWeight: 600 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-primary)' }}>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--accent-orange)' }} />
+            Consumidas (~2,100 kcal)
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-primary)' }}>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--accent-green)' }} />
+            Quemadas (~580 kcal)
+          </span>
+        </div>
+
+        {/* SVG Dual Wave Graph */}
+        <div style={{ marginTop: '16px', position: 'relative', height: '130px' }}>
+          <svg viewBox="0 0 320 120" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+            <defs>
+              <linearGradient id="consumedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#FF6A43" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="#FF6A43" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="burnedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#73A932" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="#73A932" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+
+            {/* Horizontal Grid lines */}
+            <line x1="0" y1="30" x2="320" y2="30" stroke={theme === 'dark' ? '#27313F' : '#EEF2F5'} strokeWidth="1" strokeDasharray="3 3" />
+            <line x1="0" y1="70" x2="320" y2="70" stroke={theme === 'dark' ? '#27313F' : '#EEF2F5'} strokeWidth="1" strokeDasharray="3 3" />
+            <line x1="0" y1="110" x2="320" y2="110" stroke={theme === 'dark' ? '#27313F' : '#EEF2F5'} strokeWidth="1" />
+
+            {/* Consumed Calories Curve (Orange) */}
+            <path
+              d="M 10,50 Q 55,30 100,55 T 190,40 T 270,35 T 310,45 L 310,110 L 10,110 Z"
+              fill="url(#consumedGradient)"
+            />
+            <path
+              ref={chartPathRef}
+              d="M 10,50 Q 55,30 100,55 T 190,40 T 270,35 T 310,45"
+              fill="none"
+              stroke="#FF6A43"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+
+            {/* Burned Calories Curve (Green) */}
+            <path
+              d="M 10,85 Q 55,75 100,80 T 190,70 T 270,60 T 310,80 L 310,110 L 10,110 Z"
+              fill="url(#burnedGradient)"
+            />
+            <path
+              ref={chartBurnedPathRef}
+              d="M 10,85 Q 55,75 100,80 T 190,70 T 270,60 T 310,80"
+              fill="none"
+              stroke="#73A932"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+
+            {/* Data Points on Curves */}
+            <circle cx="100" cy="55" r="4.5" fill="#FF6A43" stroke="#FFFFFF" strokeWidth="2" />
+            <circle cx="270" cy="35" r="4.5" fill="#FF6A43" stroke="#FFFFFF" strokeWidth="2" />
+            <circle cx="190" cy="70" r="4" fill="#73A932" stroke="#FFFFFF" strokeWidth="2" />
+            <circle cx="270" cy="60" r="4" fill="#73A932" stroke="#FFFFFF" strokeWidth="2" />
+          </svg>
+
+          {/* Day Labels below chart */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 8px', marginTop: '6px' }}>
+            {weekDays.map((w, idx) => (
+              <span key={idx} style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                {w.day}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Fasting Compliance & Cellular Autophagy Stats */}
+      <div
+        className="stat-card"
+        onClick={() => pushView('fasting-detail')}
+        style={{
+          backgroundColor: 'var(--card-cyan)',
+          borderRadius: '26px',
+          padding: '18px 20px',
+          border: '1px solid var(--card-cyan-border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+        }}
+        title="Ver métricas de ayuno"
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--card-white)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(48, 164, 168, 0.2)',
+            }}
+          >
+            <Timer size={20} color="var(--accent-cyan)" />
+          </div>
+
+          <div>
+            <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-cyan)', textTransform: 'uppercase' }}>
+              Cumplimiento de Ayuno Intermitente
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              {fastingComplianceRate}% de consistencia
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              Promedio: 16.2 horas de ayuno diario • Protocolo 16:8
+            </div>
+          </div>
+        </div>
+
+        <ChevronRight size={18} color="var(--text-muted)" />
+      </div>
+
+      {/* Medication & Supplement Intake Compliance (Preserved Feature) */}
+      <div
+        className="stat-card"
+        style={{
+          backgroundColor: 'var(--card-white)',
+          borderRadius: '26px',
+          padding: '18px 20px',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(230, 235, 240, 0.35)',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+              {t('medicationStatus')} & Suplementación
+            </span>
+            <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              Adherencia: {adherenceRate}%
+            </div>
+          </div>
+
+          <div
+            onClick={() => pushView('medication-detail')}
+            style={{
               fontSize: '11.5px',
               fontWeight: 700,
-              color: 'var(--text-primary)',
-              boxShadow: 'var(--shadow-subtle)',
+              color: 'var(--accent-cyan)',
               cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
             }}
-            title="Cambiar intervalo temporal"
           >
-            {getFilterLabel(filterPeriod)}
-            <ChevronRight size={13} color="var(--text-muted)" />
-          </button>
+            Pastillero <ChevronRight size={13} />
+          </div>
         </div>
 
         {/* Bottles Matrix + Count Row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '14px' }}>
           {/* 3x4 Grid of Pill Bottles */}
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 22px)',
-              gap: '8px 10px',
+              gap: '6px 10px',
             }}
           >
             {bottles.map((isConsumed, idx) => (
               <div
                 key={idx}
-                id={`bottle-${idx}`}
                 onClick={() => toggleBottle(idx)}
                 style={{
                   width: '22px',
-                  height: '28px',
+                  height: '26px',
                   cursor: 'pointer',
-                  position: 'relative',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  transformOrigin: 'center',
                 }}
                 title={isConsumed ? `Pastilla #${idx + 1}` : `Pastilla #${idx + 1}`}
               >
-                {/* Bottle Cap */}
                 <div
                   style={{
                     width: '12px',
-                    height: '4px',
+                    height: '3.5px',
                     borderRadius: '2px',
                     backgroundColor: isConsumed ? 'var(--accent-cyan)' : (theme === 'dark' ? '#334155' : '#B8CFD5'),
                   }}
                 />
-                {/* Bottle Body */}
                 <div
                   style={{
-                    width: '20px',
-                    height: '24px',
-                    borderRadius: '4px 4px 6px 6px',
+                    width: '18px',
+                    height: '22px',
+                    borderRadius: '3px 3px 5px 5px',
                     backgroundColor: isConsumed ? 'var(--accent-cyan)' : (theme === 'dark' ? '#1E293B' : '#C7DEE4'),
                     marginTop: '1px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: isConsumed ? '0 2px 8px rgba(48, 164, 168, 0.4)' : 'none',
-                    transition: 'all 0.25s ease',
+                    boxShadow: isConsumed ? '0 2px 6px rgba(48, 164, 168, 0.35)' : 'none',
+                    transition: 'all 0.2s ease',
                   }}
                 >
                   {isConsumed && (
-                    <div style={{ width: '8px', height: '10px', backgroundColor: '#FFFFFF', borderRadius: '2px', opacity: 0.7 }} />
+                    <div style={{ width: '7px', height: '8px', backgroundColor: '#FFFFFF', borderRadius: '2px', opacity: 0.7 }} />
                   )}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Right Counter */}
-          <div style={{ textAlign: 'right', paddingLeft: '8px' }}>
-            <div style={{ fontSize: '32px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
               {String(consumedToday).padStart(2, '0')}
-              <span style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-secondary)', marginLeft: '2px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginLeft: '2px' }}>
                 {t('pcs')}
               </span>
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500, marginTop: '4px', maxWidth: '105px' }}>
-              {getConsumedSubtitle()}
+            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '3px' }}>
+              Tomadas hoy
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Avg Medication Intake Rate Card */}
-      <div
-        className="stat-card"
-        style={{
-          backgroundColor: 'var(--card-white)',
-          borderRadius: '28px',
-          padding: '18px 20px',
-          boxShadow: 'var(--shadow-card)',
-          border: '1px solid rgba(230, 235, 240, 0.3)',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--text-primary)' }}>
-            {adherenceRate}<span style={{ fontSize: '18px', fontWeight: 600 }}>%</span>
-          </div>
-          <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'right' }}>
-            {t('avgMedRate')}
-          </div>
-        </div>
-
-        {/* 0 to 100 markers */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', marginTop: '10px', marginBottom: '4px' }}>
-          <span>0</span>
-          <span>100</span>
-        </div>
-
-        {/* Diagonal striped green progress bar */}
-        <div
-          style={{
-            width: '100%',
-            height: '24px',
-            backgroundColor: theme === 'dark' ? '#1F2937' : '#EDF2E8',
-            borderRadius: '12px',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            ref={stripedBarRef}
-            className="striped-green-bar"
-            style={{
-              width: `${adherenceRate}%`,
-              height: '100%',
-              borderRadius: '12px',
-              transition: 'width 0.4s ease',
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Avg Adherence Card with Smooth Spline Wave Chart */}
-      <div
-        className="stat-card"
-        onClick={() => pushView('health-base')}
-        style={{
-          backgroundColor: 'var(--card-white)',
-          borderRadius: '28px',
-          padding: '18px 20px 14px 20px',
-          boxShadow: 'var(--shadow-card)',
-          border: '1px solid rgba(230, 235, 240, 0.3)',
-          cursor: 'pointer',
-        }}
-        title="Ver desglose completo de vitales"
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                {t('avgAdherence')}
-              </h4>
-              <ArrowUpRight size={14} color="var(--text-muted)" />
-            </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px', fontWeight: 500 }}>
-              {t('last30Days')}
-            </p>
-          </div>
-          <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)' }}>
-            {adherenceRate}%
-          </div>
-        </div>
-
-        {/* Smooth Curved SVG Spline */}
-        <div style={{ position: 'relative', width: '100%', height: '85px', marginTop: '12px' }}>
-          <svg
-            viewBox="0 0 320 85"
-            style={{ width: '100%', height: '100%', overflow: 'visible' }}
-          >
-            <defs>
-              <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#FF8F6B" />
-                <stop offset="50%" stopColor="#FF5722" />
-                <stop offset="100%" stopColor="#FFA048" />
-              </linearGradient>
-              <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#FF6A43" stopOpacity={theme === 'dark' ? 0.3 : 0.15} />
-                <stop offset="100%" stopColor="#FF6A43" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-
-            {/* Subtle Guide Line */}
-            <line x1="0" y1="50" x2="320" y2="50" stroke={theme === 'dark' ? '#27313F' : '#F0F3F6'} strokeWidth="1" strokeDasharray="4 4" />
-
-            {/* Filled Area */}
-            <path
-              d="M 5,60 Q 40,78 75,55 T 150,70 T 225,35 T 285,62 T 315,50 L 315,85 L 5,85 Z"
-              fill="url(#areaGradient)"
-            />
-
-            {/* Animated Spline Stroke */}
-            <path
-              ref={chartPathRef}
-              d="M 5,60 Q 40,78 75,55 T 150,70 T 225,35 T 285,62 T 315,50"
-              fill="none"
-              stroke="url(#curveGradient)"
-              strokeWidth="4.5"
-              strokeLinecap="round"
-            />
-
-            {/* High Peak Node */}
-            <circle cx="225" cy="35" r="5.5" fill="var(--card-white)" stroke="#FF5722" strokeWidth="3" />
-            <circle cx="225" cy="35" r="9" fill="none" stroke="#FF5722" strokeWidth="1" opacity="0.4" />
-
-            {/* Secondary Node */}
-            <circle cx="75" cy="55" r="4.5" fill="var(--card-white)" stroke="#FF8F6B" strokeWidth="2.5" />
-          </svg>
         </div>
       </div>
     </div>

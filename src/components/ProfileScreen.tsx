@@ -21,6 +21,11 @@ import {
   Download,
   Smartphone,
   User,
+  Dumbbell,
+  Utensils,
+  Calculator,
+  Timer,
+  ChevronRight,
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
@@ -38,6 +43,10 @@ export const ProfileScreen: React.FC = () => {
     setLanguage,
     settings,
     toggleSetting,
+    calorieMetrics,
+    workoutSchedule,
+    activeDietPlan,
+    fastingState,
   } = useApp();
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -354,6 +363,111 @@ export const ProfileScreen: React.FC = () => {
                 {profile.residence}
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Fitness & Nutrition Management Section */}
+      <div
+        className="profile-card"
+        style={{
+          backgroundColor: 'var(--card-white)',
+          borderRadius: '26px',
+          padding: '18px 20px',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(230, 235, 240, 0.35)',
+        }}
+      >
+        <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-green)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+          Configuración Fitness & Longevidad
+        </span>
+        <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px', marginBottom: '14px' }}>
+          Tus Metas y Parámetros
+        </h4>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {/* Calorie Calculator Row */}
+          <div
+            onClick={() => pushView('calorie-calc')}
+            style={{
+              padding: '12px 14px',
+              borderRadius: '16px',
+              backgroundColor: 'var(--device-bg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              border: '1px solid rgba(220, 226, 230, 0.4)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Calculator size={17} color="var(--accent-orange)" />
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {t('calorieCalcTitle')}
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                  {calorieMetrics.weightKg} kg • {calorieMetrics.heightCm} cm • Meta: {calorieMetrics.targetCalories} kcal
+                </div>
+              </div>
+            </div>
+            <ChevronRight size={15} color="var(--text-muted)" />
+          </div>
+
+          {/* Workout Reminders Row */}
+          <div
+            onClick={() => pushView('workout-reminders')}
+            style={{
+              padding: '12px 14px',
+              borderRadius: '16px',
+              backgroundColor: 'var(--device-bg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              border: '1px solid rgba(220, 226, 230, 0.4)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Bell size={17} color="var(--accent-green)" />
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {t('workoutReminders')}
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                  {workoutSchedule.days.length} días/sem • {workoutSchedule.time}
+                </div>
+              </div>
+            </div>
+            <ChevronRight size={15} color="var(--text-muted)" />
+          </div>
+
+          {/* Fasting & Nutrition Row */}
+          <div
+            onClick={() => pushView('fasting-detail')}
+            style={{
+              padding: '12px 14px',
+              borderRadius: '16px',
+              backgroundColor: 'var(--device-bg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              border: '1px solid rgba(220, 226, 230, 0.4)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Timer size={17} color="var(--accent-cyan)" />
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {t('fastingTitle')} & Dieta
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                  Protocolo {fastingState.plan} • {activeDietPlan.name.split(' ')[0]}
+                </div>
+              </div>
+            </div>
+            <ChevronRight size={15} color="var(--text-muted)" />
           </div>
         </div>
       </div>

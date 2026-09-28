@@ -4,15 +4,40 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Disc, Moon, Sparkles, ChevronRight, User } from 'lucide-react';
+import {
+  Dumbbell,
+  Flame,
+  Clock,
+  Zap,
+  Play,
+  Calendar,
+  Utensils,
+  ChevronRight,
+  Bell,
+  Sparkles,
+  Award,
+  Disc,
+  User,
+  Timer,
+  Scale,
+} from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const HomeScreen: React.FC = () => {
   const {
     profile,
-    adherenceRate,
+    workoutRoutines,
+    selectedRoutine,
+    setSelectedRoutine,
+    activeDietPlan,
+    fastingState,
+    workoutSchedule,
+    calorieMetrics,
+    workoutComplianceRate,
+    dietComplianceRate,
     pillsRemain,
     totalPills,
+    adherenceRate,
     setActiveTab,
     pushView,
     t,
@@ -21,9 +46,12 @@ export const HomeScreen: React.FC = () => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const heroCardRef = useRef<HTMLDivElement>(null);
-  const medCardRef = useRef<HTMLDivElement>(null);
-  const wellnessCardRef = useRef<HTMLDivElement>(null);
-  const stripedBarRef = useRef<HTMLDivElement>(null);
+  const widgetsGridRef = useRef<HTMLDivElement>(null);
+  const dietCardRef = useRef<HTMLDivElement>(null);
+  const scheduleCardRef = useRef<HTMLDivElement>(null);
+
+  const todayWorkout = selectedRoutine || workoutRoutines[0];
+  const fastingPercent = Math.min(100, Math.round((fastingState.elapsedHours / fastingState.targetHours) * 100));
 
   useGSAP(
     () => {
@@ -32,26 +60,26 @@ export const HomeScreen: React.FC = () => {
       tl.from('.fade-header', {
         y: -15,
         opacity: 0,
-        duration: 0.5,
+        duration: 0.45,
         stagger: 0.08,
       })
       .from(heroCardRef.current, {
         scale: 0.95,
         y: 20,
         opacity: 0,
-        duration: 0.6,
-      }, '-=0.3')
-      .from(stripedBarRef.current, {
-        width: '0%',
-        duration: 0.8,
-        ease: 'power2.out',
-      }, '-=0.2')
-      .from([medCardRef.current, wellnessCardRef.current], {
-        y: 25,
-        opacity: 0,
-        stagger: 0.12,
         duration: 0.55,
-      }, '-=0.4');
+      }, '-=0.25')
+      .from(widgetsGridRef.current, {
+        y: 18,
+        opacity: 0,
+        duration: 0.5,
+      }, '-=0.3')
+      .from([dietCardRef.current, scheduleCardRef.current], {
+        y: 20,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 0.5,
+      }, '-=0.25');
     },
     { scope: containerRef }
   );
@@ -69,7 +97,7 @@ export const HomeScreen: React.FC = () => {
         color: 'var(--text-primary)',
       }}
     >
-      {/* Header */}
+      {/* Top Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '4px' }}>
         <div>
           <h1
@@ -89,46 +117,46 @@ export const HomeScreen: React.FC = () => {
           <p
             className="fade-header"
             style={{
-              fontSize: '13px',
+              fontSize: '12.5px',
               color: 'var(--text-secondary)',
               marginTop: '2px',
               fontWeight: 500,
             }}
           >
-            {t('howDoing')} &quot;{profile.name}&quot;!
+            {t('fitnessHeaderSubtitle')}
           </p>
         </div>
 
-        {/* Right Header Badges: 1:30 Hour & Profile Settings */}
+        {/* Header Actions: Next Workout Alarm & Profile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {/* Orange Pill Badge (1:30 Hour) */}
+          {/* Quick Workout Reminder Badge */}
           <div
             className="fade-header"
-            onClick={() => pushView('medication-detail')}
+            onClick={() => pushView('workout-reminders')}
             style={{
-              backgroundColor: 'var(--card-peach)',
-              border: '1px solid rgba(255, 106, 67, 0.25)',
+              backgroundColor: 'var(--card-lime)',
+              border: '1px solid var(--card-lime-border)',
               borderRadius: '20px',
               padding: '4px 10px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 6px rgba(255, 106, 67, 0.08)',
+              boxShadow: '0 2px 6px rgba(115, 169, 50, 0.12)',
               cursor: 'pointer',
               transition: 'transform 0.2s ease',
             }}
-            title="Ver próxima toma"
+            title="Ver recordatorios de entrenamiento"
           >
-            <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent-orange)', lineHeight: 1.1 }}>
-              1:30
+            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--accent-green)', lineHeight: 1.1 }}>
+              {workoutSchedule.time}
             </span>
-            <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-              {t('hour')}
+            <span style={{ fontSize: '8.5px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+              {t('alarm')}
             </span>
           </div>
 
-          {/* Quick Profile & Personal Settings Button */}
+          {/* Quick Profile Settings Button */}
           <button
             className="fade-header"
             onClick={() => setActiveTab('options')}
@@ -152,321 +180,447 @@ export const HomeScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Card: Shohan's Device */}
+      {/* Hero Card: Today's Recommended Workout */}
       <div
         ref={heroCardRef}
+        onClick={() => pushView('workout-detail')}
         style={{
-          backgroundColor: 'var(--card-white)',
-          borderRadius: '30px',
-          padding: '22px 20px 20px 20px',
-          boxShadow: 'var(--shadow-card)',
+          background: theme === 'dark'
+            ? 'linear-gradient(135deg, #162417 0%, #0D160E 100%)'
+            : 'linear-gradient(135deg, #1C281B 0%, #111A12 100%)',
+          borderRadius: '28px',
+          padding: '22px 20px',
+          color: '#FFFFFF',
           position: 'relative',
           overflow: 'hidden',
-          border: '1px solid rgba(230, 235, 240, 0.3)',
+          boxShadow: '0 10px 28px rgba(115, 169, 50, 0.25)',
+          border: '1px solid rgba(162, 226, 133, 0.25)',
+          cursor: 'pointer',
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         }}
       >
-        {/* Top Section with Device Info & Avatar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div
-            onClick={() => setActiveTab('options')}
-            style={{ cursor: 'pointer' }}
-            title="Ir al perfil"
-          >
-            <span style={{ fontSize: '13px', fontWeight: 600, color: '#27313D' }}>
-              {profile.name}&apos;s Device
-            </span>
-            <div style={{ marginTop: '3px' }}>
-              <span style={{ fontSize: '12px', color: '#6A7888', fontWeight: 500 }}>
-                Device ID:{' '}
-              </span>
-              <span style={{ fontSize: '12px', color: '#73A932', fontWeight: 700 }}>
-                {profile.deviceId}
-              </span>
-            </div>
-          </div>
+        {/* Glow ambient background sphere */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '-30px',
+            right: '-30px',
+            width: '140px',
+            height: '140px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(162, 226, 133, 0.35) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }}
+        />
 
-          {/* Avatar with Soft Teal Circle Backdrop */}
-          <div
-            onClick={() => setActiveTab('options')}
-            style={{ position: 'relative', width: '84px', height: '84px', cursor: 'pointer' }}
-            title="Ver opciones de perfil"
-          >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
             <div
               style={{
-                position: 'absolute',
-                top: '-4px',
-                right: '-4px',
-                width: '88px',
-                height: '88px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, #B2E2E4 0%, #D8F2F3 70%, transparent 100%)',
-                opacity: 0.9,
-              }}
-            />
-            <div
-              style={{
-                position: 'relative',
-                width: '78px',
-                height: '78px',
-                borderRadius: '50%',
-                overflow: 'hidden',
-                border: '2.5px solid #FFFFFF',
-                boxShadow: '0 4px 14px rgba(48, 164, 168, 0.25)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '4px 10px',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(162, 226, 133, 0.18)',
+                color: '#A2E285',
+                fontSize: '10.5px',
+                fontWeight: 800,
+                letterSpacing: '0.6px',
+                textTransform: 'uppercase',
               }}
             >
-              <Image
-                src={profile.avatarUrl && profile.avatarUrl.trim() !== '' ? profile.avatarUrl : '/avatar.jpg'}
-                alt={profile.name || 'Usuario'}
-                fill
-                sizes="80px"
-                style={{ objectFit: 'cover' }}
-                unoptimized
-              />
+              <Zap size={12} color="#A2E285" />
+              {t('todayWorkout')}
             </div>
+
+            <h2
+              style={{
+                fontSize: '20px',
+                fontWeight: 800,
+                color: '#FFFFFF',
+                marginTop: '8px',
+                lineHeight: 1.25,
+                letterSpacing: '-0.3px',
+              }}
+            >
+              {todayWorkout.title}
+            </h2>
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', marginTop: '3px' }}>
+              {todayWorkout.muscleGroup}
+            </p>
+          </div>
+
+          <div
+            style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(162, 226, 133, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid rgba(162, 226, 133, 0.3)',
+              flexShrink: 0,
+            }}
+          >
+            <Dumbbell size={22} color="#A2E285" />
           </div>
         </div>
 
-        {/* Divider Stats Row */}
+        {/* Metrics Row */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            display: 'flex',
+            alignItems: 'center',
             gap: '14px',
-            marginTop: '8px',
-            paddingTop: '6px',
+            marginTop: '16px',
+            paddingTop: '12px',
+            borderTop: '1px solid rgba(255,255,255,0.12)',
+            fontSize: '12px',
+            color: 'rgba(255,255,255,0.8)',
           }}
         >
-          {/* Left Column: Avg. Adherence */}
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+            <Clock size={13} color="#A2E285" /> {todayWorkout.durationMin} min
+          </span>
+          <span>•</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+            <Flame size={13} color="#FF9E80" /> {todayWorkout.caloriesBurned} kcal
+          </span>
+          <span>•</span>
+          <span style={{ fontWeight: 600, color: '#A2E285' }}>
+            {todayWorkout.exercisesCount} {t('exercises')}
+          </span>
+        </div>
+
+        {/* Action Button */}
+        <div
+          style={{
+            marginTop: '14px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <div
-            onClick={() => setActiveTab('statistics')}
-            style={{ cursor: 'pointer' }}
-            title="Ver reporte estadístico detallado"
+            style={{
+              padding: '10px 18px',
+              borderRadius: '20px',
+              backgroundColor: 'var(--accent-green)',
+              color: '#FFFFFF',
+              fontWeight: 800,
+              fontSize: '13px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 4px 14px rgba(115, 169, 50, 0.4)',
+            }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                {t('avgAdherence')}
+            <Play size={14} fill="#FFFFFF" />
+            {t('startWorkout')}
+          </div>
+
+          <span style={{ fontSize: '11.5px', color: '#A2E285', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '2px' }}>
+            Ver rutina <ChevronRight size={14} />
+          </span>
+        </div>
+      </div>
+
+      {/* Dual Widgets: Intermittent Fasting & Calorie Balance */}
+      <div
+        ref={widgetsGridRef}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '12px',
+        }}
+      >
+        {/* Left: Intermittent Fasting Widget */}
+        <div
+          onClick={() => pushView('fasting-detail')}
+          style={{
+            backgroundColor: 'var(--card-cyan)',
+            borderRadius: '24px',
+            padding: '16px 14px',
+            border: '1px solid var(--card-cyan-border)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease',
+          }}
+          title="Ver ayuno intermitente"
+        >
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-cyan)' }}>
+                {t('fastingTitle')}
               </span>
-              <ChevronRight size={12} color="var(--text-muted)" />
-            </div>
-            <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)', margin: '1px 0 6px 0' }}>
-              {adherenceRate}%
+              <Timer size={14} color="var(--accent-cyan)" />
             </div>
 
-            {/* Slanted Green Striped Progress Bar */}
+            <div style={{ fontSize: '20px', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
+              {fastingState.elapsedHours}h{' '}
+              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                / {fastingState.targetHours}h
+              </span>
+            </div>
+            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Protocolo {fastingState.plan} ({fastingPercent}%)
+            </div>
+          </div>
+
+          {/* Mini progress bar */}
+          <div style={{ marginTop: '12px' }}>
             <div
               style={{
                 width: '100%',
-                height: '13px',
-                backgroundColor: theme === 'dark' ? '#1F2937' : '#EDF1E8',
-                borderRadius: '7px',
+                height: '7px',
+                backgroundColor: theme === 'dark' ? '#1F2937' : 'rgba(255,255,255,0.7)',
+                borderRadius: '4px',
                 overflow: 'hidden',
               }}
             >
               <div
-                ref={stripedBarRef}
-                className="striped-green-bar"
                 style={{
-                  width: `${adherenceRate}%`,
+                  width: `${fastingPercent}%`,
                   height: '100%',
-                  borderRadius: '7px',
+                  backgroundColor: 'var(--accent-cyan)',
+                  borderRadius: '4px',
                 }}
               />
             </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', color: 'var(--accent-cyan)', fontWeight: 700, marginTop: '4px' }}>
+              <span>{fastingState.isFasting ? '🔥 En Cetosis' : 'Ventana abierta'}</span>
+              <ChevronRight size={10} />
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Calories & Macro Balance Widget */}
+        <div
+          onClick={() => pushView('calorie-calc')}
+          style={{
+            backgroundColor: 'var(--card-peach)',
+            borderRadius: '24px',
+            padding: '16px 14px',
+            border: '1px solid rgba(255, 106, 67, 0.25)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease',
+          }}
+          title="Ver calculadora y balance calórico"
+        >
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-orange)' }}>
+                {t('calories')}
+              </span>
+              <Flame size={14} color="var(--accent-orange)" />
+            </div>
+
+            <div style={{ fontSize: '20px', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
+              {calorieMetrics.consumedCalories}{' '}
+              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                / {calorieMetrics.targetCalories} kcal
+              </span>
+            </div>
+            <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Quemadas: <strong style={{ color: 'var(--accent-orange)' }}>{calorieMetrics.burnedCalories} kcal</strong>
+            </div>
           </div>
 
-          {/* Right Column: Pills remain */}
-          <div
-            onClick={() => pushView('medication-detail')}
-            style={{ cursor: 'pointer' }}
-            title="Ver calendario de dosis"
-          >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                {t('pillsRemain')}
-              </span>
-              <ChevronRight size={12} color="var(--text-muted)" />
+          <div style={{ marginTop: '12px' }}>
+            {/* Protein mini bar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9.5px', fontWeight: 700, marginBottom: '3px' }}>
+              <span style={{ color: 'var(--accent-orange)' }}>Prot: {calorieMetrics.consumedProtein}g / {calorieMetrics.targetProtein}g</span>
             </div>
-            <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 6px 0' }}>
-              {pillsRemain}
-              <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)' }}>
-                /{totalPills}
-              </span>
-            </div>
-
-            {/* Micro Dot Matrix Visualizer */}
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(12, 1fr)',
-                gap: '2.5px',
-                alignItems: 'center',
-                height: '13px',
-                padding: '2px 0',
+                width: '100%',
+                height: '7px',
+                backgroundColor: theme === 'dark' ? '#1F2937' : 'rgba(255,255,255,0.7)',
+                borderRadius: '4px',
+                overflow: 'hidden',
               }}
             >
-              {Array.from({ length: 36 }).map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: '3.5px',
-                    height: '3.5px',
-                    borderRadius: '50%',
-                    backgroundColor: i < (pillsRemain / totalPills) * 36 ? 'var(--accent-cyan)' : (theme === 'dark' ? '#27313F' : '#DDE6ED'),
-                    transition: 'all 0.2s ease',
-                  }}
-                />
-              ))}
+              <div
+                style={{
+                  width: `${Math.min(100, Math.round((calorieMetrics.consumedProtein / calorieMetrics.targetProtein) * 100))}%`,
+                  height: '100%',
+                  backgroundColor: 'var(--accent-orange)',
+                  borderRadius: '4px',
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '9.5px', color: 'var(--accent-orange)', fontWeight: 700, marginTop: '4px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>Calculadora <ChevronRight size={10} /></span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Medication Card (Pale Mint/Teal) */}
+      {/* Diets & Nutrition Recommendation Card */}
       <div
-        ref={medCardRef}
-        onClick={() => pushView('medication-detail')}
+        ref={dietCardRef}
+        onClick={() => pushView('diet-detail')}
         style={{
-          backgroundColor: 'var(--card-cyan)',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '26px',
           padding: '18px 20px',
-          border: '1px solid var(--card-cyan-border)',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(220, 226, 230, 0.4)',
           position: 'relative',
           cursor: 'pointer',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          transition: 'transform 0.2s ease',
         }}
-        title="Abrir detalles de medicación"
+        title="Abrir planes de dieta"
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent-cyan)' }}>
-              {t('medication')}
+            <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-orange)', textTransform: 'uppercase' }}>
+              {t('dietTitle')} • Plan Recomendado
             </span>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '1px' }}>
-              {t('keepMedication')}
+            <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              {activeDietPlan.name}
             </h3>
           </div>
 
-          {/* White/Dark Circular Badge */}
           <div
             style={{
               width: '36px',
               height: '36px',
               borderRadius: '50%',
+              backgroundColor: 'var(--card-peach)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Utensils size={18} color="var(--accent-orange)" />
+          </div>
+        </div>
+
+        <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '6px', lineHeight: 1.4 }}>
+          {activeDietPlan.tagline}
+        </p>
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '12px',
+            paddingTop: '10px',
+            borderTop: '1px solid rgba(220, 226, 230, 0.3)',
+          }}
+        >
+          <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+            <span>P: <strong style={{ color: 'var(--text-primary)' }}>{activeDietPlan.proteinGrams}g</strong></span>
+            <span>•</span>
+            <span>C: <strong style={{ color: 'var(--text-primary)' }}>{activeDietPlan.carbsGrams}g</strong></span>
+            <span>•</span>
+            <span>G: <strong style={{ color: 'var(--text-primary)' }}>{activeDietPlan.fatGrams}g</strong></span>
+          </div>
+
+          <span style={{ fontSize: '11.5px', color: 'var(--accent-orange)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '2px' }}>
+            Ver comidas <ChevronRight size={13} />
+          </span>
+        </div>
+      </div>
+
+      {/* Workout Reminders & Schedule Bar */}
+      <div
+        ref={scheduleCardRef}
+        onClick={() => pushView('workout-reminders')}
+        style={{
+          backgroundColor: 'var(--card-lime)',
+          borderRadius: '24px',
+          padding: '16px 18px',
+          border: '1px solid var(--card-lime-border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+        }}
+        title="Gestionar recordatorios de ejercicios"
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
               backgroundColor: 'var(--card-white)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(48, 164, 168, 0.18)',
+              boxShadow: '0 2px 8px rgba(115, 169, 50, 0.15)',
+            }}
+          >
+            <Bell size={18} color="var(--accent-green)" />
+          </div>
+
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
+              {t('workoutReminders')} ({workoutSchedule.time})
+            </div>
+            <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '1px' }}>
+              {workoutSchedule.days.join(', ')} • Meta: {workoutSchedule.completedThisWeek}/{workoutSchedule.weeklyTarget}
+            </div>
+          </div>
+        </div>
+
+        <ChevronRight size={16} color="var(--text-muted)" />
+      </div>
+
+      {/* Medication & Supplement Routine Card (Preserved Secondary Feature) */}
+      <div
+        onClick={() => pushView('medication-detail')}
+        style={{
+          backgroundColor: 'var(--card-white)',
+          borderRadius: '24px',
+          padding: '16px 18px',
+          boxShadow: 'var(--shadow-subtle)',
+          border: '1px solid rgba(220, 226, 230, 0.35)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+        }}
+        title="Ver suplementos y pastillas"
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--card-cyan)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <Disc size={18} color="var(--accent-cyan)" />
           </div>
-        </div>
 
-        <p
-          style={{
-            fontSize: '12.5px',
-            lineHeight: 1.45,
-            color: 'var(--text-secondary)',
-            marginTop: '8px',
-            fontWeight: 500,
-          }}
-        >
-          &quot;{profile.name}&quot; {t('medicationMsg')}{' '}
-          <strong style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{t('hoursAndMins')}</strong>
-        </p>
-      </div>
-
-      {/* Wellness Card (Pale Lime Green) */}
-      <div
-        ref={wellnessCardRef}
-        onClick={() => pushView('wellness-detail')}
-        style={{
-          backgroundColor: 'var(--card-lime)',
-          borderRadius: '26px',
-          padding: '18px 20px',
-          border: '1px solid var(--card-lime-border)',
-          position: 'relative',
-          cursor: 'pointer',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-        }}
-        title="Abrir historias y relajación"
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent-green)' }}>
-              {t('wellness')}
-            </span>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '1px' }}>
-              {t('bedtimeStories')}
-            </h3>
-          </div>
-
-          {/* White/Dark Circular Badge with Moon Icon */}
-          <div
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--card-white)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(115, 169, 50, 0.18)',
-            }}
-          >
-            <Moon size={18} color="var(--accent-green)" />
+            <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>
+              {t('medication')} & Suplementos
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              {pillsRemain}/{totalPills} dosis restantes • {adherenceRate}% adherencia
+            </div>
           </div>
         </div>
 
-        <p
-          style={{
-            fontSize: '12.5px',
-            lineHeight: 1.45,
-            color: 'var(--text-secondary)',
-            marginTop: '8px',
-            fontWeight: 500,
-          }}
-        >
-          &quot;{profile.name}&quot; {t('wellnessMsg')}
-        </p>
-      </div>
-
-      {/* Bottom Peek Image Card */}
-      <div
-        onClick={() => pushView('health-base')}
-        style={{
-          width: '100%',
-          height: '110px',
-          borderRadius: '26px 26px 0 0',
-          position: 'relative',
-          overflow: 'hidden',
-          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.05)',
-          cursor: 'pointer',
-        }}
-        title="Ver métricas de ambiente y salud"
-      >
-        <Image
-          src="/wellness.jpg"
-          alt="Rest & Recovery"
-          fill
-          sizes="360px"
-          style={{ objectFit: 'cover' }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to top, rgba(14,20,27,0.75) 0%, transparent 60%)',
-            display: 'flex',
-            alignItems: 'flex-end',
-            padding: '12px 18px',
-          }}
-        >
-          <span style={{ color: '#FFFFFF', fontSize: '11.5px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <Sparkles size={12} color="#A2E285" /> Environment Sensor: 21°C • Quiet (Ver más)
-          </span>
-        </div>
+        <span style={{ fontSize: '11.5px', color: 'var(--accent-cyan)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '2px' }}>
+          Control <ChevronRight size={13} />
+        </span>
       </div>
     </div>
   );

@@ -23,6 +23,11 @@ import { SubscriptionsView } from '@/components/views/SubscriptionsView';
 import { HealthBaseView } from '@/components/views/HealthBaseView';
 import { ScanModal } from '@/components/views/ScanModal';
 import { EditProfileModal } from '@/components/views/EditProfileModal';
+import { WorkoutDetailView } from '@/components/views/WorkoutDetailView';
+import { DietDetailView } from '@/components/views/DietDetailView';
+import { FastingDetailView } from '@/components/views/FastingDetailView';
+import { CalorieCalculatorView } from '@/components/views/CalorieCalculatorView';
+import { WorkoutRemindersView } from '@/components/views/WorkoutRemindersView';
 
 function AppContent() {
   const { activeTab, activeSubView, theme } = useApp();
@@ -87,6 +92,11 @@ function AppContent() {
     if (activeSubView === 'health-base') return <HealthBaseView />;
     if (activeSubView === 'scan') return <ScanModal />;
     if (activeSubView === 'edit-profile') return <EditProfileModal />;
+    if (activeSubView === 'workout-detail') return <WorkoutDetailView />;
+    if (activeSubView === 'diet-detail') return <DietDetailView />;
+    if (activeSubView === 'fasting-detail') return <FastingDetailView />;
+    if (activeSubView === 'calorie-calc') return <CalorieCalculatorView />;
+    if (activeSubView === 'workout-reminders') return <WorkoutRemindersView />;
 
     // Otherwise render active tab
     if (activeTab === 'home') return <HomeScreen />;
