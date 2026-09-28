@@ -9,6 +9,7 @@ import { DynamicIsland } from '@/components/DynamicIsland';
 import { BottomDock } from '@/components/BottomDock';
 import { IOSToast } from '@/components/IOSToast';
 import { HomeScreen } from '@/components/HomeScreen';
+import { RunningTrackScreen } from '@/components/RunningTrackScreen';
 import { StatisticsScreen } from '@/components/StatisticsScreen';
 import { ProfileScreen } from '@/components/ProfileScreen';
 
@@ -75,6 +76,7 @@ function AppContent() {
 
     // Otherwise render active tab
     if (activeTab === 'home') return <HomeScreen />;
+    if (activeTab === 'running') return <RunningTrackScreen />;
     if (activeTab === 'statistics') return <StatisticsScreen />;
     if (activeTab === 'options') return <ProfileScreen />;
 

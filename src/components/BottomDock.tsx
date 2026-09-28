@@ -4,8 +4,33 @@ import React from 'react';
 import { Home, BarChart2, Sparkles, BookOpen, Settings } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
+// High-fidelity Olympic / Fitness Runner Icon SVG
+const RunnerIcon: React.FC<{ size?: number; color?: string; strokeWidth?: number }> = ({
+  size = 19,
+  color = '#FFFFFF',
+  strokeWidth = 2.2,
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth={strokeWidth}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="15.8" cy="4.5" r="2.2" fill={color} stroke="none" />
+    <path d="M14.8 7.5l-3.3 3 2.3 3.5-2.8 5.5" />
+    <path d="M11 17l2 4.5" />
+    <path d="M11.5 10.5L8.2 9.5l1.3-3.5" />
+    <path d="M14.8 10.5l3.2 1.5 2-2" />
+  </svg>
+);
+
 export const BottomDock: React.FC = () => {
   const { activeTab, setActiveTab, activeSubView, pushView, theme } = useApp();
+  const isDockHidden = Boolean(activeSubView || activeTab === 'running');
 
   return (
     <div
@@ -18,31 +43,31 @@ export const BottomDock: React.FC = () => {
         flexDirection: 'column',
         alignItems: 'center',
         zIndex: 60,
-        pointerEvents: activeSubView ? 'none' : 'auto',
-        transform: activeSubView ? 'translateY(120%)' : 'translateY(0%)',
-        opacity: activeSubView ? 0 : 1,
+        pointerEvents: isDockHidden ? 'none' : 'auto',
+        transform: isDockHidden ? 'translateY(120%)' : 'translateY(0%)',
+        opacity: isDockHidden ? 0 : 1,
         transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease',
       }}
     >
-      {/* Floating 5-Item Pill Dock (Matching Reference Image) */}
+      {/* Floating Pill Dock with 6 items (Home, Running, AI Coach, Statistics, Diets, Settings) */}
       <div
         className="glass-dock"
         style={{
           pointerEvents: 'auto',
           position: 'relative',
-          width: '272px',
+          width: '320px',
           height: '58px',
-          backgroundColor: theme === 'dark' ? 'rgba(19, 23, 34, 0.88)' : 'rgba(255, 255, 255, 0.92)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          backgroundColor: theme === 'dark' ? 'rgba(19, 23, 34, 0.88)' : 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
           borderRadius: '35px',
           boxShadow: theme === 'dark'
             ? '0 16px 36px -4px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
-            : '0 16px 36px -4px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.85) inset',
+            : '0 16px 36px -4px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.9) inset',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 8px',
+          padding: '0 10px',
           transition: 'all 0.3s ease',
         }}
       >
@@ -50,7 +75,7 @@ export const BottomDock: React.FC = () => {
         <button
           onClick={() => setActiveTab('home')}
           style={{
-            width: activeTab === 'home' ? '46px' : '38px',
+            width: activeTab === 'home' ? '44px' : '36px',
             height: '38px',
             borderRadius: '20px',
             background: activeTab === 'home' ? 'var(--accent-purple)' : 'none',
@@ -66,17 +91,65 @@ export const BottomDock: React.FC = () => {
           aria-label="Inicio"
         >
           <Home
-            size={19}
+            size={18}
             color={activeTab === 'home' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#475569')}
             strokeWidth={activeTab === 'home' ? 2.5 : 2}
           />
         </button>
 
-        {/* Item 2: Statistics */}
+        {/* Item 2: Running (Correr - New Running Track Feature) */}
+        <button
+          onClick={() => setActiveTab('running')}
+          style={{
+            width: activeTab === 'running' ? '44px' : '36px',
+            height: '38px',
+            borderRadius: '20px',
+            background: activeTab === 'running' ? '#88DCF0' : 'none',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxShadow: activeTab === 'running' ? '0 4px 12px rgba(136, 220, 240, 0.5)' : 'none',
+          }}
+          title="Correr / GPS Track"
+          aria-label="Correr / GPS Track"
+        >
+          <RunnerIcon
+            size={19}
+            color={activeTab === 'running' ? '#0F172A' : (theme === 'dark' ? '#94A3B8' : '#475569')}
+            strokeWidth={activeTab === 'running' ? 2.5 : 2}
+          />
+        </button>
+
+        {/* Item 3: Center AI Coach Button (Glow Circle) */}
+        <button
+          onClick={() => pushView('workout-detail')}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #B794F6 0%, #9D7BFF 50%, #7C3AED 100%)',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 14px rgba(157, 123, 255, 0.5)',
+            transition: 'transform 0.15s ease',
+          }}
+          title="Entrenador IA"
+          aria-label="Entrenador IA"
+        >
+          <Sparkles size={19} color="#FFFFFF" />
+        </button>
+
+        {/* Item 4: Statistics */}
         <button
           onClick={() => setActiveTab('statistics')}
           style={{
-            width: activeTab === 'statistics' ? '46px' : '38px',
+            width: activeTab === 'statistics' ? '44px' : '36px',
             height: '38px',
             borderRadius: '20px',
             background: activeTab === 'statistics' ? 'var(--accent-purple)' : 'none',
@@ -92,39 +165,17 @@ export const BottomDock: React.FC = () => {
           aria-label="Estadísticas"
         >
           <BarChart2
-            size={19}
+            size={18}
             color={activeTab === 'statistics' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#475569')}
             strokeWidth={activeTab === 'statistics' ? 2.5 : 2}
           />
         </button>
 
-        {/* Item 3: Center AI Coach Button (Glow Circle) */}
-        <button
-          onClick={() => pushView('workout-detail')}
-          style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #B794F6 0%, #9D7BFF 50%, #7C3AED 100%)',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 14px rgba(157, 123, 255, 0.5)',
-            transition: 'transform 0.15s ease',
-          }}
-          title="Entrenador IA"
-          aria-label="Entrenador IA"
-        >
-          <Sparkles size={20} color="#FFFFFF" />
-        </button>
-
-        {/* Item 4: Routines / Diets Book */}
+        {/* Item 5: Routines / Diets Book */}
         <button
           onClick={() => pushView('diet-detail')}
           style={{
-            width: '38px',
+            width: '36px',
             height: '38px',
             borderRadius: '20px',
             background: 'none',
@@ -139,17 +190,17 @@ export const BottomDock: React.FC = () => {
           aria-label="Planes de Dieta & Guías"
         >
           <BookOpen
-            size={19}
+            size={18}
             color={theme === 'dark' ? '#94A3B8' : '#475569'}
             strokeWidth={2}
           />
         </button>
 
-        {/* Item 5: Settings / Profile */}
+        {/* Item 6: Settings / Profile */}
         <button
           onClick={() => setActiveTab('options')}
           style={{
-            width: activeTab === 'options' ? '46px' : '38px',
+            width: activeTab === 'options' ? '44px' : '36px',
             height: '38px',
             borderRadius: '20px',
             background: activeTab === 'options' ? 'var(--accent-purple)' : 'none',
@@ -165,7 +216,7 @@ export const BottomDock: React.FC = () => {
           aria-label="Ajustes de Perfil"
         >
           <Settings
-            size={19}
+            size={18}
             color={activeTab === 'options' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#475569')}
             strokeWidth={activeTab === 'options' ? 2.5 : 2}
           />

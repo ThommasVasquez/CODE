@@ -3,10 +3,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Language, translations } from '@/utils/translations';
 
-export type MainTab = 'home' | 'statistics' | 'options';
+export type MainTab = 'home' | 'running' | 'statistics' | 'options';
 export type SubView = 
   | null 
   | 'onboarding'
+  | 'running-map'
+  | 'running-timetrack'
   | 'medication-detail' 
   | 'wellness-detail' 
   | 'diary' 
