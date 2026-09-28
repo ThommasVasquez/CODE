@@ -50,12 +50,14 @@ export const StatisticsScreen: React.FC = () => {
         y: -12,
         opacity: 0,
         duration: 0.45,
+        clearProps: 'transform,opacity',
       })
       .from('.stat-card', {
         y: 20,
         opacity: 0,
         stagger: 0.1,
         duration: 0.5,
+        clearProps: 'transform,opacity',
       }, '-=0.2')
       .from([workoutBarRef.current, dietBarRef.current], {
         width: '0%',

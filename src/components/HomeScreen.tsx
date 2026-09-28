@@ -62,26 +62,30 @@ export const HomeScreen: React.FC = () => {
         opacity: 0,
         duration: 0.45,
         stagger: 0.08,
+        clearProps: 'transform,opacity',
       })
       .from(heroCardRef.current, {
         scale: 0.95,
         y: 20,
         opacity: 0,
         duration: 0.55,
+        clearProps: 'transform,opacity',
       }, '-=0.25')
       .from(widgetsGridRef.current, {
         y: 18,
         opacity: 0,
         duration: 0.5,
+        clearProps: 'transform,opacity',
       }, '-=0.3')
       .from([dietCardRef.current, scheduleCardRef.current], {
         y: 20,
         opacity: 0,
         stagger: 0.1,
         duration: 0.5,
+        clearProps: 'transform,opacity',
       }, '-=0.25');
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [] }
   );
 
   return (

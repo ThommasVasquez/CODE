@@ -78,21 +78,30 @@ export const ProfileScreen: React.FC = () => {
         y: -12,
         opacity: 0,
         duration: 0.45,
+        clearProps: 'transform,opacity',
       })
       .from('.profile-card', {
         scale: 0.96,
         y: 18,
         opacity: 0,
         duration: 0.55,
+        clearProps: 'transform,opacity',
       }, '-=0.2')
-      .from('.action-card', {
+      .from('.action-grid-card', {
         y: 20,
         opacity: 0,
         stagger: 0.08,
         duration: 0.5,
-      }, '-=0.3');
+        clearProps: 'transform,opacity',
+      }, '-=0.3')
+      .from('.profile-settings-card', {
+        y: 18,
+        opacity: 0,
+        duration: 0.45,
+        clearProps: 'transform,opacity',
+      }, '-=0.2');
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [] }
   );
 
   const handleShare = async () => {
@@ -139,7 +148,7 @@ export const ProfileScreen: React.FC = () => {
       />
 
       {/* Top Header with Scan & Share Icons */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', flexShrink: 0 }}>
         <h1
           className="profile-header"
           style={{
@@ -205,6 +214,7 @@ export const ProfileScreen: React.FC = () => {
           boxShadow: 'var(--shadow-card)',
           border: '1px solid rgba(230, 235, 240, 0.3)',
           position: 'relative',
+          flexShrink: 0,
         }}
       >
         {/* Top Header of Card */}
@@ -376,6 +386,7 @@ export const ProfileScreen: React.FC = () => {
           padding: '18px 20px',
           boxShadow: 'var(--shadow-card)',
           border: '1px solid rgba(230, 235, 240, 0.35)',
+          flexShrink: 0,
         }}
       >
         <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-green)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
@@ -478,11 +489,13 @@ export const ProfileScreen: React.FC = () => {
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '12px',
+          flexShrink: 0,
+          minHeight: '232px',
         }}
       >
         {/* Diary */}
         <div
-          className="action-card"
+          className="action-grid-card"
           onClick={() => pushView('diary')}
           style={{
             backgroundColor: 'var(--card-white)',
@@ -495,7 +508,8 @@ export const ProfileScreen: React.FC = () => {
             justifyContent: 'space-between',
             height: '110px',
             cursor: 'pointer',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            flexShrink: 0,
+            overflow: 'hidden',
           }}
           title={t('diary')}
         >
@@ -530,7 +544,7 @@ export const ProfileScreen: React.FC = () => {
 
         {/* Settings */}
         <div
-          className="action-card"
+          className="action-grid-card"
           onClick={() => pushView('settings')}
           style={{
             backgroundColor: 'var(--card-white)',
@@ -543,7 +557,8 @@ export const ProfileScreen: React.FC = () => {
             justifyContent: 'space-between',
             height: '110px',
             cursor: 'pointer',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            flexShrink: 0,
+            overflow: 'hidden',
           }}
           title={t('settings')}
         >
@@ -578,7 +593,7 @@ export const ProfileScreen: React.FC = () => {
 
         {/* Subscriptions */}
         <div
-          className="action-card"
+          className="action-grid-card"
           onClick={() => pushView('subscriptions')}
           style={{
             backgroundColor: 'var(--card-white)',
@@ -591,7 +606,8 @@ export const ProfileScreen: React.FC = () => {
             justifyContent: 'space-between',
             height: '110px',
             cursor: 'pointer',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            flexShrink: 0,
+            overflow: 'hidden',
           }}
           title={t('subscriptions')}
         >
@@ -626,7 +642,7 @@ export const ProfileScreen: React.FC = () => {
 
         {/* Health Base */}
         <div
-          className="action-card"
+          className="action-grid-card"
           onClick={() => pushView('health-base')}
           style={{
             backgroundColor: 'var(--card-white)',
@@ -639,7 +655,8 @@ export const ProfileScreen: React.FC = () => {
             justifyContent: 'space-between',
             height: '110px',
             cursor: 'pointer',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            flexShrink: 0,
+            overflow: 'hidden',
           }}
           title={t('healthBase')}
         >
@@ -675,7 +692,7 @@ export const ProfileScreen: React.FC = () => {
 
       {/* Personal Settings & Preferences Card */}
       <div
-        className="action-card"
+        className="profile-settings-card"
         style={{
           backgroundColor: 'var(--card-white)',
           borderRadius: '26px',
@@ -685,6 +702,8 @@ export const ProfileScreen: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
+          flexShrink: 0,
+          marginTop: '2px',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
