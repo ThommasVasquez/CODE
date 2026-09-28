@@ -136,15 +136,25 @@ export const FastingDetailView: React.FC = () => {
         >
           {/* SVG Radial Clock */}
           <div style={{ position: 'relative', width: '190px', height: '190px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="190" height="190" style={{ transform: 'rotate(-90deg)' }}>
+            <svg width="190" height="190" style={{ transform: 'rotate(-90deg)', overflow: 'visible' }}>
+              <defs>
+                <linearGradient id="fastingRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#0891B2" />
+                  <stop offset="60%" stopColor="#06B6D4" />
+                  <stop offset="100%" stopColor="#22D3EE" />
+                </linearGradient>
+                <filter id="fastingGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#06B6D4" floodOpacity="0.45" />
+                </filter>
+              </defs>
               {/* Background Track */}
               <circle
                 cx="95"
                 cy="95"
                 r={radius}
                 fill="none"
-                stroke={theme === 'dark' ? '#1F2937' : '#EDF4F6'}
-                strokeWidth="12"
+                stroke={theme === 'dark' ? 'rgba(255,255,255,0.07)' : '#E6EEF2'}
+                strokeWidth="13"
               />
               {/* Active Progress Path */}
               <circle
@@ -153,11 +163,12 @@ export const FastingDetailView: React.FC = () => {
                 cy="95"
                 r={radius}
                 fill="none"
-                stroke="var(--accent-cyan)"
-                strokeWidth="12"
+                stroke="url(#fastingRingGrad)"
+                strokeWidth="13"
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
                 strokeLinecap="round"
+                filter="url(#fastingGlow)"
                 style={{ transition: 'stroke-dashoffset 0.8s ease' }}
               />
             </svg>

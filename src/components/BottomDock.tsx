@@ -21,62 +21,69 @@ export const BottomDock: React.FC = () => {
   useEffect(() => {
     if (!pillIndicatorRef.current || !containerRef.current) return;
 
-    // Positions for 3 buttons in 180px width dock
-    const positions = [6, 62, 118];
-    const targetX = positions[currentIdx] ?? 6;
+    // Perfectly centered positions for 3 slots in 192px dock (slot width = 64px, pill = 50px, margin = 7px)
+    const positions = [7, 71, 135];
+    const targetX = positions[currentIdx] ?? 7;
 
     gsap.to(pillIndicatorRef.current, {
       x: targetX,
-      duration: 0.45,
-      ease: 'back.out(1.4)',
+      duration: 0.4,
+      ease: 'back.out(1.5)',
     });
   }, [currentIdx]);
 
   return (
-    <div style={{
-      position: 'absolute',
-      bottom: '22px',
-      left: '0',
-      right: '0',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      zIndex: 60,
-      pointerEvents: 'none',
-      opacity: activeSubView === 'scan' ? 0 : 1,
-      transition: 'opacity 0.2s ease',
-    }}>
-      {/* Floating Pill Bar */}
+    <div
+      style={{
+        position: 'absolute',
+        bottom: '16px',
+        left: '0',
+        right: '0',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        zIndex: 60,
+        pointerEvents: activeSubView ? 'none' : 'auto',
+        transform: activeSubView ? 'translateY(120%)' : 'translateY(0%)',
+        opacity: activeSubView ? 0 : 1,
+        transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease',
+      }}
+    >
+      {/* Floating Pill Dock */}
       <div
         ref={containerRef}
+        className="glass-dock"
         style={{
           pointerEvents: 'auto',
           position: 'relative',
-          width: '180px',
-          height: '58px',
-          backgroundColor: theme === 'dark' ? '#1A212B' : '#FFFFFF',
+          width: '192px',
+          height: '60px',
+          backgroundColor: theme === 'dark' ? 'rgba(18, 23, 32, 0.82)' : 'rgba(255, 255, 255, 0.88)',
           borderRadius: '35px',
-          boxShadow: theme === 'dark' ? '0 10px 30px rgba(0, 0, 0, 0.6)' : '0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04)',
-          border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(220, 226, 230, 0.7)',
+          boxShadow: theme === 'dark'
+            ? '0 16px 36px -4px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
+            : '0 16px 36px -4px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.85) inset',
           display: 'flex',
           alignItems: 'center',
-          padding: '0 6px',
+          padding: '0',
           transition: 'background-color 0.3s ease',
         }}
       >
-        {/* Animated Dark Pill Slider */}
+        {/* Animated Pill Indicator Slider */}
         <div
           ref={pillIndicatorRef}
           style={{
             position: 'absolute',
-            top: '6px',
+            top: '5px',
             left: '0',
-            width: '46px',
-            height: '46px',
+            width: '50px',
+            height: '50px',
             borderRadius: '50%',
-            backgroundColor: theme === 'dark' ? '#2A3342' : '#121417',
+            backgroundColor: theme === 'dark' ? '#222A38' : '#0F172A',
             zIndex: 1,
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            boxShadow: theme === 'dark'
+              ? '0 4px 14px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08) inset'
+              : '0 6px 16px rgba(15, 23, 42, 0.3)',
             transition: 'background-color 0.3s ease',
           }}
         />
@@ -85,7 +92,7 @@ export const BottomDock: React.FC = () => {
         <button
           onClick={() => setActiveTab('home')}
           style={{
-            flex: 1,
+            width: '64px',
             height: '100%',
             background: 'none',
             border: 'none',
@@ -97,10 +104,11 @@ export const BottomDock: React.FC = () => {
             transition: 'color 0.25s ease',
           }}
           aria-label="Home Dashboard"
+          title="Panel Principal"
         >
           <Home
-            size={21}
-            color={activeTab === 'home' ? '#FFFFFF' : (theme === 'dark' ? '#8696A6' : '#4A5568')}
+            size={22}
+            color={activeTab === 'home' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#64748B')}
             strokeWidth={activeTab === 'home' ? 2.5 : 2}
           />
         </button>
@@ -109,7 +117,7 @@ export const BottomDock: React.FC = () => {
         <button
           onClick={() => setActiveTab('statistics')}
           style={{
-            flex: 1,
+            width: '64px',
             height: '100%',
             background: 'none',
             border: 'none',
@@ -121,19 +129,20 @@ export const BottomDock: React.FC = () => {
             transition: 'color 0.25s ease',
           }}
           aria-label="Statistics Report"
+          title="Reporte Estadístico"
         >
           <Activity
             size={22}
-            color={activeTab === 'statistics' ? '#FFFFFF' : (theme === 'dark' ? '#8696A6' : '#4A5568')}
+            color={activeTab === 'statistics' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#64748B')}
             strokeWidth={activeTab === 'statistics' ? 2.5 : 2}
           />
         </button>
 
-        {/* Tab 2: Profile / More Options */}
+        {/* Tab 2: Profile / Settings */}
         <button
           onClick={() => setActiveTab('options')}
           style={{
-            flex: 1,
+            width: '64px',
             height: '100%',
             background: 'none',
             border: 'none',
@@ -148,8 +157,8 @@ export const BottomDock: React.FC = () => {
           title="Perfil y Ajustes"
         >
           <User
-            size={21}
-            color={activeTab === 'options' ? '#FFFFFF' : (theme === 'dark' ? '#8696A6' : '#4A5568')}
+            size={22}
+            color={activeTab === 'options' ? '#FFFFFF' : (theme === 'dark' ? '#94A3B8' : '#64748B')}
             strokeWidth={activeTab === 'options' ? 2.5 : 2}
           />
         </button>
@@ -158,12 +167,12 @@ export const BottomDock: React.FC = () => {
       {/* iOS Home Indicator */}
       <div
         style={{
-          width: '134px',
+          width: '136px',
           height: '4px',
-          backgroundColor: theme === 'dark' ? '#FFFFFF' : '#0E1116',
-          opacity: theme === 'dark' ? 0.6 : 1,
+          backgroundColor: theme === 'dark' ? '#FFFFFF' : '#0F172A',
+          opacity: theme === 'dark' ? 0.45 : 0.9,
           borderRadius: '10px',
-          marginTop: '12px',
+          marginTop: '10px',
         }}
       />
     </div>

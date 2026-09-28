@@ -332,19 +332,25 @@ export const StatisticsScreen: React.FC = () => {
           <svg viewBox="0 0 320 120" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
             <defs>
               <linearGradient id="consumedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#FF6A43" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#FF6A43" stopOpacity="0" />
+                <stop offset="0%" stopColor="var(--accent-orange)" stopOpacity={theme === 'dark' ? 0.35 : 0.22} />
+                <stop offset="100%" stopColor="var(--accent-orange)" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="burnedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#73A932" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#73A932" stopOpacity="0" />
+                <stop offset="0%" stopColor="var(--accent-green)" stopOpacity={theme === 'dark' ? 0.35 : 0.22} />
+                <stop offset="100%" stopColor="var(--accent-green)" stopOpacity="0" />
               </linearGradient>
+              <filter id="glowOrange" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="var(--accent-orange)" floodOpacity="0.4" />
+              </filter>
+              <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="var(--accent-green)" floodOpacity="0.4" />
+              </filter>
             </defs>
 
             {/* Horizontal Grid lines */}
-            <line x1="0" y1="30" x2="320" y2="30" stroke={theme === 'dark' ? '#27313F' : '#EEF2F5'} strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="70" x2="320" y2="70" stroke={theme === 'dark' ? '#27313F' : '#EEF2F5'} strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="110" x2="320" y2="110" stroke={theme === 'dark' ? '#27313F' : '#EEF2F5'} strokeWidth="1" />
+            <line x1="0" y1="30" x2="320" y2="30" stroke={theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)'} strokeWidth="1" strokeDasharray="3 3" />
+            <line x1="0" y1="70" x2="320" y2="70" stroke={theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)'} strokeWidth="1" strokeDasharray="3 3" />
+            <line x1="0" y1="110" x2="320" y2="110" stroke={theme === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)'} strokeWidth="1" />
 
             {/* Consumed Calories Curve (Orange) */}
             <path
@@ -355,9 +361,10 @@ export const StatisticsScreen: React.FC = () => {
               ref={chartPathRef}
               d="M 10,50 Q 55,30 100,55 T 190,40 T 270,35 T 310,45"
               fill="none"
-              stroke="#FF6A43"
+              stroke="var(--accent-orange)"
               strokeWidth="3"
               strokeLinecap="round"
+              filter="url(#glowOrange)"
             />
 
             {/* Burned Calories Curve (Green) */}
@@ -369,16 +376,17 @@ export const StatisticsScreen: React.FC = () => {
               ref={chartBurnedPathRef}
               d="M 10,85 Q 55,75 100,80 T 190,70 T 270,60 T 310,80"
               fill="none"
-              stroke="#73A932"
-              strokeWidth="2.5"
+              stroke="var(--accent-green)"
+              strokeWidth="2.8"
               strokeLinecap="round"
+              filter="url(#glowGreen)"
             />
 
             {/* Data Points on Curves */}
-            <circle cx="100" cy="55" r="4.5" fill="#FF6A43" stroke="#FFFFFF" strokeWidth="2" />
-            <circle cx="270" cy="35" r="4.5" fill="#FF6A43" stroke="#FFFFFF" strokeWidth="2" />
-            <circle cx="190" cy="70" r="4" fill="#73A932" stroke="#FFFFFF" strokeWidth="2" />
-            <circle cx="270" cy="60" r="4" fill="#73A932" stroke="#FFFFFF" strokeWidth="2" />
+            <circle cx="100" cy="55" r="4.5" fill="var(--accent-orange)" stroke="#FFFFFF" strokeWidth="2" />
+            <circle cx="270" cy="35" r="4.5" fill="var(--accent-orange)" stroke="#FFFFFF" strokeWidth="2" />
+            <circle cx="190" cy="70" r="4" fill="var(--accent-green)" stroke="#FFFFFF" strokeWidth="2" />
+            <circle cx="270" cy="60" r="4" fill="var(--accent-green)" stroke="#FFFFFF" strokeWidth="2" />
           </svg>
 
           {/* Day Labels below chart */}

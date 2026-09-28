@@ -4,74 +4,84 @@
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Color Palette matching the iOS health prototype */
-  --bg-desktop: #E5EAED;
-  --bg-desktop-gradient: radial-gradient(circle at 10% 20%, #F5F7FA 0%, #E4E9ED 90%);
-  --device-bezel: #1F2227;
-  --device-rim: #3A3D42;
-  --device-bg: #F4F6F8;
+  /* Premium Apple Fitness / Health Color Palette */
+  --bg-desktop: #E6EBF0;
+  --bg-desktop-gradient: radial-gradient(circle at 10% 15%, #F8FAFC 0%, #E2E8F0 100%);
+  --device-bezel: #111317;
+  --device-rim: #2E333B;
+  --device-bg: #F1F4F8;
 
-  /* Card colors */
+  /* Card colors (Light Mode) */
   --card-white: #FFFFFF;
-  --card-cyan: #E2F3F4;
-  --card-cyan-border: #D1EBEB;
-  --card-lime: #EAF4DC;
-  --card-lime-border: #DDECC9;
-  --card-blue-light: #EBF3F8;
-  --card-peach: #FFF0EB;
+  --card-white-border: rgba(226, 232, 240, 0.8);
+  --card-cyan: #EDF9FA;
+  --card-cyan-border: rgba(6, 182, 212, 0.22);
+  --card-lime: #F0FDF4;
+  --card-lime-border: rgba(34, 197, 94, 0.22);
+  --card-blue-light: #EFF6FF;
+  --card-peach: #FFF5F0;
+  --card-peach-border: rgba(249, 115, 22, 0.22);
 
-  /* Accents */
-  --accent-green: #73A932;
-  --accent-green-dark: #588225;
-  --accent-orange: #FF6A43;
-  --accent-orange-light: #FF9E73;
-  --accent-cyan: #30A4A8;
-  --text-primary: #121820;
-  --text-secondary: #576574;
-  --text-muted: #8E9BAE;
-  --text-light: #A4B0BE;
+  /* Apple Fitness Accents */
+  --accent-green: #16A34A;
+  --accent-green-bright: #22C55E;
+  --accent-green-dark: #15803D;
+  --accent-orange: #EA580C;
+  --accent-orange-bright: #F97316;
+  --accent-orange-light: #FB923C;
+  --accent-cyan: #0891B2;
+  --accent-cyan-bright: #06B6D4;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #8896A6;
+  --text-light: #CBD5E1;
 
   /* Shadow & Radius */
   --radius-ios-screen: 50px;
   --radius-card: 26px;
   --radius-pill: 9999px;
-  --shadow-subtle: 0 4px 20px -2px rgba(18, 24, 32, 0.05);
-  --shadow-card: 0 10px 30px -4px rgba(18, 24, 32, 0.04);
-  --shadow-floating: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
-  --shadow-dock: 0 12px 36px rgba(0, 0, 0, 0.14);
+  --shadow-subtle: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
+  --shadow-card: 0 12px 28px -6px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  --shadow-floating: 0 24px 48px -12px rgba(15, 23, 42, 0.15);
+  --shadow-dock: 0 16px 36px -4px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
 }
 
 [data-theme="dark"], .dark {
-  --bg-desktop: #0D1117;
-  --bg-desktop-gradient: radial-gradient(circle at 10% 20%, #161B22 0%, #090D12 90%);
+  --bg-desktop: #06090E;
+  --bg-desktop-gradient: radial-gradient(circle at 10% 15%, #0F141C 0%, #05070B 100%);
   --device-bezel: #000000;
-  --device-rim: #21262D;
-  --device-bg: #0B0E14;
+  --device-rim: #1E232B;
+  --device-bg: #090C10;
 
-  /* Card colors */
-  --card-white: #161B22;
-  --card-cyan: #0E2429;
-  --card-cyan-border: #19434A;
-  --card-lime: #16240E;
-  --card-lime-border: #2B461B;
-  --card-blue-light: #131E2B;
-  --card-peach: #2B1612;
+  /* Card colors (Dark Mode - Apple OLED) */
+  --card-white: #121720;
+  --card-white-border: rgba(255, 255, 255, 0.08);
+  --card-cyan: #091C22;
+  --card-cyan-border: rgba(6, 182, 212, 0.3);
+  --card-lime: #0B1D0E;
+  --card-lime-border: rgba(34, 197, 94, 0.28);
+  --card-blue-light: #0C1726;
+  --card-peach: #24130F;
+  --card-peach-border: rgba(249, 115, 22, 0.3);
 
   /* Accents */
-  --accent-green: #85D428;
-  --accent-green-dark: #629E1D;
-  --accent-orange: #FF7854;
-  --accent-orange-light: #FFAC8A;
-  --accent-cyan: #3DD1D6;
-  --text-primary: #F0F3F6;
-  --text-secondary: #9DA7B3;
-  --text-muted: #6E7987;
-  --text-light: #485260;
+  --accent-green: #22C55E;
+  --accent-green-bright: #4ADE80;
+  --accent-green-dark: #16A34A;
+  --accent-orange: #F97316;
+  --accent-orange-bright: #FB923C;
+  --accent-orange-light: #FDBA74;
+  --accent-cyan: #06B6D4;
+  --accent-cyan-bright: #22D3EE;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-light: #334155;
 
-  --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 10px 30px -4px rgba(0, 0, 0, 0.5);
-  --shadow-floating: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
-  --shadow-dock: 0 12px 36px rgba(0, 0, 0, 0.7);
+  --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-card: 0 12px 30px -4px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --shadow-floating: 0 24px 48px -10px rgba(0, 0, 0, 0.8);
+  --shadow-dock: 0 16px 40px -4px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 * {
@@ -84,74 +94,95 @@
 
 html, body {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
   font-family: var(--font-sans);
   background: var(--bg-desktop);
   background-image: var(--bg-desktop-gradient);
   color: var(--text-primary);
-  overflow-x: hidden;
+  overflow: hidden;
+  user-select: none;
 }
 
-/* Diagonal Green Stripe Pattern for Adherence Bar */
-.striped-green-bar {
-  background: repeating-linear-gradient(
-    -55deg,
-    var(--accent-green),
-    var(--accent-green) 5px,
-    #FFFFFF 5px,
-    #FFFFFF 8px
-  );
+/* Button Tap Micro-Interaction */
+button {
+  font-family: inherit;
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.striped-green-bar-bg {
-  background-color: #E2E8DC;
+button:active {
+  transform: scale(0.965);
 }
 
-/* Custom subtle scrollbar */
+/* Custom iOS Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.25);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.15);
+}
+
+/* Custom sleek scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(148, 163, 184, 0.25);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.22);
+  background: rgba(148, 163, 184, 0.45);
 }
 
 /* Glassmorphism helpers */
 .glass-panel {
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
 .glass-dock {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] .glass-panel {
+  background: rgba(18, 23, 32, 0.85);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Subtle animations */
-@keyframes pulse-gentle {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.95;
-  }
-  50% {
-    transform: scale(1.04);
-    opacity: 1;
-  }
-}
-
-.animate-pulse-gentle {
-  animation: pulse-gentle 3s ease-in-out infinite;
+[data-theme="dark"] .glass-dock {
+  background: rgba(18, 23, 32, 0.85);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Device Shell Styles */

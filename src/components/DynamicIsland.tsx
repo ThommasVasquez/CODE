@@ -2,11 +2,11 @@
 
 import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
-import { Pill, CheckCircle2, Clock, Activity } from 'lucide-react';
+import { Dumbbell, Timer, Zap, ChevronRight } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const DynamicIsland: React.FC = () => {
-  const { takeDose } = useApp();
+  const { fastingState, pushView } = useApp();
   const [isExpanded, setIsExpanded] = useState(false);
   const islandRef = useRef<HTMLDivElement>(null);
 
@@ -17,17 +17,17 @@ export const DynamicIsland: React.FC = () => {
     if (islandRef.current) {
       if (nextState) {
         gsap.to(islandRef.current, {
-          width: 320,
-          height: 80,
-          borderRadius: 40,
+          width: 326,
+          height: 82,
+          borderRadius: 42,
           duration: 0.45,
-          ease: 'elastic.out(1, 0.75)',
+          ease: 'elastic.out(1, 0.78)',
         });
       } else {
         gsap.to(islandRef.current, {
-          width: 124,
-          height: 34,
-          borderRadius: 20,
+          width: 126,
+          height: 35,
+          borderRadius: 22,
           duration: 0.35,
           ease: 'power3.out',
         });
@@ -44,73 +44,113 @@ export const DynamicIsland: React.FC = () => {
         top: '11px',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: '124px',
-        height: '34px',
+        width: '126px',
+        height: '35px',
         backgroundColor: '#000000',
-        borderRadius: '20px',
+        borderRadius: '22px',
         zIndex: 50,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: isExpanded ? '12px 18px' : '0 10px',
+        padding: isExpanded ? '12px 18px' : '0 11px',
         cursor: 'pointer',
-        boxShadow: '0 4px 18px rgba(0, 0, 0, 0.35)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(255, 255, 255, 0.08) inset',
         overflow: 'hidden',
         userSelect: 'none',
         transition: 'box-shadow 0.2s ease',
       }}
-      title="Toca para interactuar con la Dynamic Island"
+      title="Dynamic Island CODE®"
     >
       {!isExpanded ? (
         <>
+          {/* Authentic Apple Camera Lens with optical reflection */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{
-              width: '10px',
-              height: '10px',
-              borderRadius: '50%',
-              backgroundColor: '#1C1C1E',
-              border: '1.5px solid #2C2C2E'
-            }} />
-            <Activity size={13} color="#73A932" />
+            <div
+              style={{
+                width: '11px',
+                height: '11px',
+                borderRadius: '50%',
+                backgroundColor: '#090B0E',
+                border: '1.5px solid #23272F',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <div
+                style={{
+                  width: '3.5px',
+                  height: '3.5px',
+                  borderRadius: '50%',
+                  backgroundColor: '#1E3A5F',
+                  opacity: 0.9,
+                }}
+              />
+            </div>
+
+            {/* Glowing Live Activity Dot */}
+            <div
+              style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                backgroundColor: fastingState.isFasting ? 'var(--accent-cyan)' : 'var(--accent-green)',
+                boxShadow: fastingState.isFasting ? '0 0 8px #06B6D4' : '0 0 8px #22C55E',
+              }}
+            />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ color: '#FFFFFF', fontSize: '11px', fontWeight: 600, letterSpacing: '0.2px' }}>
-              1:30h
+
+          {/* Right indicator: Live Fasting or Workout Status */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span
+              style={{
+                color: '#FFFFFF',
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.2px',
+                fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {fastingState.elapsedHours}h
             </span>
-            <div style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              backgroundColor: '#FF6A43'
-            }} />
+            <Timer size={12} color="var(--accent-cyan)" />
           </div>
         </>
       ) : (
-        <div style={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          color: '#FFFFFF'
-        }}>
+        /* Expanded Dynamic Island HUD */
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            color: '#FFFFFF',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(115, 169, 50, 0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Pill size={19} color="#73A932" />
+            <div
+              style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(6, 182, 212, 0.18)',
+                border: '1px solid rgba(6, 182, 212, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Timer size={20} color="var(--accent-cyan)" />
             </div>
+
             <div>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF' }}>
-                Próxima Toma
+              <div style={{ fontSize: '13px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.2px' }}>
+                Ayuno Activo • {fastingState.plan}
               </div>
-              <div style={{ fontSize: '11px', color: '#9E9EA7', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Clock size={11} /> Cardiovit • en 1h 30m
+              <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '1px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Zap size={11} color="var(--accent-green)" />
+                {fastingState.elapsedHours}h transcurridas • En Cetosis
               </div>
             </div>
           </div>
@@ -118,25 +158,25 @@ export const DynamicIsland: React.FC = () => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              takeDose('Cardiovit 50mg');
               toggleExpand();
+              pushView('fasting-detail');
             }}
             style={{
-              background: '#73A932',
+              background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 100%)',
               color: '#FFFFFF',
               border: 'none',
-              borderRadius: '16px',
-              padding: '6px 12px',
-              fontSize: '11.5px',
-              fontWeight: 700,
+              borderRadius: '20px',
+              padding: '7px 13px',
+              fontSize: '12px',
+              fontWeight: 800,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
+              boxShadow: '0 4px 12px rgba(6, 182, 212, 0.35)',
             }}
           >
-            <CheckCircle2 size={13} />
-            Tomar
+            Ver <ChevronRight size={13} />
           </button>
         </div>
       )}
