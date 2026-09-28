@@ -4,11 +4,22 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Scan, Share2, Pencil, ArrowUpRight, Camera } from 'lucide-react';
+import { Scan, Share2, Pencil, ArrowUpRight, Camera, Moon, Sun, Globe, Sliders, Check } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const ProfileScreen: React.FC = () => {
-  const { profile, diaryEntries, pushView, showToast, setAvatarUrl } = useApp();
+  const {
+    profile,
+    diaryEntries,
+    pushView,
+    showToast,
+    setAvatarUrl,
+    t,
+    theme,
+    toggleTheme,
+    language,
+    setLanguage,
+  } = useApp();
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,8 +69,8 @@ export const ProfileScreen: React.FC = () => {
 
   const handleShare = async () => {
     const shareData = {
-      title: `CODE® - Informe de ${profile.name}`,
-      text: `Paciente: ${profile.name} | ID: ${profile.deviceId} | Residencia: ${profile.residence}`,
+      title: `CODE® - ${profile.name}`,
+      text: `${profile.name} | ID: ${profile.deviceId} | ${profile.residence}`,
       url: window.location.href,
     };
 
@@ -67,13 +78,13 @@ export const ProfileScreen: React.FC = () => {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        // Ignored if cancelled
+        // Ignored
       }
     } else {
       navigator.clipboard.writeText(
-        `CODE® Salud: Paciente ${profile.name} (ID: ${profile.deviceId}), Residencia: ${profile.residence}`
+        `CODE®: ${profile.name} (ID: ${profile.deviceId}), ${profile.residence}`
       );
-      showToast('Enlace e informe copiado al portapapeles');
+      showToast(t('linkCopied'));
     }
   };
 
@@ -87,6 +98,7 @@ export const ProfileScreen: React.FC = () => {
         padding: '12px 20px 100px 20px',
         overflowY: 'auto',
         height: '100%',
+        color: 'var(--text-primary)',
       }}
     >
       {/* Hidden File Input for Avatar Change */}
@@ -105,11 +117,11 @@ export const ProfileScreen: React.FC = () => {
           style={{
             fontSize: '24px',
             fontWeight: 800,
-            color: '#0E141B',
+            color: 'var(--text-primary)',
             letterSpacing: '-0.5px',
           }}
         >
-          More Options
+          {t('moreOptions')}
         </h1>
 
         <div className="profile-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -120,17 +132,17 @@ export const ProfileScreen: React.FC = () => {
               width: '38px',
               height: '38px',
               borderRadius: '50%',
-              backgroundColor: '#FFFFFF',
-              border: '1px solid rgba(220, 226, 230, 0.9)',
+              backgroundColor: 'var(--card-white)',
+              border: '1px solid rgba(220, 226, 230, 0.4)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
+              boxShadow: 'var(--shadow-subtle)',
             }}
-            title="Escanear código de barras o dispositivo"
+            title={t('scanTitle')}
           >
-            <Scan size={18} color="#181D23" />
+            <Scan size={18} color="var(--text-primary)" />
           </button>
 
           {/* Share button */}
@@ -140,17 +152,17 @@ export const ProfileScreen: React.FC = () => {
               width: '38px',
               height: '38px',
               borderRadius: '50%',
-              backgroundColor: '#FFFFFF',
-              border: '1px solid rgba(220, 226, 230, 0.9)',
+              backgroundColor: 'var(--card-white)',
+              border: '1px solid rgba(220, 226, 230, 0.4)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
+              boxShadow: 'var(--shadow-subtle)',
             }}
             title="Compartir informe de salud"
           >
-            <Share2 size={17} color="#181D23" />
+            <Share2 size={17} color="var(--text-primary)" />
           </button>
         </div>
       </div>
@@ -159,21 +171,21 @@ export const ProfileScreen: React.FC = () => {
       <div
         className="profile-card"
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '30px',
           padding: '20px 20px 18px 20px',
-          boxShadow: '0 8px 30px rgba(16, 24, 40, 0.04)',
-          border: '1px solid rgba(230, 235, 240, 0.8)',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(230, 235, 240, 0.3)',
           position: 'relative',
         }}
       >
         {/* Top Header of Card */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1A232C' }}>
-              {profile.name}&apos;s Device
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {profile.name}{t('device')}
             </h3>
-            <p style={{ fontSize: '11px', color: '#68798A', fontWeight: 500, marginTop: '2px' }}>
+            <p style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500, marginTop: '2px' }}>
               {profile.patientId}
             </p>
           </div>
@@ -184,30 +196,29 @@ export const ProfileScreen: React.FC = () => {
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              backgroundColor: '#F3F6F8',
+              backgroundColor: theme === 'dark' ? '#27313F' : '#F3F6F8',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
             }}
-            title="Editar Perfil"
+            title={t('editProfileTitle')}
           >
-            <Pencil size={15} color="#455464" />
+            <Pencil size={15} color="var(--text-secondary)" />
           </button>
         </div>
 
         {/* Central Portrait with Halo Backdrop & Camera Button */}
         <div style={{ display: 'flex', justifyContent: 'center', margin: '6px 0 16px 0' }}>
-          <div
-            style={{ position: 'relative', width: '106px', height: '106px' }}
-          >
+          <div style={{ position: 'relative', width: '106px', height: '106px' }}>
             <div
               style={{
                 position: 'absolute',
                 inset: '-4px',
                 borderRadius: '50%',
                 background: 'radial-gradient(circle, #BCE4E6 0%, #E3F5F5 70%, transparent 100%)',
+                opacity: theme === 'dark' ? 0.3 : 1,
               }}
             />
             <div
@@ -218,11 +229,11 @@ export const ProfileScreen: React.FC = () => {
                 height: '100%',
                 borderRadius: '50%',
                 overflow: 'hidden',
-                border: '3px solid #FFFFFF',
+                border: '3px solid var(--card-white)',
                 boxShadow: '0 6px 20px rgba(48, 164, 168, 0.28)',
                 cursor: 'pointer',
               }}
-              title="Haz clic para cambiar la foto de perfil"
+              title={t('changePhoto')}
             >
               <Image
                 src={profile.avatarUrl}
@@ -244,8 +255,8 @@ export const ProfileScreen: React.FC = () => {
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: '#12161C',
-                border: '2.5px solid #FFFFFF',
+                backgroundColor: 'var(--device-bezel)',
+                border: '2.5px solid var(--card-white)',
                 color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
@@ -254,39 +265,39 @@ export const ProfileScreen: React.FC = () => {
                 boxShadow: '0 3px 8px rgba(0,0,0,0.25)',
                 transition: 'transform 0.2s ease',
               }}
-              title="Cambiar foto de perfil"
+              title={t('changePhoto')}
             >
               <Camera size={14} color="#FFFFFF" />
             </button>
           </div>
         </div>
 
-        {/* Light Cyan Rounded Personal Details Table */}
+        {/* Light Cyan/Dark Rounded Personal Details Table */}
         <div
           style={{
-            backgroundColor: '#E4F2F4',
+            backgroundColor: 'var(--card-cyan)',
             borderRadius: '22px',
             padding: '14px 16px',
-            border: '1px solid #D6EAEB',
+            border: '1px solid var(--card-cyan-border)',
           }}
         >
           {/* Key-Value Details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-              <span style={{ color: '#556D73', fontWeight: 500 }}>Age :</span>
-              <span style={{ color: '#102025', fontWeight: 700 }}>{profile.age} years</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{t('age')} :</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{profile.age} {t('years')}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-              <span style={{ color: '#556D73', fontWeight: 500 }}>Email :</span>
-              <span style={{ color: '#102025', fontWeight: 700 }}>{profile.email}</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{t('email')} :</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{profile.email}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-              <span style={{ color: '#556D73', fontWeight: 500 }}>Phone number :</span>
-              <span style={{ color: '#102025', fontWeight: 700 }}>{profile.phone}</span>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{t('phone')} :</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{profile.phone}</span>
             </div>
           </div>
 
-          {/* Bottom Dual White Chips (Policy removed, spacious 2 columns) */}
+          {/* Bottom Dual White/Dark Chips */}
           <div
             style={{
               display: 'grid',
@@ -297,30 +308,30 @@ export const ProfileScreen: React.FC = () => {
           >
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--card-white)',
                 borderRadius: '12px',
                 padding: '7px 8px',
                 textAlign: 'center',
-                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)',
+                boxShadow: 'var(--shadow-subtle)',
               }}
             >
-              <div style={{ fontSize: '9.5px', color: '#688288', fontWeight: 600 }}>ID Paciente</div>
-              <div style={{ fontSize: '11px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
+              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('patientId')}</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 800, marginTop: '1px' }}>
                 {profile.deviceId}
               </div>
             </div>
 
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--card-white)',
                 borderRadius: '12px',
                 padding: '7px 8px',
                 textAlign: 'center',
-                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)',
+                boxShadow: 'var(--shadow-subtle)',
               }}
             >
-              <div style={{ fontSize: '9.5px', color: '#688288', fontWeight: 600 }}>Residencia</div>
-              <div style={{ fontSize: '11px', color: '#102025', fontWeight: 800, marginTop: '1px' }}>
+              <div style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('residence')}</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 800, marginTop: '1px' }}>
                 {profile.residence}
               </div>
             </div>
@@ -341,11 +352,11 @@ export const ProfileScreen: React.FC = () => {
           className="action-card"
           onClick={() => pushView('diary')}
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--card-white)',
             borderRadius: '24px',
             padding: '16px',
-            boxShadow: '0 6px 20px rgba(16, 24, 40, 0.04)',
-            border: '1px solid rgba(230, 235, 240, 0.8)',
+            boxShadow: 'var(--shadow-card)',
+            border: '1px solid rgba(230, 235, 240, 0.3)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -353,33 +364,33 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
-          title="Abrir bitácora de salud"
+          title={t('diary')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
-              Diary
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {t('diary')}
             </span>
             <div
               style={{
                 width: '26px',
                 height: '26px',
                 borderRadius: '50%',
-                backgroundColor: '#F3F6F8',
+                backgroundColor: theme === 'dark' ? '#27313F' : '#F3F6F8',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <ArrowUpRight size={14} color="#354556" />
+              <ArrowUpRight size={14} color="var(--text-secondary)" />
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B', lineHeight: 1 }}>
+            <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
               {diaryEntries.length}
             </div>
-            <div style={{ fontSize: '11px', fontWeight: 500, color: '#7E8C9C', marginTop: '3px' }}>
-              Total
+            <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', marginTop: '3px' }}>
+              {t('diarySub')}
             </div>
           </div>
         </div>
@@ -389,11 +400,11 @@ export const ProfileScreen: React.FC = () => {
           className="action-card"
           onClick={() => pushView('settings')}
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--card-white)',
             borderRadius: '24px',
             padding: '16px',
-            boxShadow: '0 6px 20px rgba(16, 24, 40, 0.04)',
-            border: '1px solid rgba(230, 235, 240, 0.8)',
+            boxShadow: 'var(--shadow-card)',
+            border: '1px solid rgba(230, 235, 240, 0.3)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -401,33 +412,33 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
-          title="Abrir ajustes de la aplicación"
+          title={t('settings')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
-              Settings
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {t('settings')}
             </span>
             <div
               style={{
                 width: '26px',
                 height: '26px',
                 borderRadius: '50%',
-                backgroundColor: '#F3F6F8',
+                backgroundColor: theme === 'dark' ? '#27313F' : '#F3F6F8',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <ArrowUpRight size={14} color="#354556" />
+              <ArrowUpRight size={14} color="var(--text-secondary)" />
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B', lineHeight: 1 }}>
+            <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
               12
             </div>
-            <div style={{ fontSize: '11px', fontWeight: 500, color: '#7E8C9C', marginTop: '3px' }}>
-              Action
+            <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', marginTop: '3px' }}>
+              {t('settingsSub')}
             </div>
           </div>
         </div>
@@ -437,11 +448,11 @@ export const ProfileScreen: React.FC = () => {
           className="action-card"
           onClick={() => pushView('subscriptions')}
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--card-white)',
             borderRadius: '24px',
             padding: '16px',
-            boxShadow: '0 6px 20px rgba(16, 24, 40, 0.04)',
-            border: '1px solid rgba(230, 235, 240, 0.8)',
+            boxShadow: 'var(--shadow-card)',
+            border: '1px solid rgba(230, 235, 240, 0.3)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -449,33 +460,33 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
-          title="Ver suscripciones y recargas"
+          title={t('subscriptions')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
-              Subscriptions
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {t('subscriptions')}
             </span>
             <div
               style={{
                 width: '26px',
                 height: '26px',
                 borderRadius: '50%',
-                backgroundColor: '#F3F6F8',
+                backgroundColor: theme === 'dark' ? '#27313F' : '#F3F6F8',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <ArrowUpRight size={14} color="#354556" />
+              <ArrowUpRight size={14} color="var(--text-secondary)" />
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B', lineHeight: 1 }}>
+            <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
               24
             </div>
-            <div style={{ fontSize: '11px', fontWeight: 500, color: '#7E8C9C', marginTop: '3px' }}>
-              Day leave
+            <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', marginTop: '3px' }}>
+              {t('subscriptionsSub')}
             </div>
           </div>
         </div>
@@ -485,11 +496,11 @@ export const ProfileScreen: React.FC = () => {
           className="action-card"
           onClick={() => pushView('health-base')}
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--card-white)',
             borderRadius: '24px',
             padding: '16px',
-            boxShadow: '0 6px 20px rgba(16, 24, 40, 0.04)',
-            border: '1px solid rgba(230, 235, 240, 0.8)',
+            boxShadow: 'var(--shadow-card)',
+            border: '1px solid rgba(230, 235, 240, 0.3)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -497,34 +508,226 @@ export const ProfileScreen: React.FC = () => {
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
-          title="Ver métricas de actividad y vitales"
+          title={t('healthBase')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#18222B' }}>
-              Health Base
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {t('healthBase')}
             </span>
             <div
               style={{
                 width: '26px',
                 height: '26px',
                 borderRadius: '50%',
-                backgroundColor: '#F3F6F8',
+                backgroundColor: theme === 'dark' ? '#27313F' : '#F3F6F8',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <ArrowUpRight size={14} color="#354556" />
+              <ArrowUpRight size={14} color="var(--text-secondary)" />
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B', lineHeight: 1 }}>
+            <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
               05
             </div>
-            <div style={{ fontSize: '11px', fontWeight: 500, color: '#7E8C9C', marginTop: '3px' }}>
-              Activity
+            <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-muted)', marginTop: '3px' }}>
+              {t('healthBaseSub')}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Settings Card: Dark/Light Mode & Language Switcher */}
+      <div
+        className="action-card"
+        style={{
+          backgroundColor: 'var(--card-white)',
+          borderRadius: '26px',
+          padding: '18px 20px',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(220, 226, 230, 0.4)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Sliders size={16} color="var(--accent-cyan)" />
+            <div>
+              <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                {t('quickSettings')}
+              </h4>
+              <p style={{ fontSize: '10.5px', color: 'var(--text-muted)', margin: 0 }}>
+                {t('quickSettingsSub')}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => pushView('settings')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--accent-cyan)',
+              fontSize: '11.5px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
+            }}
+          >
+            {t('settings')} <ArrowUpRight size={13} />
+          </button>
+        </div>
+
+        {/* Theme Mode Toggle (Light / Dark) */}
+        <div
+          onClick={toggleTheme}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 14px',
+            borderRadius: '16px',
+            backgroundColor: theme === 'dark' ? '#141B22' : '#F7F9FA',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '10px',
+                backgroundColor: theme === 'dark' ? '#2A2035' : '#FFF9E6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {theme === 'dark' ? (
+                <Moon size={16} color="#A277FF" />
+              ) : (
+                <Sun size={16} color="#E5A100" />
+              )}
+            </div>
+            <div>
+              <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                {theme === 'dark' ? t('darkMode') : t('lightMode')}
+              </div>
+              <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                {theme === 'dark' ? 'Tema con fondo negro OLED' : 'Tema claro con alto contraste'}
+              </div>
+            </div>
+          </div>
+
+          {/* iOS Switch Toggle */}
+          <div
+            style={{
+              width: '46px',
+              height: '26px',
+              backgroundColor: theme === 'dark' ? 'var(--accent-green)' : '#D1D7DC',
+              borderRadius: '13px',
+              padding: '2px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: theme === 'dark' ? 'flex-end' : 'flex-start',
+              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+          >
+            <div
+              style={{
+                width: '22px',
+                height: '22px',
+                backgroundColor: '#FFFFFF',
+                borderRadius: '50%',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.25)',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Language Switcher Segmented Control */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Globe size={14} color="var(--accent-cyan)" />
+            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {t('languageSetting')}
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              backgroundColor: theme === 'dark' ? '#141B22' : '#EFF2F5',
+              borderRadius: '14px',
+              padding: '3px',
+              gap: '4px',
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setLanguage('es');
+                showToast('Idioma cambiado a Español 🇪🇸');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                padding: '9px 12px',
+                borderRadius: '11px',
+                border: 'none',
+                backgroundColor: language === 'es' ? 'var(--card-white)' : 'transparent',
+                color: language === 'es' ? 'var(--text-primary)' : 'var(--text-muted)',
+                fontWeight: language === 'es' ? 800 : 600,
+                fontSize: '12.5px',
+                cursor: 'pointer',
+                boxShadow: language === 'es' ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <span style={{ fontSize: '14px' }}>🇪🇸</span>
+              <span>Español</span>
+              {language === 'es' && <Check size={13} color="var(--accent-green)" />}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setLanguage('en');
+                showToast('Language switched to English 🇺🇸');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                padding: '9px 12px',
+                borderRadius: '11px',
+                border: 'none',
+                backgroundColor: language === 'en' ? 'var(--card-white)' : 'transparent',
+                color: language === 'en' ? 'var(--text-primary)' : 'var(--text-muted)',
+                fontWeight: language === 'en' ? 800 : 600,
+                fontSize: '12.5px',
+                cursor: 'pointer',
+                boxShadow: language === 'en' ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <span style={{ fontSize: '14px' }}>🇺🇸</span>
+              <span>English</span>
+              {language === 'en' && <Check size={13} color="var(--accent-green)" />}
+            </button>
           </div>
         </div>
       </div>

@@ -25,7 +25,7 @@ import { ScanModal } from '@/components/views/ScanModal';
 import { EditProfileModal } from '@/components/views/EditProfileModal';
 
 function AppContent() {
-  const { activeTab, activeSubView } = useApp();
+  const { activeTab, activeSubView, theme } = useApp();
   const [viewMode, setViewMode] = useState<'device' | 'showcase'>('device');
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
@@ -98,14 +98,19 @@ function AppContent() {
 
   return (
     <main
+      data-theme={theme}
+      className={theme === 'dark' ? 'dark' : ''}
       style={{
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        background: 'radial-gradient(ellipse at 50% 15%, #F4F6F9 0%, #DDE3E8 100%)',
+        background: 'var(--bg-desktop)',
+        backgroundImage: 'var(--bg-desktop-gradient)',
         position: 'relative',
         paddingBottom: '40px',
+        color: 'var(--text-primary)',
+        transition: 'background 0.3s ease, color 0.3s ease',
       }}
     >
       {/* Top Presentation Toolbar */}

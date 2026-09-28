@@ -6,7 +6,7 @@ import { useApp } from '@/context/AppContext';
 import { Pill, Clock, CheckCircle2, AlertCircle, Plus, Calendar } from 'lucide-react';
 
 export const MedicationDetailView: React.FC = () => {
-  const { takeDose, pillsRemain, totalPills, adherenceRate } = useApp();
+  const { takeDose, pillsRemain, totalPills, adherenceRate, t, theme } = useApp();
 
   const medications = [
     {
@@ -15,7 +15,7 @@ export const MedicationDetailView: React.FC = () => {
       dosage: '1 cápsula con desayuno',
       schedule: '08:30 AM',
       status: 'Tomada hoy',
-      color: '#DEF1F2',
+      color: theme === 'dark' ? '#182C2D' : '#DEF1F2',
       accent: '#30A4A8',
       taken: true,
     },
@@ -25,7 +25,7 @@ export const MedicationDetailView: React.FC = () => {
       dosage: '1 comprimido',
       schedule: '08:46 PM (Próxima en 12h 16m)',
       status: 'Programada',
-      color: '#FFF0EA',
+      color: theme === 'dark' ? '#321D18' : '#FFF0EA',
       accent: '#FF6A43',
       taken: false,
     },
@@ -35,7 +35,7 @@ export const MedicationDetailView: React.FC = () => {
       dosage: '2 perlas con cena',
       schedule: '09:30 PM',
       status: 'Programada',
-      color: '#EAF4DC',
+      color: theme === 'dark' ? '#1D2A1C' : '#EAF4DC',
       accent: '#73A932',
       taken: false,
     },
@@ -47,21 +47,23 @@ export const MedicationDetailView: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        backgroundColor: '#F4F6F8',
+        backgroundColor: 'var(--device-bg)',
         overflowY: 'auto',
         paddingBottom: '90px',
+        color: 'var(--text-primary)',
       }}
     >
-      <IOSHeader title="Control de Medicación" subtitle="Prescripciones Activas" />
+      <IOSHeader title={t('medControl')} subtitle={t('activePrescriptions')} />
 
       <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {/* Next Dose Banner */}
         <div
           style={{
-            backgroundColor: '#DEF1F2',
+            backgroundColor: 'var(--card-cyan)',
             borderRadius: '24px',
             padding: '18px 20px',
-            border: '1px solid #CEE8EC',
+            border: '1px solid var(--card-cyan-border)',
+            boxShadow: 'var(--shadow-card)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -70,33 +72,33 @@ export const MedicationDetailView: React.FC = () => {
                 width: '36px',
                 height: '36px',
                 borderRadius: '50%',
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--card-white)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <Clock size={18} color="#30A4A8" />
+              <Clock size={18} color="var(--accent-cyan)" />
             </div>
             <div>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#32777A', textTransform: 'uppercase' }}>
-                Próxima Toma
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-cyan)', textTransform: 'uppercase' }}>
+                {t('nextDose')}
               </span>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#0F2126' }}>
-                En 12 horas y 16 minutos
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                {t('hoursAndMins')}
               </h3>
             </div>
           </div>
 
-          <p style={{ fontSize: '12px', color: '#4B6B71', marginTop: '10px', lineHeight: 1.4 }}>
-            &quot;Shohan&quot; ya completó su dosis de la mañana y está al día con la pauta de tratamiento.
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '10px', lineHeight: 1.4 }}>
+            &quot;Shohan&quot; {t('medicationMsg')} {t('hoursAndMins')}.
           </p>
 
           <button
             onClick={() => takeDose('NeuroProtect Plus')}
             style={{
               width: '100%',
-              backgroundColor: '#30A4A8',
+              backgroundColor: 'var(--accent-cyan)',
               color: '#FFFFFF',
               border: 'none',
               borderRadius: '16px',
@@ -113,21 +115,21 @@ export const MedicationDetailView: React.FC = () => {
             }}
           >
             <CheckCircle2 size={16} />
-            Registrar Toma Anticipada
+            {t('takeDoseAction')}
           </button>
         </div>
 
         {/* Stats Pill Row */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-          <div style={{ backgroundColor: '#FFFFFF', padding: '14px', borderRadius: '20px', border: '1px solid rgba(220,226,230,0.8)' }}>
-            <span style={{ fontSize: '11px', color: '#687889', fontWeight: 600 }}>Pastillas en Blíster</span>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#0E141B', marginTop: '2px' }}>
-              {pillsRemain} <span style={{ fontSize: '12px', color: '#8E9BAE' }}>/ {totalPills}</span>
+          <div style={{ backgroundColor: 'var(--card-white)', padding: '14px', borderRadius: '20px', border: '1px solid rgba(220,226,230,0.3)', boxShadow: 'var(--shadow-subtle)' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('pillsRemain')}</span>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+              {pillsRemain} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>/ {totalPills}</span>
             </div>
           </div>
-          <div style={{ backgroundColor: '#FFFFFF', padding: '14px', borderRadius: '20px', border: '1px solid rgba(220,226,230,0.8)' }}>
-            <span style={{ fontSize: '11px', color: '#687889', fontWeight: 600 }}>Tasa de Adherencia</span>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#73A932', marginTop: '2px' }}>
+          <div style={{ backgroundColor: 'var(--card-white)', padding: '14px', borderRadius: '20px', border: '1px solid rgba(220,226,230,0.3)', boxShadow: 'var(--shadow-subtle)' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('avgAdherence')}</span>
+            <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--accent-green)', marginTop: '2px' }}>
               {adherenceRate}%
             </div>
           </div>
@@ -135,8 +137,8 @@ export const MedicationDetailView: React.FC = () => {
 
         {/* Prescription List */}
         <div>
-          <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#0E141B', marginBottom: '8px' }}>
-            Medicamentos Asignados
+          <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+            {t('activePrescriptions')}
           </h4>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -144,11 +146,11 @@ export const MedicationDetailView: React.FC = () => {
               <div
                 key={med.id}
                 style={{
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: 'var(--card-white)',
                   borderRadius: '20px',
                   padding: '14px 16px',
-                  boxShadow: '0 4px 14px rgba(0,0,0,0.03)',
-                  border: '1px solid rgba(220,226,230,0.8)',
+                  boxShadow: 'var(--shadow-subtle)',
+                  border: '1px solid rgba(220,226,230,0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -169,10 +171,10 @@ export const MedicationDetailView: React.FC = () => {
                     <Pill size={18} color={med.accent} />
                   </div>
                   <div>
-                    <h5 style={{ fontSize: '13.5px', fontWeight: 800, color: '#121A22' }}>
+                    <h5 style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
                       {med.name}
                     </h5>
-                    <p style={{ fontSize: '11px', color: '#687787', marginTop: '1px' }}>
+                    <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '1px' }}>
                       {med.dosage}
                     </p>
                     <span style={{ fontSize: '10px', color: med.accent, fontWeight: 700 }}>
@@ -185,8 +187,8 @@ export const MedicationDetailView: React.FC = () => {
                   style={{
                     padding: '4px 8px',
                     borderRadius: '12px',
-                    backgroundColor: med.taken ? '#EDF8EE' : '#F4F6F8',
-                    color: med.taken ? '#2A8532' : '#687889',
+                    backgroundColor: med.taken ? (theme === 'dark' ? '#1D2A1C' : '#EDF8EE') : (theme === 'dark' ? '#1E2630' : '#F4F6F8'),
+                    color: med.taken ? 'var(--accent-green)' : 'var(--text-muted)',
                     fontSize: '10px',
                     fontWeight: 700,
                   }}

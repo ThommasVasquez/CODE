@@ -6,7 +6,7 @@ import { useApp } from '@/context/AppContext';
 import { Moon, Play, Pause, Sparkles, Volume2, CloudRain, Wind, Heart, Smile } from 'lucide-react';
 
 export const WellnessView: React.FC = () => {
-  const { showToast } = useApp();
+  const { showToast, t, theme } = useApp();
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState('Lluvia Serena');
   const [selectedMood, setSelectedMood] = useState('Tranquilo');
@@ -22,7 +22,7 @@ export const WellnessView: React.FC = () => {
   const togglePlay = () => {
     const next = !isPlaying;
     setIsPlaying(next);
-    showToast(next ? 'Reproduciendo audio de relajación' : 'Audio pausado');
+    showToast(next ? t('audioPlaying') : t('audioPaused'));
   };
 
   return (
@@ -31,12 +31,13 @@ export const WellnessView: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        backgroundColor: '#F4F6F8',
+        backgroundColor: 'var(--device-bg)',
         overflowY: 'auto',
         paddingBottom: '90px',
+        color: 'var(--text-primary)',
       }}
     >
-      <IOSHeader title="Bienestar & Sueño" subtitle="Bedtime Stories" />
+      <IOSHeader title={t('wellnessTitle')} subtitle={t('wellnessSub')} />
 
       <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {/* Main Audio Player Card */}
@@ -116,8 +117,8 @@ export const WellnessView: React.FC = () => {
 
         {/* Ambient Soundscapes */}
         <div>
-          <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#0E141B', marginBottom: '8px' }}>
-            Paisajes Sonoros
+          <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+            {t('bedtimeStories')}
           </h4>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
             {soundscapes.map((snd) => {
@@ -128,25 +129,27 @@ export const WellnessView: React.FC = () => {
                   key={snd.name}
                   onClick={() => {
                     setSelectedSound(snd.name);
-                    showToast(`Sonido seleccionado: ${snd.name}`);
+                    showToast(`${snd.name}`);
                   }}
                   style={{
-                    backgroundColor: isSel ? '#EAF4DC' : '#FFFFFF',
-                    border: isSel ? '1.5px solid #73A932' : '1px solid rgba(220, 226, 230, 0.8)',
+                    backgroundColor: isSel
+                      ? (theme === 'dark' ? '#1D2A1C' : '#EAF4DC')
+                      : 'var(--card-white)',
+                    border: isSel ? '1.5px solid var(--accent-green)' : '1px solid rgba(220, 226, 230, 0.3)',
                     borderRadius: '18px',
                     padding: '12px 8px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     cursor: 'pointer',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                    boxShadow: 'var(--shadow-subtle)',
                   }}
                 >
-                  <Icon size={18} color={isSel ? '#73A932' : '#576778'} />
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#111822', marginTop: '6px', textAlign: 'center' }}>
+                  <Icon size={18} color={isSel ? 'var(--accent-green)' : 'var(--text-muted)'} />
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-primary)', marginTop: '6px', textAlign: 'center' }}>
                     {snd.name}
                   </span>
-                  <span style={{ fontSize: '9px', color: '#8898A8', marginTop: '1px' }}>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '1px' }}>
                     {snd.duration}
                   </span>
                 </button>
@@ -158,16 +161,17 @@ export const WellnessView: React.FC = () => {
         {/* Daily Wellness Checkin */}
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--card-white)',
             borderRadius: '22px',
             padding: '16px 18px',
-            border: '1px solid rgba(220,226,230,0.8)',
+            border: '1px solid rgba(220,226,230,0.3)',
+            boxShadow: 'var(--shadow-card)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Smile size={18} color="#73A932" />
-            <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: '#0E141B' }}>
-              Estado de Ánimo Hoy
+            <Smile size={18} color="var(--accent-green)" />
+            <h4 style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
+              {t('wellness')} Check-in
             </h4>
           </div>
 
@@ -177,16 +181,18 @@ export const WellnessView: React.FC = () => {
                 key={m}
                 onClick={() => {
                   setSelectedMood(m);
-                  showToast(`Estado guardado: ${m}`);
+                  showToast(`${m}`);
                 }}
                 style={{
-                  backgroundColor: selectedMood === m ? '#EAF4DC' : '#F4F6F8',
-                  border: selectedMood === m ? '1.5px solid #73A932' : 'none',
+                  backgroundColor: selectedMood === m
+                    ? (theme === 'dark' ? '#1D2A1C' : '#EAF4DC')
+                    : (theme === 'dark' ? '#161D26' : '#F4F6F8'),
+                  border: selectedMood === m ? '1.5px solid var(--accent-green)' : 'none',
                   borderRadius: '14px',
-                  padding: '6px 10px',
+                  padding: '7px 12px',
                   fontSize: '11.5px',
                   fontWeight: 600,
-                  color: '#1A2710',
+                  color: selectedMood === m ? 'var(--accent-green)' : 'var(--text-primary)',
                   cursor: 'pointer',
                 }}
               >

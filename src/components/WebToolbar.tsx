@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Smartphone, Columns, RotateCcw, Cloud, ChevronRight } from 'lucide-react';
-import { useApp, MainTab } from '@/context/AppContext';
+import { Smartphone, Columns, RotateCcw, Cloud, ChevronRight, Moon, Sun } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 interface WebToolbarProps {
   viewMode: 'device' | 'showcase';
@@ -17,17 +17,27 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
   onReplayAnimations,
   onOpenDeployModal,
 }) => {
-  const { activeTab, setActiveTab, activeSubView, popView } = useApp();
+  const {
+    activeTab,
+    setActiveTab,
+    activeSubView,
+    popView,
+    theme,
+    toggleTheme,
+    language,
+    setLanguage,
+    t,
+  } = useApp();
 
   const subViewNames: Record<string, string> = {
-    'medication-detail': 'Medicación',
-    'wellness-detail': 'Bienestar',
-    'diary': 'Bitácora',
-    'settings': 'Ajustes',
-    'subscriptions': 'Suscripciones',
-    'health-base': 'Health Base',
-    'scan': 'Escáner',
-    'edit-profile': 'Editar Perfil',
+    'medication-detail': t('medication'),
+    'wellness-detail': t('wellness'),
+    'diary': t('diary'),
+    'settings': t('settings'),
+    'subscriptions': t('subscriptions'),
+    'health-base': t('healthBase'),
+    'scan': t('scanTitle'),
+    'edit-profile': t('editProfileTitle'),
   };
 
   return (
@@ -57,7 +67,7 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
             fontWeight: 800,
             fontSize: '15px',
             letterSpacing: '1.2px',
-            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
@@ -69,25 +79,25 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#161F28' }}>
-              iOS Vital & Medication OS
+            <span style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              {t('appSubtitle')}
             </span>
             {activeSubView && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#73A932', fontWeight: 700 }}>
-                <ChevronRight size={13} color="#8898A8" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--accent-green)', fontWeight: 700 }}>
+                <ChevronRight size={13} color="var(--text-muted)" />
                 <span
                   onClick={popView}
                   style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                  title="Volver"
+                  title={t('back')}
                 >
                   {subViewNames[activeSubView] || activeSubView}
                 </span>
               </div>
             )}
           </div>
-          <span style={{ fontSize: '11px', color: '#637384', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#73A932' }} />
-            Totalmente Interactivo • Cloudflare Pages Ready
+          <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent-green)' }} />
+            {t('readyEdge')}
           </span>
         </div>
       </div>
@@ -97,11 +107,11 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
         style={{
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '30px',
           padding: '4px',
-          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)',
-          border: '1px solid rgba(220, 226, 232, 0.9)',
+          boxShadow: 'var(--shadow-subtle)',
+          border: '1px solid rgba(220, 226, 232, 0.4)',
         }}
       >
         <button
@@ -116,13 +126,13 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
             fontSize: '12.5px',
             fontWeight: 700,
             cursor: 'pointer',
-            backgroundColor: viewMode === 'device' ? '#12161C' : 'transparent',
-            color: viewMode === 'device' ? '#FFFFFF' : '#4E5F70',
+            backgroundColor: viewMode === 'device' ? (theme === 'dark' ? '#27313F' : '#12161C') : 'transparent',
+            color: viewMode === 'device' ? '#FFFFFF' : 'var(--text-secondary)',
             transition: 'all 0.2s ease',
           }}
         >
           <Smartphone size={15} />
-          iPhone Interactivo
+          {t('interactiveIPhone')}
         </button>
 
         <button
@@ -137,39 +147,82 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
             fontSize: '12.5px',
             fontWeight: 700,
             cursor: 'pointer',
-            backgroundColor: viewMode === 'showcase' ? '#12161C' : 'transparent',
-            color: viewMode === 'showcase' ? '#FFFFFF' : '#4E5F70',
+            backgroundColor: viewMode === 'showcase' ? (theme === 'dark' ? '#27313F' : '#12161C') : 'transparent',
+            color: viewMode === 'showcase' ? '#FFFFFF' : 'var(--text-secondary)',
             transition: 'all 0.2s ease',
           }}
         >
           <Columns size={15} />
-          Vista 3 Pantallas (Mockup)
+          {t('threeScreensMockup')}
         </button>
       </div>
 
       {/* Right Controls */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Dark / Light Mode Quick Toggle */}
+        <button
+          onClick={toggleTheme}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--card-white)',
+            border: '1px solid rgba(220, 226, 232, 0.4)',
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-subtle)',
+          }}
+          title={theme === 'dark' ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
+        >
+          {theme === 'dark' ? <Sun size={16} color="#FFA500" /> : <Moon size={16} color="#4A5568" />}
+        </button>
+
+        {/* Quick Language Toggle */}
+        <button
+          onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            padding: '7px 12px',
+            borderRadius: '20px',
+            backgroundColor: 'var(--card-white)',
+            border: '1px solid rgba(220, 226, 232, 0.4)',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-subtle)',
+          }}
+          title="Cambiar idioma (ES / EN)"
+        >
+          <span>{language === 'es' ? '🇪🇸 ES' : '🇺🇸 EN'}</span>
+        </button>
+
         {/* Replay GSAP button */}
         <button
           onClick={onReplayAnimations}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '7px 13px',
+            gap: '5px',
+            padding: '7px 12px',
             borderRadius: '20px',
-            backgroundColor: '#FFFFFF',
-            border: '1px solid rgba(220, 226, 232, 0.9)',
+            backgroundColor: 'var(--card-white)',
+            border: '1px solid rgba(220, 226, 232, 0.4)',
             fontSize: '12px',
             fontWeight: 600,
-            color: '#2B3947',
+            color: 'var(--text-primary)',
             cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)',
+            boxShadow: 'var(--shadow-subtle)',
           }}
-          title="Reiniciar animaciones GSAP"
+          title={t('replay')}
         >
           <RotateCcw size={13} />
-          Reanimar
+          {t('replay')}
         </button>
 
         {/* Deploy on Cloudflare Pages Guide Button */}
@@ -191,7 +244,7 @@ export const WebToolbar: React.FC<WebToolbarProps> = ({
           }}
         >
           <Cloud size={14} />
-          Cloudflare Deploy
+          {t('cloudflareDeploy')}
         </button>
       </div>
     </header>

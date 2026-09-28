@@ -7,7 +7,7 @@ import { useApp } from '@/context/AppContext';
 import { Camera, Upload, Check } from 'lucide-react';
 
 export const EditProfileModal: React.FC = () => {
-  const { profile, updateProfile, popView, showToast, setAvatarUrl } = useApp();
+  const { profile, updateProfile, popView, showToast, setAvatarUrl, t, theme } = useApp();
 
   const [name, setName] = useState(profile.name);
   const [age, setAge] = useState(profile.age.toString());
@@ -30,7 +30,7 @@ export const EditProfileModal: React.FC = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      showToast('Por favor selecciona una imagen válida');
+      showToast(t('selectValidImage'));
       return;
     }
 
@@ -40,7 +40,7 @@ export const EditProfileModal: React.FC = () => {
       if (dataUrl) {
         setCurrentAvatar(dataUrl);
         setAvatarUrl(dataUrl);
-        showToast('Foto cargada correctamente');
+        showToast(t('photoLoadedSuccess'));
       }
     };
     reader.readAsDataURL(file);
@@ -65,12 +65,13 @@ export const EditProfileModal: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        backgroundColor: '#F4F6F8',
+        backgroundColor: 'var(--device-bg)',
         overflowY: 'auto',
         paddingBottom: '90px',
+        color: 'var(--text-primary)',
       }}
     >
-      <IOSHeader title="Editar Perfil" subtitle="Datos y Foto del Paciente" />
+      <IOSHeader title={t('editProfileTitle')} subtitle={t('editProfileSub')} />
 
       {/* Hidden file input */}
       <input
@@ -85,10 +86,11 @@ export const EditProfileModal: React.FC = () => {
         {/* Avatar Editing Section */}
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--card-white)',
             borderRadius: '24px',
             padding: '18px',
-            border: '1px solid rgba(220,226,230,0.8)',
+            border: '1px solid rgba(220,226,230,0.3)',
+            boxShadow: 'var(--shadow-card)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -102,7 +104,7 @@ export const EditProfileModal: React.FC = () => {
                 height: '100%',
                 borderRadius: '50%',
                 overflow: 'hidden',
-                border: '3px solid #73A932',
+                border: '3px solid var(--accent-green)',
                 position: 'relative',
                 boxShadow: '0 4px 16px rgba(115, 169, 50, 0.25)',
               }}
@@ -126,8 +128,8 @@ export const EditProfileModal: React.FC = () => {
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: '#12161C',
-                border: '2px solid #FFFFFF',
+                backgroundColor: 'var(--device-bezel)',
+                border: '2px solid var(--card-white)',
                 color: '#FFFFFF',
                 display: 'flex',
                 alignItems: 'center',
@@ -135,7 +137,7 @@ export const EditProfileModal: React.FC = () => {
                 cursor: 'pointer',
                 boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
               }}
-              title="Cargar foto desde tu dispositivo"
+              title={t('uploadPhoto')}
             >
               <Camera size={15} />
             </button>
@@ -146,30 +148,30 @@ export const EditProfileModal: React.FC = () => {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               style={{
-                backgroundColor: '#EDF8EE',
-                color: '#2A8532',
+                backgroundColor: theme === 'dark' ? '#1D2A1C' : '#EDF8EE',
+                color: theme === 'dark' ? '#9FE856' : '#2A8532',
                 border: 'none',
                 borderRadius: '16px',
-                padding: '6px 14px',
-                fontSize: '12px',
+                padding: '7px 16px',
+                fontSize: '12.5px',
                 fontWeight: 700,
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '5px',
+                gap: '6px',
               }}
             >
               <Upload size={13} />
-              Cargar Foto Personal
+              {t('uploadPhoto')}
             </button>
           </div>
 
           {/* Quick Avatar Presets */}
           <div style={{ width: '100%', marginTop: '4px' }}>
-            <span style={{ fontSize: '10.5px', color: '#7E8E9E', fontWeight: 600, display: 'block', marginBottom: '6px', textAlign: 'center' }}>
-              O elige un avatar sugerido:
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, display: 'block', marginBottom: '8px', textAlign: 'center' }}>
+              {t('orPreset')}
             </span>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
               {avatarPresets.map((preset) => {
                 const isSelected = currentAvatar === preset.url;
                 return (
@@ -182,11 +184,11 @@ export const EditProfileModal: React.FC = () => {
                     }}
                     style={{
                       position: 'relative',
-                      width: '42px',
-                      height: '42px',
+                      width: '44px',
+                      height: '44px',
                       borderRadius: '50%',
                       overflow: 'hidden',
-                      border: isSelected ? '2.5px solid #73A932' : '2px solid #E2E8F0',
+                      border: isSelected ? '2.5px solid var(--accent-green)' : '2px solid rgba(150, 160, 175, 0.3)',
                       cursor: 'pointer',
                       padding: 0,
                       transform: isSelected ? 'scale(1.08)' : 'scale(1)',
@@ -198,7 +200,7 @@ export const EditProfileModal: React.FC = () => {
                       src={preset.url}
                       alt={preset.name}
                       fill
-                      sizes="42px"
+                      sizes="44px"
                       style={{ objectFit: 'cover' }}
                     />
                   </button>
@@ -209,10 +211,21 @@ export const EditProfileModal: React.FC = () => {
         </div>
 
         {/* Personal Details Form */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '24px', padding: '18px', border: '1px solid rgba(220,226,230,0.8)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div
+          style={{
+            backgroundColor: 'var(--card-white)',
+            borderRadius: '24px',
+            padding: '18px',
+            border: '1px solid rgba(220,226,230,0.3)',
+            boxShadow: 'var(--shadow-card)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+          }}
+        >
           <div>
-            <label style={{ fontSize: '11px', fontWeight: 700, color: '#687787', textTransform: 'uppercase' }}>
-              Nombre Completo
+            <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+              {t('fullName')}
             </label>
             <input
               type="text"
@@ -221,20 +234,23 @@ export const EditProfileModal: React.FC = () => {
               required
               style={{
                 width: '100%',
-                padding: '9px 12px',
-                borderRadius: '12px',
-                border: '1px solid #D1D9E0',
-                fontSize: '13px',
+                padding: '10px 14px',
+                borderRadius: '13px',
+                border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D5DCE2',
+                backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                color: 'var(--text-primary)',
+                fontSize: '13.5px',
                 marginTop: '4px',
                 fontFamily: 'inherit',
+                outline: 'none',
               }}
             />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '10px' }}>
             <div>
-              <label style={{ fontSize: '11px', fontWeight: 700, color: '#687787', textTransform: 'uppercase' }}>
-                Edad (Años)
+              <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                {t('ageYears')}
               </label>
               <input
                 type="number"
@@ -243,19 +259,22 @@ export const EditProfileModal: React.FC = () => {
                 required
                 style={{
                   width: '100%',
-                  padding: '9px 12px',
-                  borderRadius: '12px',
-                  border: '1px solid #D1D9E0',
-                  fontSize: '13px',
+                  padding: '10px 14px',
+                  borderRadius: '13px',
+                  border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D5DCE2',
+                  backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                  color: 'var(--text-primary)',
+                  fontSize: '13.5px',
                   marginTop: '4px',
                   fontFamily: 'inherit',
+                  outline: 'none',
                 }}
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '11px', fontWeight: 700, color: '#687787', textTransform: 'uppercase' }}>
-                Residencia / Ciudad
+              <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                {t('residenceCity')}
               </label>
               <input
                 type="text"
@@ -264,20 +283,23 @@ export const EditProfileModal: React.FC = () => {
                 required
                 style={{
                   width: '100%',
-                  padding: '9px 12px',
-                  borderRadius: '12px',
-                  border: '1px solid #D1D9E0',
-                  fontSize: '13px',
+                  padding: '10px 14px',
+                  borderRadius: '13px',
+                  border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D5DCE2',
+                  backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                  color: 'var(--text-primary)',
+                  fontSize: '13.5px',
                   marginTop: '4px',
                   fontFamily: 'inherit',
+                  outline: 'none',
                 }}
               />
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize: '11px', fontWeight: 700, color: '#687787', textTransform: 'uppercase' }}>
-              Correo Electrónico
+            <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+              {t('email')}
             </label>
             <input
               type="email"
@@ -286,19 +308,22 @@ export const EditProfileModal: React.FC = () => {
               required
               style={{
                 width: '100%',
-                padding: '9px 12px',
-                borderRadius: '12px',
-                border: '1px solid #D1D9E0',
-                fontSize: '13px',
+                padding: '10px 14px',
+                borderRadius: '13px',
+                border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D5DCE2',
+                backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                color: 'var(--text-primary)',
+                fontSize: '13.5px',
                 marginTop: '4px',
                 fontFamily: 'inherit',
+                outline: 'none',
               }}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: '11px', fontWeight: 700, color: '#687787', textTransform: 'uppercase' }}>
-              Teléfono de Contacto
+            <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+              {t('phone')}
             </label>
             <input
               type="tel"
@@ -307,12 +332,15 @@ export const EditProfileModal: React.FC = () => {
               required
               style={{
                 width: '100%',
-                padding: '9px 12px',
-                borderRadius: '12px',
-                border: '1px solid #D1D9E0',
-                fontSize: '13px',
+                padding: '10px 14px',
+                borderRadius: '13px',
+                border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D5DCE2',
+                backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                color: 'var(--text-primary)',
+                fontSize: '13.5px',
                 marginTop: '4px',
                 fontFamily: 'inherit',
+                outline: 'none',
               }}
             />
           </div>
@@ -321,23 +349,24 @@ export const EditProfileModal: React.FC = () => {
         <button
           type="submit"
           style={{
-            backgroundColor: '#12161C',
+            backgroundColor: 'var(--device-bezel)',
             color: '#FFFFFF',
             border: 'none',
             borderRadius: '16px',
-            padding: '13px',
+            padding: '14px',
             fontSize: '13.5px',
             fontWeight: 700,
             cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.2)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '6px',
+            gap: '8px',
+            transition: 'transform 0.15s ease',
           }}
         >
           <Check size={16} />
-          Guardar Cambios
+          {t('saveChanges')}
         </button>
       </form>
     </div>

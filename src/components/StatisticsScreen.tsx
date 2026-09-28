@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ChevronRight, Calendar, ArrowUpRight } from 'lucide-react';
+import { ChevronRight, ArrowUpRight } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const StatisticsScreen: React.FC = () => {
@@ -13,6 +13,8 @@ export const StatisticsScreen: React.FC = () => {
     consumedToday,
     adherenceRate,
     pushView,
+    t,
+    theme,
   } = useApp();
 
   const [filterPeriod, setFilterPeriod] = useState<'Daily' | 'Weekly' | 'Monthly'>('Daily');
@@ -59,6 +61,18 @@ export const StatisticsScreen: React.FC = () => {
     { scope: containerRef, dependencies: [filterPeriod] }
   );
 
+  const getFilterLabel = (p: 'Daily' | 'Weekly' | 'Monthly') => {
+    if (p === 'Daily') return t('daily');
+    if (p === 'Weekly') return t('weekly');
+    return t('monthly');
+  };
+
+  const getConsumedSubtitle = () => {
+    if (filterPeriod === 'Daily') return t('medicinesConsumedToday');
+    if (filterPeriod === 'Weekly') return t('medicinesConsumedWeek');
+    return t('medicinesConsumedMonth');
+  };
+
   return (
     <div
       ref={containerRef}
@@ -69,6 +83,7 @@ export const StatisticsScreen: React.FC = () => {
         padding: '12px 20px 100px 20px',
         overflowY: 'auto',
         height: '100%',
+        color: 'var(--text-primary)',
       }}
     >
       {/* Top Title */}
@@ -78,31 +93,31 @@ export const StatisticsScreen: React.FC = () => {
           style={{
             fontSize: '24px',
             fontWeight: 800,
-            color: '#0E141B',
+            color: 'var(--text-primary)',
             letterSpacing: '-0.5px',
           }}
         >
-          Statistics Report
+          {t('statisticsReport')}
         </h1>
       </div>
 
-      {/* Medication Status Card (Soft Cyan/Sky Blue) */}
+      {/* Medication Status Card (Soft Cyan/Dark Elevated) */}
       <div
         className="stat-card"
         style={{
-          backgroundColor: '#DEF1F4',
+          backgroundColor: 'var(--card-cyan)',
           borderRadius: '28px',
           padding: '20px 18px',
-          border: '1px solid #CEE8EC',
+          border: '1px solid var(--card-cyan-border)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#102227' }}>
-              Medication Status
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>
+              {t('medicationStatus')}
             </h3>
-            <p style={{ fontSize: '11.5px', color: '#4B6A70', marginTop: '3px', maxWidth: '190px', lineHeight: 1.35 }}>
-              Keep track of your prescriptions for better health and peace of mind.
+            <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginTop: '3px', maxWidth: '190px', lineHeight: 1.35 }}>
+              {t('medicationStatusDesc')}
             </p>
           </div>
 
@@ -113,7 +128,7 @@ export const StatisticsScreen: React.FC = () => {
               setFilterPeriod(next);
             }}
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--card-white)',
               border: 'none',
               borderRadius: '20px',
               padding: '6px 12px',
@@ -122,14 +137,14 @@ export const StatisticsScreen: React.FC = () => {
               gap: '4px',
               fontSize: '11.5px',
               fontWeight: 700,
-              color: '#1A2E33',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+              color: 'var(--text-primary)',
+              boxShadow: 'var(--shadow-subtle)',
               cursor: 'pointer',
             }}
             title="Cambiar intervalo temporal"
           >
-            {filterPeriod}
-            <ChevronRight size={13} color="#60767C" />
+            {getFilterLabel(filterPeriod)}
+            <ChevronRight size={13} color="var(--text-muted)" />
           </button>
         </div>
 
@@ -158,7 +173,7 @@ export const StatisticsScreen: React.FC = () => {
                   alignItems: 'center',
                   transformOrigin: 'center',
                 }}
-                title={isConsumed ? `Pastilla #${idx + 1} tomada (clic para desmarcar)` : `Pastilla #${idx + 1} pendiente (clic para tomar)`}
+                title={isConsumed ? `Pastilla #${idx + 1}` : `Pastilla #${idx + 1}`}
               >
                 {/* Bottle Cap */}
                 <div
@@ -166,7 +181,7 @@ export const StatisticsScreen: React.FC = () => {
                     width: '12px',
                     height: '4px',
                     borderRadius: '2px',
-                    backgroundColor: isConsumed ? '#4BA7AB' : '#B8CFD5',
+                    backgroundColor: isConsumed ? 'var(--accent-cyan)' : (theme === 'dark' ? '#334155' : '#B8CFD5'),
                   }}
                 />
                 {/* Bottle Body */}
@@ -175,17 +190,17 @@ export const StatisticsScreen: React.FC = () => {
                     width: '20px',
                     height: '24px',
                     borderRadius: '4px 4px 6px 6px',
-                    backgroundColor: isConsumed ? '#66C3C7' : '#C7DEE4',
+                    backgroundColor: isConsumed ? 'var(--accent-cyan)' : (theme === 'dark' ? '#1E293B' : '#C7DEE4'),
                     marginTop: '1px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: isConsumed ? '0 2px 6px rgba(48, 164, 168, 0.3)' : 'none',
+                    boxShadow: isConsumed ? '0 2px 8px rgba(48, 164, 168, 0.4)' : 'none',
                     transition: 'all 0.25s ease',
                   }}
                 >
                   {isConsumed && (
-                    <div style={{ width: '8px', height: '10px', backgroundColor: '#FFFFFF', borderRadius: '2px', opacity: 0.6 }} />
+                    <div style={{ width: '8px', height: '10px', backgroundColor: '#FFFFFF', borderRadius: '2px', opacity: 0.7 }} />
                   )}
                 </div>
               </div>
@@ -194,14 +209,14 @@ export const StatisticsScreen: React.FC = () => {
 
           {/* Right Counter */}
           <div style={{ textAlign: 'right', paddingLeft: '8px' }}>
-            <div style={{ fontSize: '32px', fontWeight: 800, color: '#0F2126', lineHeight: 1 }}>
+            <div style={{ fontSize: '32px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
               {String(consumedToday).padStart(2, '0')}
-              <span style={{ fontSize: '15px', fontWeight: 600, color: '#4B6B72', marginLeft: '2px' }}>
-                Pcs
+              <span style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-secondary)', marginLeft: '2px' }}>
+                {t('pcs')}
               </span>
             </div>
-            <div style={{ fontSize: '11px', color: '#4E6A70', fontWeight: 500, marginTop: '4px', maxWidth: '105px' }}>
-              Medicines consumed {filterPeriod === 'Daily' ? 'today' : filterPeriod === 'Weekly' ? 'this week' : 'this month'}
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500, marginTop: '4px', maxWidth: '105px' }}>
+              {getConsumedSubtitle()}
             </div>
           </div>
         </div>
@@ -211,24 +226,24 @@ export const StatisticsScreen: React.FC = () => {
       <div
         className="stat-card"
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '28px',
           padding: '18px 20px',
-          boxShadow: '0 8px 30px rgba(16, 24, 40, 0.04)',
-          border: '1px solid rgba(230, 235, 240, 0.8)',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(230, 235, 240, 0.3)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <div style={{ fontSize: '28px', fontWeight: 800, color: '#0E141B' }}>
+          <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--text-primary)' }}>
             {adherenceRate}<span style={{ fontSize: '18px', fontWeight: 600 }}>%</span>
           </div>
-          <div style={{ fontSize: '12px', fontWeight: 600, color: '#667585', textAlign: 'right' }}>
-            Avg. Medication<br />Intake Rate
+          <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'right' }}>
+            {t('avgMedRate')}
           </div>
         </div>
 
         {/* 0 to 100 markers */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 600, color: '#8898A8', marginTop: '10px', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', marginTop: '10px', marginBottom: '4px' }}>
           <span>0</span>
           <span>100</span>
         </div>
@@ -238,7 +253,7 @@ export const StatisticsScreen: React.FC = () => {
           style={{
             width: '100%',
             height: '24px',
-            backgroundColor: '#EDF2E8',
+            backgroundColor: theme === 'dark' ? '#1F2937' : '#EDF2E8',
             borderRadius: '12px',
             overflow: 'hidden',
           }}
@@ -261,11 +276,11 @@ export const StatisticsScreen: React.FC = () => {
         className="stat-card"
         onClick={() => pushView('health-base')}
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '28px',
           padding: '18px 20px 14px 20px',
-          boxShadow: '0 8px 30px rgba(16, 24, 40, 0.04)',
-          border: '1px solid rgba(230, 235, 240, 0.8)',
+          boxShadow: 'var(--shadow-card)',
+          border: '1px solid rgba(230, 235, 240, 0.3)',
           cursor: 'pointer',
         }}
         title="Ver desglose completo de vitales"
@@ -273,16 +288,16 @@ export const StatisticsScreen: React.FC = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#0E141B' }}>
-                Avg. Adherence
+              <h4 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                {t('avgAdherence')}
               </h4>
-              <ArrowUpRight size={14} color="#7E8E9E" />
+              <ArrowUpRight size={14} color="var(--text-muted)" />
             </div>
-            <p style={{ fontSize: '11px', color: '#748394', marginTop: '2px', fontWeight: 500 }}>
-              Last 30 days trailing avg.
+            <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px', fontWeight: 500 }}>
+              {t('last30Days')}
             </p>
           </div>
-          <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B' }}>
+          <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)' }}>
             {adherenceRate}%
           </div>
         </div>
@@ -300,13 +315,13 @@ export const StatisticsScreen: React.FC = () => {
                 <stop offset="100%" stopColor="#FFA048" />
               </linearGradient>
               <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#FF6A43" stopOpacity="0.15" />
+                <stop offset="0%" stopColor="#FF6A43" stopOpacity={theme === 'dark' ? 0.3 : 0.15} />
                 <stop offset="100%" stopColor="#FF6A43" stopOpacity="0" />
               </linearGradient>
             </defs>
 
             {/* Subtle Guide Line */}
-            <line x1="0" y1="50" x2="320" y2="50" stroke="#F0F3F6" strokeWidth="1" strokeDasharray="4 4" />
+            <line x1="0" y1="50" x2="320" y2="50" stroke={theme === 'dark' ? '#27313F' : '#F0F3F6'} strokeWidth="1" strokeDasharray="4 4" />
 
             {/* Filled Area */}
             <path
@@ -325,11 +340,11 @@ export const StatisticsScreen: React.FC = () => {
             />
 
             {/* High Peak Node */}
-            <circle cx="225" cy="35" r="5.5" fill="#FFFFFF" stroke="#FF5722" strokeWidth="3" />
+            <circle cx="225" cy="35" r="5.5" fill="var(--card-white)" stroke="#FF5722" strokeWidth="3" />
             <circle cx="225" cy="35" r="9" fill="none" stroke="#FF5722" strokeWidth="1" opacity="0.4" />
 
             {/* Secondary Node */}
-            <circle cx="75" cy="55" r="4.5" fill="#FFFFFF" stroke="#FF8F6B" strokeWidth="2.5" />
+            <circle cx="75" cy="55" r="4.5" fill="var(--card-white)" stroke="#FF8F6B" strokeWidth="2.5" />
           </svg>
         </div>
       </div>

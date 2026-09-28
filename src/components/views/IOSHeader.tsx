@@ -11,7 +11,7 @@ interface IOSHeaderProps {
 }
 
 export const IOSHeader: React.FC<IOSHeaderProps> = ({ title, subtitle, rightAction }) => {
-  const { popView } = useApp();
+  const { popView, t } = useApp();
 
   return (
     <div
@@ -20,11 +20,12 @@ export const IOSHeader: React.FC<IOSHeaderProps> = ({ title, subtitle, rightActi
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '8px 16px 12px 12px',
-        backgroundColor: '#F4F6F8',
-        borderBottom: '1px solid rgba(220, 226, 230, 0.6)',
+        backgroundColor: 'var(--device-bg)',
+        borderBottom: '1px solid rgba(220, 226, 230, 0.25)',
         position: 'sticky',
         top: 0,
         zIndex: 30,
+        color: 'var(--text-primary)',
       }}
     >
       <button
@@ -35,7 +36,7 @@ export const IOSHeader: React.FC<IOSHeaderProps> = ({ title, subtitle, rightActi
           gap: '2px',
           background: 'none',
           border: 'none',
-          color: '#102227',
+          color: 'var(--text-primary)',
           fontSize: '15px',
           fontWeight: 600,
           cursor: 'pointer',
@@ -43,16 +44,16 @@ export const IOSHeader: React.FC<IOSHeaderProps> = ({ title, subtitle, rightActi
           borderRadius: '8px',
         }}
       >
-        <ChevronLeft size={22} color="#102227" strokeWidth={2.5} />
-        Atrás
+        <ChevronLeft size={22} color="var(--text-primary)" strokeWidth={2.5} />
+        {t('back')}
       </button>
 
       <div style={{ textAlign: 'center' }}>
-        <h2 style={{ fontSize: '15px', fontWeight: 800, color: '#0E141B', lineHeight: 1.1 }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>
           {title}
         </h2>
         {subtitle && (
-          <span style={{ fontSize: '10.5px', color: '#6A7888', fontWeight: 500 }}>
+          <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 500 }}>
             {subtitle}
           </span>
         )}

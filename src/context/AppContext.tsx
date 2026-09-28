@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Language, translations } from '@/utils/translations';
 
 export type MainTab = 'home' | 'statistics' | 'options';
 export type SubView = 
@@ -35,6 +36,8 @@ export interface DiaryEntry {
   vital?: string;
 }
 
+export type TranslationKey = keyof typeof translations['es'];
+
 interface AppContextType {
   activeTab: MainTab;
   setActiveTab: (tab: MainTab) => void;
@@ -42,6 +45,14 @@ interface AppContextType {
   navigationStack: SubView[];
   pushView: (view: SubView) => void;
   popView: () => void;
+
+  // Theme & Language
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
+  toggleTheme: () => void;
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: TranslationKey) => string;
   
   // Patient Profile
   profile: PatientProfile;
@@ -134,6 +145,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [adherenceRate, setAdherenceRate] = useState<number>(65);
   const [pillsRemain, setPillsRemain] = useState<number>(40);
   const totalPills = 120;
+
+  // Theme & Language
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguageState] = useState<Language>('es');
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === 'light' ? 'dark' : 'light';
+      showToast(next === 'dark' ? 'Modo Oscuro activado' : 'Modo Claro activado');
+      return next;
+    });
+  };
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    showToast(lang === 'es' ? 'Idioma: Español' : 'Language: English');
+  };
+
+  const t = (key: TranslationKey): string => {
+    return translations[language][key] ?? translations['es'][key] ?? key;
+  };
   
   const [bottles, setBottles] = useState<boolean[]>([
     true, true, true, true,
@@ -261,6 +293,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         navigationStack,
         pushView,
         popView,
+        theme,
+        setTheme,
+        toggleTheme,
+        language,
+        setLanguage,
+        t,
         profile,
         updateProfile,
         setAvatarUrl,

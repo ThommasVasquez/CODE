@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { X, Cloud, CheckCircle2, Terminal } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 interface CloudflareModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface CloudflareModalProps {
 }
 
 export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClose }) => {
+  const { theme } = useApp();
   if (!isOpen) return null;
 
   return (
@@ -16,7 +18,7 @@ export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClos
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(10, 15, 22, 0.65)',
+        backgroundColor: 'rgba(10, 15, 22, 0.75)',
         backdropFilter: 'blur(8px)',
         zIndex: 200,
         display: 'flex',
@@ -30,12 +32,13 @@ export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClos
         style={{
           width: '100%',
           maxWidth: '580px',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '28px',
           padding: '28px',
-          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.25)',
-          border: '1px solid rgba(220, 228, 235, 0.8)',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.4)',
+          border: '1px solid rgba(220, 228, 235, 0.2)',
           position: 'relative',
+          color: 'var(--text-primary)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -49,7 +52,7 @@ export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClos
             width: '32px',
             height: '32px',
             borderRadius: '50%',
-            backgroundColor: '#F1F4F7',
+            backgroundColor: theme === 'dark' ? '#212A35' : '#F1F4F7',
             border: 'none',
             display: 'flex',
             alignItems: 'center',
@@ -57,7 +60,7 @@ export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClos
             cursor: 'pointer',
           }}
         >
-          <X size={16} color="#485766" />
+          <X size={16} color="var(--text-secondary)" />
         </button>
 
         {/* Modal Title */}
@@ -76,10 +79,10 @@ export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClos
             <Cloud size={22} color="#F38020" />
           </div>
           <div>
-            <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#111822' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)' }}>
               Despliegue de CODE® en Cloudflare Pages
             </h2>
-            <p style={{ fontSize: '13px', color: '#687787', marginTop: '2px' }}>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '2px' }}>
               A través de GitHub en 3 pasos automáticos
             </p>
           </div>
@@ -94,7 +97,7 @@ export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClos
                 width: '26px',
                 height: '26px',
                 borderRadius: '50%',
-                backgroundColor: '#111822',
+                backgroundColor: 'var(--device-bezel)',
                 color: '#FFFFFF',
                 fontSize: '12px',
                 fontWeight: 700,
@@ -107,24 +110,25 @@ export const CloudflareModal: React.FC<CloudflareModalProps> = ({ isOpen, onClos
               1
             </div>
             <div>
-              <div style={{ fontSize: '14px', fontWeight: 700, color: '#111822' }}>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>
                 Subir este código a tu repositorio GitHub
               </div>
               <div
                 style={{
-                  backgroundColor: '#F4F7F9',
+                  backgroundColor: theme === 'dark' ? '#141A22' : '#F4F7F9',
                   borderRadius: '10px',
                   padding: '8px 12px',
                   fontSize: '12px',
                   fontFamily: 'monospace',
-                  color: '#2B3847',
+                  color: theme === 'dark' ? '#A2B5CC' : '#2B3847',
                   marginTop: '6px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
+                  border: theme === 'dark' ? '1px solid #2B3542' : 'none',
                 }}
               >
-                <Terminal size={14} color="#687A8C" />
+                <Terminal size={14} color="var(--accent-cyan)" />
                 git init && git add . && git commit -m &quot;feat: CODE® iOS UI&quot;
               </div>
             </div>

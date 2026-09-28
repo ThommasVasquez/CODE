@@ -15,6 +15,8 @@ export const HomeScreen: React.FC = () => {
     totalPills,
     setActiveTab,
     pushView,
+    t,
+    theme,
   } = useApp();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -64,6 +66,7 @@ export const HomeScreen: React.FC = () => {
         padding: '12px 20px 100px 20px',
         overflowY: 'auto',
         height: '100%',
+        color: 'var(--text-primary)',
       }}
     >
       {/* Header */}
@@ -74,25 +77,25 @@ export const HomeScreen: React.FC = () => {
             style={{
               fontSize: '24px',
               fontWeight: 800,
-              color: '#0E141B',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.5px',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
             }}
           >
-            Hello {profile.name} <span>👋</span>
+            {t('hello')} {profile.name} <span>👋</span>
           </h1>
           <p
             className="fade-header"
             style={{
               fontSize: '13px',
-              color: '#5C6A79',
+              color: 'var(--text-secondary)',
               marginTop: '2px',
               fontWeight: 500,
             }}
           >
-            Here&apos;s how &quot;{profile.name}&quot; is doing!
+            {t('howDoing')} &quot;{profile.name}&quot;!
           </p>
         </div>
 
@@ -101,8 +104,8 @@ export const HomeScreen: React.FC = () => {
           className="fade-header"
           onClick={() => pushView('medication-detail')}
           style={{
-            backgroundColor: '#FFF0EA',
-            border: '1px solid #FFE0D3',
+            backgroundColor: 'var(--card-peach)',
+            border: '1px solid rgba(255, 106, 67, 0.25)',
             borderRadius: '20px',
             padding: '4px 10px',
             display: 'flex',
@@ -115,11 +118,11 @@ export const HomeScreen: React.FC = () => {
           }}
           title="Ver próxima toma"
         >
-          <span style={{ fontSize: '13px', fontWeight: 800, color: '#FF5E36', lineHeight: 1.1 }}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent-orange)', lineHeight: 1.1 }}>
             1:30
           </span>
-          <span style={{ fontSize: '9px', fontWeight: 600, color: '#A36855', textTransform: 'uppercase' }}>
-            Hour
+          <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+            {t('hour')}
           </span>
         </div>
       </div>
@@ -128,13 +131,13 @@ export const HomeScreen: React.FC = () => {
       <div
         ref={heroCardRef}
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--card-white)',
           borderRadius: '30px',
           padding: '22px 20px 20px 20px',
-          boxShadow: '0 8px 30px rgba(16, 24, 40, 0.05)',
+          boxShadow: 'var(--shadow-card)',
           position: 'relative',
           overflow: 'hidden',
-          border: '1px solid rgba(230, 235, 240, 0.8)',
+          border: '1px solid rgba(230, 235, 240, 0.3)',
         }}
       >
         {/* Top Section with Device Info & Avatar */}
@@ -215,12 +218,12 @@ export const HomeScreen: React.FC = () => {
             title="Ver reporte estadístico detallado"
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '10.5px', color: '#6B7A8B', fontWeight: 600 }}>
-                Avg. Adherence
+              <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                {t('avgAdherence')}
               </span>
-              <ChevronRight size={12} color="#8E9DAE" />
+              <ChevronRight size={12} color="var(--text-muted)" />
             </div>
-            <div style={{ fontSize: '26px', fontWeight: 800, color: '#0E141B', margin: '1px 0 6px 0' }}>
+            <div style={{ fontSize: '26px', fontWeight: 800, color: 'var(--text-primary)', margin: '1px 0 6px 0' }}>
               {adherenceRate}%
             </div>
 
@@ -229,7 +232,7 @@ export const HomeScreen: React.FC = () => {
               style={{
                 width: '100%',
                 height: '13px',
-                backgroundColor: '#EDF1E8',
+                backgroundColor: theme === 'dark' ? '#1F2937' : '#EDF1E8',
                 borderRadius: '7px',
                 overflow: 'hidden',
               }}
@@ -253,14 +256,14 @@ export const HomeScreen: React.FC = () => {
             title="Ver calendario de dosis"
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '10.5px', color: '#6B7A8B', fontWeight: 600 }}>
-                Pills remain in the Pack
+              <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                {t('pillsRemain')}
               </span>
-              <ChevronRight size={12} color="#8E9DAE" />
+              <ChevronRight size={12} color="var(--text-muted)" />
             </div>
-            <div style={{ fontSize: '24px', fontWeight: 800, color: '#0E141B', margin: '2px 0 6px 0' }}>
+            <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 6px 0' }}>
               {pillsRemain}
-              <span style={{ fontSize: '14px', fontWeight: 500, color: '#7E8C9C' }}>
+              <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-muted)' }}>
                 /{totalPills}
               </span>
             </div>
@@ -283,7 +286,7 @@ export const HomeScreen: React.FC = () => {
                     width: '3.5px',
                     height: '3.5px',
                     borderRadius: '50%',
-                    backgroundColor: i < (pillsRemain / totalPills) * 36 ? '#30A4A8' : '#DDE6ED',
+                    backgroundColor: i < (pillsRemain / totalPills) * 36 ? 'var(--accent-cyan)' : (theme === 'dark' ? '#27313F' : '#DDE6ED'),
                     transition: 'all 0.2s ease',
                   }}
                 />
@@ -298,10 +301,10 @@ export const HomeScreen: React.FC = () => {
         ref={medCardRef}
         onClick={() => pushView('medication-detail')}
         style={{
-          backgroundColor: '#DEF1F2',
+          backgroundColor: 'var(--card-cyan)',
           borderRadius: '26px',
           padding: '18px 20px',
-          border: '1px solid #CFEBEB',
+          border: '1px solid var(--card-cyan-border)',
           position: 'relative',
           cursor: 'pointer',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
@@ -310,28 +313,28 @@ export const HomeScreen: React.FC = () => {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: '#3A777A' }}>
-              Medication
+            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent-cyan)' }}>
+              {t('medication')}
             </span>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0E1E22', marginTop: '1px' }}>
-              Keep Medication
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '1px' }}>
+              {t('keepMedication')}
             </h3>
           </div>
 
-          {/* White Circular Badge */}
+          {/* White/Dark Circular Badge */}
           <div
             style={{
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--card-white)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(48, 164, 168, 0.18)',
             }}
           >
-            <Disc size={18} color="#30A4A8" />
+            <Disc size={18} color="var(--accent-cyan)" />
           </div>
         </div>
 
@@ -339,13 +342,13 @@ export const HomeScreen: React.FC = () => {
           style={{
             fontSize: '12.5px',
             lineHeight: 1.45,
-            color: '#345558',
+            color: 'var(--text-secondary)',
             marginTop: '8px',
             fontWeight: 500,
           }}
         >
-          &quot;{profile.name}&quot; has taken his medication and is due for their next intake in time{' '}
-          <strong style={{ color: '#133538', fontWeight: 700 }}>12 hours and 16 minutes!</strong>
+          &quot;{profile.name}&quot; {t('medicationMsg')}{' '}
+          <strong style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{t('hoursAndMins')}</strong>
         </p>
       </div>
 
@@ -354,10 +357,10 @@ export const HomeScreen: React.FC = () => {
         ref={wellnessCardRef}
         onClick={() => pushView('wellness-detail')}
         style={{
-          backgroundColor: '#EAF4DC',
+          backgroundColor: 'var(--card-lime)',
           borderRadius: '26px',
           padding: '18px 20px',
-          border: '1px solid #DDEEC7',
+          border: '1px solid var(--card-lime-border)',
           position: 'relative',
           cursor: 'pointer',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
@@ -366,28 +369,28 @@ export const HomeScreen: React.FC = () => {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: '#57782A' }}>
-              Wellness
+            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent-green)' }}>
+              {t('wellness')}
             </span>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#1A290E', marginTop: '1px' }}>
-              Bedtime Stories
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '1px' }}>
+              {t('bedtimeStories')}
             </h3>
           </div>
 
-          {/* White Circular Badge with Moon Icon */}
+          {/* White/Dark Circular Badge with Moon Icon */}
           <div
             style={{
               width: '36px',
               height: '36px',
               borderRadius: '50%',
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--card-white)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(115, 169, 50, 0.18)',
             }}
           >
-            <Moon size={18} color="#73A932" />
+            <Moon size={18} color="var(--accent-green)" />
           </div>
         </div>
 
@@ -395,12 +398,12 @@ export const HomeScreen: React.FC = () => {
           style={{
             fontSize: '12.5px',
             lineHeight: 1.45,
-            color: '#3C4F24',
+            color: 'var(--text-secondary)',
             marginTop: '8px',
             fontWeight: 500,
           }}
         >
-          &quot;{profile.name}&quot; has perform his wellness check today
+          &quot;{profile.name}&quot; {t('wellnessMsg')}
         </p>
       </div>
 

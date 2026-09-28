@@ -5,7 +5,7 @@ import { X, Scan, CheckCircle2, Zap } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const ScanModal: React.FC = () => {
-  const { popView, showToast, takeDose } = useApp();
+  const { popView, showToast, takeDose, t } = useApp();
   const [scanned, setScanned] = useState(false);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export const ScanModal: React.FC = () => {
           <X size={18} color="#FFFFFF" />
         </button>
 
-        <span style={{ fontSize: '14px', fontWeight: 700 }}>Escanear Medicamento</span>
+        <span style={{ fontSize: '14px', fontWeight: 700 }}>{t('scanTitle')}</span>
 
         <button
           style={{
@@ -134,8 +134,8 @@ export const ScanModal: React.FC = () => {
 
         <p style={{ fontSize: '12.5px', color: '#A0B0C0', marginTop: '22px', textAlign: 'center' }}>
           {scanned
-            ? 'Prescripción verificada correctamente.'
-            : 'Alinea el código QR o código de barras de la caja de medicamento.'}
+            ? t('scanVerified')
+            : t('scanAlign')}
         </p>
 
         {scanned && (
@@ -154,7 +154,7 @@ export const ScanModal: React.FC = () => {
               boxShadow: '0 4px 16px rgba(115, 169, 50, 0.4)',
             }}
           >
-            Confirmar y Registrar Toma
+            {t('confirmScan')}
           </button>
         )}
       </div>

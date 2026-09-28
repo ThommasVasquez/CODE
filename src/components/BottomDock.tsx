@@ -6,7 +6,7 @@ import { Home, Activity, LayoutGrid } from 'lucide-react';
 import { useApp, MainTab } from '@/context/AppContext';
 
 export const BottomDock: React.FC = () => {
-  const { activeTab, setActiveTab, activeSubView } = useApp();
+  const { activeTab, setActiveTab, activeSubView, theme } = useApp();
   const pillIndicatorRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,13 +54,14 @@ export const BottomDock: React.FC = () => {
           position: 'relative',
           width: '180px',
           height: '58px',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme === 'dark' ? '#1A212B' : '#FFFFFF',
           borderRadius: '35px',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04)',
-          border: '1px solid rgba(220, 226, 230, 0.7)',
+          boxShadow: theme === 'dark' ? '0 10px 30px rgba(0, 0, 0, 0.6)' : '0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04)',
+          border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(220, 226, 230, 0.7)',
           display: 'flex',
           alignItems: 'center',
           padding: '0 6px',
+          transition: 'background-color 0.3s ease',
         }}
       >
         {/* Animated Dark Pill Slider */}
@@ -73,9 +74,10 @@ export const BottomDock: React.FC = () => {
             width: '46px',
             height: '46px',
             borderRadius: '50%',
-            backgroundColor: '#121417',
+            backgroundColor: theme === 'dark' ? '#2A3342' : '#121417',
             zIndex: 1,
-            boxShadow: '0 4px 12px rgba(18, 20, 23, 0.3)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            transition: 'background-color 0.3s ease',
           }}
         />
 
@@ -98,7 +100,7 @@ export const BottomDock: React.FC = () => {
         >
           <Home
             size={21}
-            color={activeTab === 'home' ? '#FFFFFF' : '#4A5568'}
+            color={activeTab === 'home' ? '#FFFFFF' : (theme === 'dark' ? '#8696A6' : '#4A5568')}
             strokeWidth={activeTab === 'home' ? 2.5 : 2}
           />
         </button>
@@ -122,7 +124,7 @@ export const BottomDock: React.FC = () => {
         >
           <Activity
             size={22}
-            color={activeTab === 'statistics' ? '#FFFFFF' : '#4A5568'}
+            color={activeTab === 'statistics' ? '#FFFFFF' : (theme === 'dark' ? '#8696A6' : '#4A5568')}
             strokeWidth={activeTab === 'statistics' ? 2.5 : 2}
           />
         </button>
@@ -146,7 +148,7 @@ export const BottomDock: React.FC = () => {
         >
           <LayoutGrid
             size={20}
-            color={activeTab === 'options' ? '#FFFFFF' : '#4A5568'}
+            color={activeTab === 'options' ? '#FFFFFF' : (theme === 'dark' ? '#8696A6' : '#4A5568')}
             strokeWidth={activeTab === 'options' ? 2.5 : 2}
           />
         </button>
@@ -157,7 +159,8 @@ export const BottomDock: React.FC = () => {
         style={{
           width: '134px',
           height: '4px',
-          backgroundColor: '#0E1116',
+          backgroundColor: theme === 'dark' ? '#FFFFFF' : '#0E1116',
+          opacity: theme === 'dark' ? 0.6 : 1,
           borderRadius: '10px',
           marginTop: '12px',
         }}

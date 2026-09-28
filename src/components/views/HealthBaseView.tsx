@@ -6,7 +6,7 @@ import { useApp } from '@/context/AppContext';
 import { Heart, Activity, Droplets, Moon, Footprints, Flame } from 'lucide-react';
 
 export const HealthBaseView: React.FC = () => {
-  const { showToast } = useApp();
+  const { showToast, t, theme } = useApp();
 
   const vitals = [
     {
@@ -15,7 +15,7 @@ export const HealthBaseView: React.FC = () => {
       unit: 'bpm',
       status: 'En reposo normal',
       icon: Heart,
-      color: '#FFF0EA',
+      color: theme === 'dark' ? '#321D18' : '#FFF0EA',
       accent: '#FF6A43',
     },
     {
@@ -24,7 +24,7 @@ export const HealthBaseView: React.FC = () => {
       unit: 'mmHg',
       status: 'Óptima',
       icon: Activity,
-      color: '#EAF4DC',
+      color: theme === 'dark' ? '#1D2A1C' : '#EAF4DC',
       accent: '#73A932',
     },
     {
@@ -33,7 +33,7 @@ export const HealthBaseView: React.FC = () => {
       unit: '%',
       status: 'Excelente',
       icon: Droplets,
-      color: '#DEF1F2',
+      color: theme === 'dark' ? '#182C2D' : '#DEF1F2',
       accent: '#30A4A8',
     },
     {
@@ -42,7 +42,7 @@ export const HealthBaseView: React.FC = () => {
       unit: '',
       status: 'Profundo y reparador',
       icon: Moon,
-      color: '#ECEEF8',
+      color: theme === 'dark' ? '#1F2238' : '#ECEEF8',
       accent: '#5E6AD2',
     },
   ];
@@ -53,38 +53,39 @@ export const HealthBaseView: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        backgroundColor: '#F4F6F8',
+        backgroundColor: 'var(--device-bg)',
         overflowY: 'auto',
         paddingBottom: '90px',
+        color: 'var(--text-primary)',
       }}
     >
-      <IOSHeader title="Health Base" subtitle="05 Métricas de Actividad" />
+      <IOSHeader title={t('healthBaseTitle')} subtitle={`05 ${t('healthBaseHeaderSub')}`} />
 
       <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {/* Daily Summary Banner */}
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--card-white)',
             borderRadius: '24px',
             padding: '18px 20px',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
-            border: '1px solid rgba(220, 226, 230, 0.8)',
+            boxShadow: 'var(--shadow-card)',
+            border: '1px solid rgba(220, 226, 230, 0.3)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <span style={{ fontSize: '11px', color: '#687888', fontWeight: 600 }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
                 Índice de Vitalidad General
               </span>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#101820', marginTop: '2px' }}>
-                94<span style={{ fontSize: '16px', color: '#73A932' }}>/100</span>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
+                94<span style={{ fontSize: '16px', color: 'var(--accent-green)' }}>/100</span>
               </div>
             </div>
 
             <div
               style={{
-                backgroundColor: '#EDF8EE',
-                color: '#2A8532',
+                backgroundColor: theme === 'dark' ? '#1D2A1C' : '#EDF8EE',
+                color: theme === 'dark' ? '#9FE856' : '#2A8532',
                 borderRadius: '14px',
                 padding: '6px 12px',
                 fontSize: '11.5px',
@@ -95,11 +96,11 @@ export const HealthBaseView: React.FC = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #F1F4F7' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#4B5B6D', fontWeight: 600 }}>
-              <Footprints size={15} color="#30A4A8" /> 4,820 pasos
+          <div style={{ display: 'flex', gap: '14px', marginTop: '14px', paddingTop: '12px', borderTop: '1px solid rgba(140, 150, 160, 0.15)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+              <Footprints size={15} color="var(--accent-cyan)" /> 4,820 pasos
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#4B5B6D', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
               <Flame size={15} color="#FF6A43" /> 380 kcal
             </div>
           </div>
@@ -114,11 +115,11 @@ export const HealthBaseView: React.FC = () => {
                 key={v.title}
                 onClick={() => showToast(`${v.title}: ${v.value} ${v.unit}`)}
                 style={{
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: 'var(--card-white)',
                   borderRadius: '24px',
                   padding: '16px',
-                  boxShadow: '0 4px 14px rgba(0,0,0,0.03)',
-                  border: '1px solid rgba(220, 226, 230, 0.8)',
+                  boxShadow: 'var(--shadow-subtle)',
+                  border: '1px solid rgba(220, 226, 230, 0.3)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -143,15 +144,15 @@ export const HealthBaseView: React.FC = () => {
                 </div>
 
                 <div>
-                  <div style={{ fontSize: '22px', fontWeight: 800, color: '#101820', lineHeight: 1 }}>
+                  <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>
                     {v.value}
                     {v.unit && (
-                      <span style={{ fontSize: '11px', fontWeight: 600, color: '#7E8E9E', marginLeft: '3px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', marginLeft: '3px' }}>
                         {v.unit}
                       </span>
                     )}
                   </div>
-                  <div style={{ fontSize: '11px', fontWeight: 600, color: '#566676', marginTop: '3px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', marginTop: '3px' }}>
                     {v.title}
                   </div>
                 </div>

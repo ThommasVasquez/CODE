@@ -6,7 +6,7 @@ import { useApp } from '@/context/AppContext';
 import { BookOpen, Plus, Heart, Pill, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export const DiaryView: React.FC = () => {
-  const { diaryEntries, addDiaryEntry } = useApp();
+  const { diaryEntries, addDiaryEntry, t, theme } = useApp();
   const [filter, setFilter] = useState<'all' | 'taken' | 'wellness'>('all');
   const [isAdding, setIsAdding] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -43,14 +43,15 @@ export const DiaryView: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        backgroundColor: '#F4F6F8',
+        backgroundColor: 'var(--device-bg)',
         overflowY: 'auto',
         paddingBottom: '90px',
+        color: 'var(--text-primary)',
       }}
     >
       <IOSHeader
-        title="Bitácora de Salud"
-        subtitle={`${diaryEntries.length} Registros`}
+        title={t('diaryTitle')}
+        subtitle={`${diaryEntries.length} ${t('diarySub')}`}
         rightAction={
           <button
             onClick={() => setIsAdding(!isAdding)}
@@ -58,13 +59,14 @@ export const DiaryView: React.FC = () => {
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              backgroundColor: '#12161C',
+              backgroundColor: 'var(--device-bezel)',
               color: '#FFFFFF',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
+              boxShadow: 'var(--shadow-subtle)',
             }}
             title="Añadir entrada"
           >
@@ -81,18 +83,18 @@ export const DiaryView: React.FC = () => {
               key={f}
               onClick={() => setFilter(f)}
               style={{
-                backgroundColor: filter === f ? '#12161C' : '#FFFFFF',
-                color: filter === f ? '#FFFFFF' : '#4F5F70',
+                backgroundColor: filter === f ? 'var(--device-bezel)' : 'var(--card-white)',
+                color: filter === f ? '#FFFFFF' : 'var(--text-secondary)',
                 border: 'none',
                 borderRadius: '16px',
                 padding: '6px 12px',
                 fontSize: '11.5px',
                 fontWeight: 700,
                 cursor: 'pointer',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
+                boxShadow: 'var(--shadow-subtle)',
               }}
             >
-              {f === 'all' ? 'Todas' : f === 'taken' ? 'Medicación' : 'Bienestar'}
+              {f === 'all' ? (theme === 'dark' ? 'Todas' : 'Todas') : f === 'taken' ? t('medication') : t('wellness')}
             </button>
           ))}
         </div>
@@ -102,17 +104,17 @@ export const DiaryView: React.FC = () => {
           <form
             onSubmit={handleSave}
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--card-white)',
               borderRadius: '22px',
               padding: '16px',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-              border: '1px solid #DCE3E8',
+              boxShadow: 'var(--shadow-card)',
+              border: '1px solid rgba(220, 226, 230, 0.3)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px',
+              gap: '10px',
             }}
           >
-            <span style={{ fontSize: '13px', fontWeight: 800, color: '#111822' }}>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>
               Nueva Nota de Salud
             </span>
 
@@ -124,11 +126,14 @@ export const DiaryView: React.FC = () => {
               required
               style={{
                 width: '100%',
-                padding: '8px 12px',
-                borderRadius: '10px',
-                border: '1px solid #D0D8DF',
+                padding: '10px 12px',
+                borderRadius: '12px',
+                border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D0D8DF',
+                backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                color: 'var(--text-primary)',
                 fontSize: '12.5px',
                 fontFamily: 'inherit',
+                outline: 'none',
               }}
             />
 
@@ -139,11 +144,14 @@ export const DiaryView: React.FC = () => {
               onChange={(e) => setNewVital(e.target.value)}
               style={{
                 width: '100%',
-                padding: '8px 12px',
-                borderRadius: '10px',
-                border: '1px solid #D0D8DF',
+                padding: '10px 12px',
+                borderRadius: '12px',
+                border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D0D8DF',
+                backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                color: 'var(--text-primary)',
                 fontSize: '12.5px',
                 fontFamily: 'inherit',
+                outline: 'none',
               }}
             />
 
@@ -154,12 +162,15 @@ export const DiaryView: React.FC = () => {
               rows={2}
               style={{
                 width: '100%',
-                padding: '8px 12px',
-                borderRadius: '10px',
-                border: '1px solid #D0D8DF',
+                padding: '10px 12px',
+                borderRadius: '12px',
+                border: theme === 'dark' ? '1px solid #2B3542' : '1px solid #D0D8DF',
+                backgroundColor: theme === 'dark' ? '#141A22' : '#FFFFFF',
+                color: 'var(--text-primary)',
                 fontSize: '12.5px',
                 fontFamily: 'inherit',
                 resize: 'none',
+                outline: 'none',
               }}
             />
 
@@ -168,33 +179,33 @@ export const DiaryView: React.FC = () => {
                 type="submit"
                 style={{
                   flex: 1,
-                  backgroundColor: '#73A932',
+                  backgroundColor: 'var(--accent-green)',
                   color: '#FFFFFF',
                   border: 'none',
                   borderRadius: '12px',
-                  padding: '9px',
-                  fontSize: '12px',
+                  padding: '10px',
+                  fontSize: '12.5px',
                   fontWeight: 700,
                   cursor: 'pointer',
                 }}
               >
-                Guardar Nota
+                {t('saveChanges')}
               </button>
               <button
                 type="button"
                 onClick={() => setIsAdding(false)}
                 style={{
-                  backgroundColor: '#F1F4F6',
-                  color: '#495868',
+                  backgroundColor: theme === 'dark' ? '#212A35' : '#F1F4F6',
+                  color: 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: '12px',
-                  padding: '9px 14px',
+                  padding: '10px 16px',
                   fontSize: '12px',
                   fontWeight: 600,
                   cursor: 'pointer',
                 }}
               >
-                Cancelar
+                {t('cancel')}
               </button>
             </div>
           </form>
@@ -206,11 +217,11 @@ export const DiaryView: React.FC = () => {
             <div
               key={entry.id}
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--card-white)',
                 borderRadius: '20px',
                 padding: '14px 16px',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.03)',
-                border: '1px solid rgba(220, 226, 230, 0.8)',
+                boxShadow: 'var(--shadow-subtle)',
+                border: '1px solid rgba(220, 226, 230, 0.3)',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -220,23 +231,25 @@ export const DiaryView: React.FC = () => {
                       width: '28px',
                       height: '28px',
                       borderRadius: '50%',
-                      backgroundColor: entry.status === 'taken' ? '#DEF1F2' : '#EAF4DC',
+                      backgroundColor: entry.status === 'taken'
+                        ? (theme === 'dark' ? '#182C2D' : '#DEF1F2')
+                        : (theme === 'dark' ? '#1D2A1C' : '#EAF4DC'),
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
                   >
                     {entry.status === 'taken' ? (
-                      <Pill size={14} color="#30A4A8" />
+                      <Pill size={14} color="var(--accent-cyan)" />
                     ) : (
-                      <Heart size={14} color="#73A932" />
+                      <Heart size={14} color="var(--accent-green)" />
                     )}
                   </div>
                   <div>
-                    <h5 style={{ fontSize: '13px', fontWeight: 800, color: '#101820' }}>
+                    <h5 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>
                       {entry.title}
                     </h5>
-                    <span style={{ fontSize: '10.5px', color: '#7E8E9E' }}>
+                    <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
                       {entry.date} • {entry.time}
                     </span>
                   </div>
@@ -247,10 +260,10 @@ export const DiaryView: React.FC = () => {
                     style={{
                       fontSize: '10.5px',
                       fontWeight: 700,
-                      backgroundColor: '#F3F6F8',
+                      backgroundColor: theme === 'dark' ? '#19222C' : '#F3F6F8',
                       padding: '3px 8px',
                       borderRadius: '8px',
-                      color: '#384858',
+                      color: 'var(--text-secondary)',
                     }}
                   >
                     {entry.vital}
@@ -258,7 +271,7 @@ export const DiaryView: React.FC = () => {
                 )}
               </div>
 
-              <p style={{ fontSize: '12px', color: '#526272', marginTop: '8px', lineHeight: 1.4 }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '8px', lineHeight: 1.4 }}>
                 {entry.notes}
               </p>
             </div>
