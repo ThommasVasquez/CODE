@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { AppProvider, useApp } from '@/context/AppContext';
@@ -11,8 +11,6 @@ import { IOSToast } from '@/components/IOSToast';
 import { HomeScreen } from '@/components/HomeScreen';
 import { StatisticsScreen } from '@/components/StatisticsScreen';
 import { ProfileScreen } from '@/components/ProfileScreen';
-import { WebToolbar } from '@/components/WebToolbar';
-import { CloudflareModal } from '@/components/CloudflareModal';
 
 // Subviews
 import { MedicationDetailView } from '@/components/views/MedicationDetailView';
@@ -31,12 +29,7 @@ import { WorkoutRemindersView } from '@/components/views/WorkoutRemindersView';
 
 function AppContent() {
   const { activeTab, activeSubView, theme } = useApp();
-  const [viewMode, setViewMode] = useState<'device' | 'showcase'>('device');
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [animationKey, setAnimationKey] = useState(0);
-
   const screenContainerRef = useRef<HTMLDivElement>(null);
-  const showcaseRef = useRef<HTMLDivElement>(null);
 
   // GSAP transition when changing tabs or pushing subviews
   useGSAP(
@@ -59,28 +52,8 @@ function AppContent() {
         }
       }
     },
-    { dependencies: [activeTab, activeSubView, animationKey] }
+    { dependencies: [activeTab, activeSubView] }
   );
-
-  // GSAP entrance for 3-screen showcase mode
-  useGSAP(
-    () => {
-      if (viewMode === 'showcase' && showcaseRef.current) {
-        gsap.from('.showcase-device', {
-          y: 40,
-          opacity: 0,
-          stagger: 0.15,
-          duration: 0.7,
-          ease: 'power3.out',
-        });
-      }
-    },
-    { dependencies: [viewMode, animationKey] }
-  );
-
-  const replayAnimations = () => {
-    setAnimationKey((k) => k + 1);
-  };
 
   const renderActiveScreen = () => {
     // If a subview is active in navigation stack
@@ -111,176 +84,100 @@ function AppContent() {
       data-theme={theme}
       className={theme === 'dark' ? 'dark' : ''}
       style={{
-        minHeight: '100vh',
+        height: '100vh',
+        width: '100vw',
+        overflow: 'hidden',
         display: 'flex',
-        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
         background: 'var(--bg-desktop)',
         backgroundImage: 'var(--bg-desktop-gradient)',
         position: 'relative',
-        paddingBottom: '40px',
         color: 'var(--text-primary)',
         transition: 'background 0.3s ease, color 0.3s ease',
       }}
     >
-      {/* Top Presentation Toolbar */}
-      <WebToolbar
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        onReplayAnimations={replayAnimations}
-        onOpenDeployModal={() => setIsDeployModalOpen(true)}
-      />
+      {/* Interactive iPhone Frame (90% viewport height) */}
+      <div className="iphone-frame" style={{ position: 'relative' }}>
+        {/* Ambient Gloss Highlight on screen rim */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '20%',
+            right: '20%',
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+            zIndex: 60,
+            pointerEvents: 'none',
+          }}
+        />
 
-      {/* Main View Area */}
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '16px 20px 40px 20px',
-        }}
-      >
-        {viewMode === 'device' ? (
-          /* Single Interactive iPhone Mode */
-          <div className="iphone-frame" style={{ position: 'relative' }}>
-            {/* Ambient Gloss Highlight on screen rim */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '20%',
-                right: '20%',
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
-                zIndex: 60,
-                pointerEvents: 'none',
-              }}
-            />
+        {/* Hardware Side Buttons */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '-14px',
+            top: '18%',
+            width: '3.5px',
+            height: '5.8%',
+            backgroundColor: '#353940',
+            borderRadius: '3px 0 0 3px',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            left: '-14px',
+            top: '25%',
+            width: '3.5px',
+            height: '5.8%',
+            backgroundColor: '#353940',
+            borderRadius: '3px 0 0 3px',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            right: '-14px',
+            top: '21%',
+            width: '3.5px',
+            height: '9%',
+            backgroundColor: '#353940',
+            borderRadius: '0 3px 3px 0',
+          }}
+        />
 
-            {/* Hardware Side Buttons */}
-            <div
-              style={{
-                position: 'absolute',
-                left: '-14px',
-                top: '145px',
-                width: '3.5px',
-                height: '48px',
-                backgroundColor: '#353940',
-                borderRadius: '3px 0 0 3px',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                left: '-14px',
-                top: '205px',
-                width: '3.5px',
-                height: '48px',
-                backgroundColor: '#353940',
-                borderRadius: '3px 0 0 3px',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                right: '-14px',
-                top: '170px',
-                width: '3.5px',
-                height: '75px',
-                backgroundColor: '#353940',
-                borderRadius: '0 3px 3px 0',
-              }}
-            />
+        {/* Inner iOS Screen */}
+        <div className="iphone-screen">
+          {/* Dynamic Island */}
+          <DynamicIsland />
 
-            {/* Inner iOS Screen */}
-            <div className="iphone-screen">
-              {/* Dynamic Island */}
-              <DynamicIsland />
+          {/* Status Bar */}
+          <StatusBar />
 
-              {/* Status Bar */}
-              <StatusBar />
+          {/* Drop-down iOS Toast / Banner Alert */}
+          <IOSToast />
 
-              {/* Drop-down iOS Toast / Banner Alert */}
-              <IOSToast />
-
-              {/* Screen Content Switcher with GSAP animation */}
-              <div
-                ref={screenContainerRef}
-                key={`screen-${activeTab}-${activeSubView}-${animationKey}`}
-                style={{
-                  flex: 1,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                {renderActiveScreen()}
-              </div>
-
-              {/* Floating Bottom Navigation Dock */}
-              <BottomDock />
-            </div>
-          </div>
-        ) : (
-          /* 3-Screen Mockup Showcase Mode */
+          {/* Screen Content Switcher with GSAP animation */}
           <div
-            ref={showcaseRef}
+            ref={screenContainerRef}
+            key={`screen-${activeTab}-${activeSubView}`}
             style={{
+              flex: 1,
+              position: 'relative',
+              overflow: 'hidden',
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '28px',
-              flexWrap: 'wrap',
-              maxWidth: '1360px',
-              margin: '0 auto',
+              flexDirection: 'column',
             }}
           >
-            {/* Screen 1: Home */}
-            <div className="iphone-frame showcase-device" style={{ transform: 'scale(0.92)' }}>
-              <div className="iphone-screen">
-                <DynamicIsland />
-                <StatusBar />
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <HomeScreen />
-                </div>
-                <BottomDock />
-              </div>
-            </div>
-
-            {/* Screen 2: Statistics */}
-            <div className="iphone-frame showcase-device" style={{ transform: 'scale(0.92)' }}>
-              <div className="iphone-screen">
-                <DynamicIsland />
-                <StatusBar />
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <StatisticsScreen />
-                </div>
-                <BottomDock />
-              </div>
-            </div>
-
-            {/* Screen 3: More Options */}
-            <div className="iphone-frame showcase-device" style={{ transform: 'scale(0.92)' }}>
-              <div className="iphone-screen">
-                <DynamicIsland />
-                <StatusBar />
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <ProfileScreen />
-                </div>
-                <BottomDock />
-              </div>
-            </div>
+            {renderActiveScreen()}
           </div>
-        )}
-      </div>
 
-      {/* Cloudflare Pages Guide Modal */}
-      <CloudflareModal
-        isOpen={isDeployModalOpen}
-        onClose={() => setIsDeployModalOpen(false)}
-      />
+          {/* Floating Bottom Navigation Dock */}
+          <BottomDock />
+        </div>
+      </div>
     </main>
   );
 }
