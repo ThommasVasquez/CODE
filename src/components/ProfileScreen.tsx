@@ -4,7 +4,24 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Scan, Share2, Pencil, ArrowUpRight, Camera, Moon, Sun, Globe, Sliders, Check } from 'lucide-react';
+import {
+  Scan,
+  Share2,
+  Pencil,
+  ArrowUpRight,
+  Camera,
+  Moon,
+  Sun,
+  Globe,
+  Sliders,
+  Check,
+  Bell,
+  RefreshCw,
+  Cloud,
+  Download,
+  Smartphone,
+  User,
+} from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const ProfileScreen: React.FC = () => {
@@ -19,6 +36,8 @@ export const ProfileScreen: React.FC = () => {
     toggleTheme,
     language,
     setLanguage,
+    settings,
+    toggleSetting,
   } = useApp();
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -121,7 +140,7 @@ export const ProfileScreen: React.FC = () => {
             letterSpacing: '-0.5px',
           }}
         >
-          {t('moreOptions')}
+          {t('profileAndSettings')}
         </h1>
 
         <div className="profile-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -540,29 +559,29 @@ export const ProfileScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Settings Card: Dark/Light Mode & Language Switcher */}
+      {/* Personal Settings & Preferences Card */}
       <div
         className="action-card"
         style={{
           backgroundColor: 'var(--card-white)',
           borderRadius: '26px',
-          padding: '18px 20px',
+          padding: '20px',
           boxShadow: 'var(--shadow-card)',
           border: '1px solid rgba(220, 226, 230, 0.4)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '14px',
+          gap: '16px',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sliders size={16} color="var(--accent-cyan)" />
+            <Sliders size={17} color="var(--accent-cyan)" />
             <div>
-              <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                {t('quickSettings')}
+              <h4 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                {t('personalSettings')}
               </h4>
-              <p style={{ fontSize: '10.5px', color: 'var(--text-muted)', margin: 0 }}>
-                {t('quickSettingsSub')}
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0, marginTop: '1px' }}>
+                {t('personalSettingsSub')}
               </p>
             </div>
           </div>
@@ -592,8 +611,8 @@ export const ProfileScreen: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '10px 14px',
-            borderRadius: '16px',
+            padding: '12px 14px',
+            borderRadius: '18px',
             backgroundColor: theme === 'dark' ? '#141B22' : '#F7F9FA',
             cursor: 'pointer',
             transition: 'background-color 0.2s ease',
@@ -602,9 +621,9 @@ export const ProfileScreen: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div
               style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '10px',
+                width: '34px',
+                height: '34px',
+                borderRadius: '11px',
                 backgroundColor: theme === 'dark' ? '#2A2035' : '#FFF9E6',
                 display: 'flex',
                 alignItems: 'center',
@@ -613,17 +632,17 @@ export const ProfileScreen: React.FC = () => {
               }}
             >
               {theme === 'dark' ? (
-                <Moon size={16} color="#A277FF" />
+                <Moon size={17} color="#A277FF" />
               ) : (
-                <Sun size={16} color="#E5A100" />
+                <Sun size={17} color="#E5A100" />
               )}
             </div>
             <div>
-              <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
                 {theme === 'dark' ? t('darkMode') : t('lightMode')}
               </div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
-                {theme === 'dark' ? 'Tema con fondo negro OLED' : 'Tema claro con alto contraste'}
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                {t('themeDesc')}
               </div>
             </div>
           </div>
@@ -730,6 +749,333 @@ export const ProfileScreen: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Additional Personal Toggles List */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: '4px' }}>
+          {/* Dose Reminders */}
+          <div
+            onClick={() => toggleSetting('notifications')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px',
+              borderRadius: '14px',
+              backgroundColor: theme === 'dark' ? '#141B22' : '#F7F9FA',
+              cursor: 'pointer',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '9px',
+                  backgroundColor: theme === 'dark' ? '#1F2937' : '#EFF6FF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Bell size={15} color="#3B82F6" />
+              </div>
+              <div>
+                <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {t('doseReminders')}
+                </div>
+                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                  {t('doseRemindersDesc')}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                width: '42px',
+                height: '24px',
+                backgroundColor: settings.notifications ? 'var(--accent-green)' : '#D1D7DC',
+                borderRadius: '12px',
+                padding: '2px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: settings.notifications ? 'flex-end' : 'flex-start',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '50%',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Auto Refill */}
+          <div
+            onClick={() => toggleSetting('autoRefill')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px',
+              borderRadius: '14px',
+              backgroundColor: theme === 'dark' ? '#141B22' : '#F7F9FA',
+              cursor: 'pointer',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '9px',
+                  backgroundColor: theme === 'dark' ? '#1C2E20' : '#ECFDF5',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <RefreshCw size={14} color="#10B981" />
+              </div>
+              <div>
+                <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {t('autoRefill')}
+                </div>
+                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                  {t('autoRefillDesc')}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                width: '42px',
+                height: '24px',
+                backgroundColor: settings.autoRefill ? 'var(--accent-green)' : '#D1D7DC',
+                borderRadius: '12px',
+                padding: '2px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: settings.autoRefill ? 'flex-end' : 'flex-start',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '50%',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Cloud Sync */}
+          <div
+            onClick={() => toggleSetting('cloudSync')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px',
+              borderRadius: '14px',
+              backgroundColor: theme === 'dark' ? '#141B22' : '#F7F9FA',
+              cursor: 'pointer',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '9px',
+                  backgroundColor: theme === 'dark' ? '#2A1F18' : '#FFF7ED',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Cloud size={15} color="#F97316" />
+              </div>
+              <div>
+                <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {t('cloudSync')}
+                </div>
+                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                  {t('cloudSyncDesc')}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                width: '42px',
+                height: '24px',
+                backgroundColor: settings.cloudSync ? 'var(--accent-green)' : '#D1D7DC',
+                borderRadius: '12px',
+                padding: '2px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: settings.cloudSync ? 'flex-end' : 'flex-start',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '50%',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Haptic Feedback */}
+          <div
+            onClick={() => toggleSetting('hapticFeedback')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px',
+              borderRadius: '14px',
+              backgroundColor: theme === 'dark' ? '#141B22' : '#F7F9FA',
+              cursor: 'pointer',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '9px',
+                  backgroundColor: theme === 'dark' ? '#231E2E' : '#F5F3FF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Smartphone size={15} color="#8B5CF6" />
+              </div>
+              <div>
+                <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {t('hapticFeedback')}
+                </div>
+                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                  {t('hapticFeedbackDesc')}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                width: '42px',
+                height: '24px',
+                backgroundColor: settings.hapticFeedback ? 'var(--accent-green)' : '#D1D7DC',
+                borderRadius: '12px',
+                padding: '2px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: settings.hapticFeedback ? 'flex-end' : 'flex-start',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '50%',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Action Buttons: Edit Profile & Change Photo & Export Report */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', paddingTop: '4px' }}>
+          <button
+            type="button"
+            onClick={() => pushView('edit-profile')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: '11px 12px',
+              borderRadius: '14px',
+              border: 'none',
+              backgroundColor: 'var(--device-bezel)',
+              color: '#FFFFFF',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: '0 3px 10px rgba(0,0,0,0.15)',
+              transition: 'transform 0.15s ease',
+            }}
+          >
+            <Pencil size={13} />
+            {t('editProfileTitle')}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: '11px 12px',
+              borderRadius: '14px',
+              border: '1px solid rgba(140, 150, 160, 0.2)',
+              backgroundColor: theme === 'dark' ? '#1E2733' : '#F1F4F7',
+              color: 'var(--text-primary)',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'transform 0.15s ease',
+            }}
+          >
+            <Camera size={13} color="var(--accent-cyan)" />
+            {t('changePhoto')}
+          </button>
+        </div>
+
+        {/* Export Report Clinical Button */}
+        <button
+          type="button"
+          onClick={() => {
+            showToast(t('reportExported'));
+          }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '12px',
+            borderRadius: '14px',
+            border: 'none',
+            backgroundColor: theme === 'dark' ? '#1D2A1C' : '#EDF8EE',
+            color: theme === 'dark' ? '#9FE856' : '#2A8532',
+            fontSize: '12.5px',
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'transform 0.15s ease',
+          }}
+        >
+          <Download size={14} />
+          {t('exportReport')} ({t('exportReportSub')})
+        </button>
       </div>
     </div>
   );

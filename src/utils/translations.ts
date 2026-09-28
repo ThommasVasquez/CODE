@@ -110,6 +110,11 @@ export const translations = {
     scanVerified: 'Prescripción verificada correctamente.',
     confirmScan: 'Confirmar y Registrar Toma',
     // Subviews & Additional
+    profileAndSettings: 'Perfil & Ajustes',
+    personalSettings: 'Ajustes Personales',
+    personalSettingsSub: 'Tema, idioma y preferencias de salud',
+    hapticFeedback: 'Respuesta Háptica',
+    hapticFeedbackDesc: 'Vibración táctil al interactuar',
     quickSettings: 'Ajustes Rápidos',
     quickSettingsSub: 'Tema e Idioma de la interfaz',
     lightMode: 'Modo Claro',
@@ -238,6 +243,11 @@ export const translations = {
     confirmScan: 'Confirm & Log Intake',
 
     // Subviews & Additional
+    profileAndSettings: 'Profile & Settings',
+    personalSettings: 'Personal Settings',
+    personalSettingsSub: 'Theme, language and health preferences',
+    hapticFeedback: 'Haptic Feedback',
+    hapticFeedbackDesc: 'Tactile feel on tap interactions',
     quickSettings: 'Quick Settings',
     quickSettingsSub: 'Theme & App Language',
     lightMode: 'Light Mode',

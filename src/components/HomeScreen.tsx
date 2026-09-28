@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Disc, Moon, Sparkles, ChevronRight } from 'lucide-react';
+import { Disc, Moon, Sparkles, ChevronRight, User } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 export const HomeScreen: React.FC = () => {
@@ -99,31 +99,56 @@ export const HomeScreen: React.FC = () => {
           </p>
         </div>
 
-        {/* Orange Pill Badge (1:30 Hour) */}
-        <div
-          className="fade-header"
-          onClick={() => pushView('medication-detail')}
-          style={{
-            backgroundColor: 'var(--card-peach)',
-            border: '1px solid rgba(255, 106, 67, 0.25)',
-            borderRadius: '20px',
-            padding: '4px 10px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 6px rgba(255, 106, 67, 0.08)',
-            cursor: 'pointer',
-            transition: 'transform 0.2s ease',
-          }}
-          title="Ver próxima toma"
-        >
-          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent-orange)', lineHeight: 1.1 }}>
-            1:30
-          </span>
-          <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-            {t('hour')}
-          </span>
+        {/* Right Header Badges: 1:30 Hour & Profile Settings */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Orange Pill Badge (1:30 Hour) */}
+          <div
+            className="fade-header"
+            onClick={() => pushView('medication-detail')}
+            style={{
+              backgroundColor: 'var(--card-peach)',
+              border: '1px solid rgba(255, 106, 67, 0.25)',
+              borderRadius: '20px',
+              padding: '4px 10px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 6px rgba(255, 106, 67, 0.08)',
+              cursor: 'pointer',
+              transition: 'transform 0.2s ease',
+            }}
+            title="Ver próxima toma"
+          >
+            <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--accent-orange)', lineHeight: 1.1 }}>
+              1:30
+            </span>
+            <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              {t('hour')}
+            </span>
+          </div>
+
+          {/* Quick Profile & Personal Settings Button */}
+          <button
+            className="fade-header"
+            onClick={() => setActiveTab('options')}
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--card-white)',
+              border: '1px solid rgba(220, 226, 230, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: 'var(--shadow-subtle)',
+              transition: 'transform 0.2s ease',
+            }}
+            title="Ajustes de Perfil"
+          >
+            <User size={17} color="var(--text-primary)" />
+          </button>
         </div>
       </div>
 

@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
-import { Home, Activity, LayoutGrid } from 'lucide-react';
+import { Home, Activity, User } from 'lucide-react';
 import { useApp, MainTab } from '@/context/AppContext';
 
 export const BottomDock: React.FC = () => {
@@ -144,10 +144,11 @@ export const BottomDock: React.FC = () => {
             justifyContent: 'center',
             transition: 'color 0.25s ease',
           }}
-          aria-label="More Options"
+          aria-label="Perfil y Ajustes"
+          title="Perfil y Ajustes"
         >
-          <LayoutGrid
-            size={20}
+          <User
+            size={21}
             color={activeTab === 'options' ? '#FFFFFF' : (theme === 'dark' ? '#8696A6' : '#4A5568')}
             strokeWidth={activeTab === 'options' ? 2.5 : 2}
           />
