@@ -12,16 +12,16 @@ import {
   Clock, 
   Timer, 
   Volume2, 
-  Moon, 
-  Heart,
-  X
+  Heart
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { JessicaAvatarSVG } from '@/components/JessicaAvatarSVG';
 
 export type RunningScreenMode = 'dashboard' | 'map' | 'timetrack';
 
 export const RunningTrackScreen: React.FC = () => {
   const { setActiveTab, showToast } = useApp();
+  // 'dashboard' = Screen 2 (Hey, Jessica), 'map' = Screen 1 (Track Activity), 'timetrack' = Screen 3 (Time Track)
   const [currentScreen, setCurrentScreen] = useState<RunningScreenMode>('dashboard');
 
   // Interactive state
@@ -38,7 +38,7 @@ export const RunningTrackScreen: React.FC = () => {
 
   const handleStartRun = () => {
     setIsTracking(true);
-    showToast('¡Sesión de Running GPS iniciada en San Diego!');
+    showToast('¡Sesión de Running GPS iniciada en San Diego! 🏃‍♂️');
   };
 
   return (
@@ -48,562 +48,11 @@ export const RunningTrackScreen: React.FC = () => {
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: '#F3F6F8',
+        backgroundColor: '#EBF3F5',
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      {/* ========================================================================= */}
-      {/* SCREEN 1: TRACK ACTIVITY (MAP VIEW)                                       */}
-      {/* ========================================================================= */}
-      {currentScreen === 'map' && (
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {/* Header */}
-          <div
-            style={{
-              padding: '52px 20px 10px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              zIndex: 30,
-            }}
-          >
-            {/* Back Button -> returns to Hey, Jessica */}
-            <button
-              onClick={() => setCurrentScreen('dashboard')}
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'transform 0.15s ease',
-              }}
-              title="Volver a Jessica Dashboard"
-            >
-              <ChevronLeft size={22} color="#1E293B" strokeWidth={2.5} />
-            </button>
-
-            {/* Title */}
-            <h1
-              style={{
-                fontSize: '17px',
-                fontWeight: 700,
-                color: '#1E293B',
-                margin: 0,
-                letterSpacing: '-0.3px',
-              }}
-            >
-              Track Activity
-            </h1>
-
-            {/* Right Action Button (Gym bag/lock) */}
-            <button
-              onClick={() => showToast('Rutas guardadas en tu casillero')}
-              style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              title="Mochila / Casillero"
-            >
-              <ShoppingBag size={18} color="#1E293B" strokeWidth={2.2} />
-            </button>
-          </div>
-
-          {/* Full Screen Vector Map Area */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 10,
-              overflow: 'hidden',
-            }}
-          >
-            {/* Map Background Image */}
-            <img
-              src="/running_map.jpg"
-              alt="Running Map"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                opacity: 0.98,
-              }}
-            />
-
-            {/* SVG Curving Dashed Route Path */}
-            <svg
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                pointerEvents: 'none',
-              }}
-            >
-              <path
-                d="M 60 520 C 100 480, 160 490, 196 420 S 230 310, 210 260 S 260 180, 310 160"
-                fill="none"
-                stroke="#1E293B"
-                strokeWidth="2.5"
-                strokeDasharray="6 6"
-                strokeLinecap="round"
-                opacity="0.85"
-              />
-              <path
-                d="M 196 420 C 160 380, 120 370, 95 340"
-                fill="none"
-                stroke="#1E293B"
-                strokeWidth="2.5"
-                strokeDasharray="6 6"
-                strokeLinecap="round"
-                opacity="0.85"
-              />
-              <path
-                d="M 196 420 C 230 450, 270 460, 305 480"
-                fill="none"
-                stroke="#1E293B"
-                strokeWidth="2.5"
-                strokeDasharray="6 6"
-                strokeLinecap="round"
-                opacity="0.85"
-              />
-            </svg>
-
-            {/* Central Radar Pulse & Red Pin Target */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                pointerEvents: 'none',
-              }}
-            >
-              {/* Radar Outer Halo */}
-              <div
-                style={{
-                  position: 'absolute',
-                  width: '180px',
-                  height: '180px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(143, 225, 244, 0.32)',
-                  border: '1.5px solid rgba(143, 225, 244, 0.65)',
-                  boxShadow: '0 0 36px rgba(143, 225, 244, 0.55)',
-                }}
-              />
-              {/* Radar Inner Circle */}
-              <div
-                style={{
-                  position: 'absolute',
-                  width: '115px',
-                  height: '115px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(143, 225, 244, 0.28)',
-                }}
-              />
-              {/* Red Map Pin with black ring and white dot */}
-              <div
-                style={{
-                  position: 'relative',
-                  width: '32px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 5,
-                  filter: 'drop-shadow(0 6px 14px rgba(239, 68, 68, 0.5))',
-                }}
-              >
-                <svg width="34" height="42" viewBox="0 0 34 42" fill="none">
-                  <path
-                    d="M17 0C7.61 0 0 7.61 0 17C0 29.75 17 42 17 42C17 42 34 29.75 34 17C34 7.61 26.39 0 17 0Z"
-                    fill="#FF4B4B"
-                  />
-                  <circle cx="17" cy="17" r="10" fill="#1E293B" />
-                  <circle cx="17" cy="17" r="5" fill="#FFFFFF" />
-                </svg>
-              </div>
-            </div>
-
-            {/* Runner Pin: Alex (Top Right) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '23%',
-                right: '18%',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#FFFFFF',
-                padding: '3px 8px 3px 3px',
-                borderRadius: '20px',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
-                zIndex: 15,
-              }}
-            >
-              <div
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  marginRight: '6px',
-                  border: '1.5px solid #FFFFFF',
-                }}
-              >
-                <img src="/avatar.jpg" alt="Alex" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <span style={{ fontSize: '12px', fontWeight: 600, color: '#1E293B' }}>Alex</span>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
-            </div>
-
-            {/* Runner Pin: Nyla (Upper Middle) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '34%',
-                left: '32%',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#FFFFFF',
-                padding: '3px 8px 3px 3px',
-                borderRadius: '20px',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
-                zIndex: 15,
-              }}
-            >
-              <div
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  marginRight: '6px',
-                  border: '1.5px solid #FFFFFF',
-                }}
-              >
-                <img src="/runner_jessica.jpg" alt="Nyla" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <span style={{ fontSize: '12px', fontWeight: 600, color: '#1E293B' }}>Nyla</span>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
-            </div>
-
-            {/* Runner Pin: James (Mid Left) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '44%',
-                left: '14%',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#FFFFFF',
-                padding: '3px 8px 3px 3px',
-                borderRadius: '20px',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
-                zIndex: 15,
-              }}
-            >
-              <div
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  marginRight: '6px',
-                  border: '1.5px solid #FFFFFF',
-                }}
-              >
-                <img src="/avatar.jpg" alt="James" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <span style={{ fontSize: '12px', fontWeight: 600, color: '#1E293B' }}>James</span>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
-            </div>
-
-            {/* Runner Pin: Neloy (Lower Right) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '55%',
-                right: '18%',
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#FFFFFF',
-                padding: '3px 8px 3px 3px',
-                borderRadius: '20px',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
-                zIndex: 15,
-              }}
-            >
-              <div
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  marginRight: '6px',
-                  border: '1.5px solid #FFFFFF',
-                }}
-              >
-                <img src="/avatar.jpg" alt="Neloy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <span style={{ fontSize: '12px', fontWeight: 600, color: '#1E293B' }}>Neloy</span>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
-            </div>
-          </div>
-
-          {/* Bottom Floating Cards Overlay (Resting cleanly right above home indicator) */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '26px',
-              left: '16px',
-              right: '16px',
-              zIndex: 35,
-              display: 'flex',
-              gap: '12px',
-            }}
-          >
-            {/* Left Card: 10 Runners & San Diego */}
-            <div
-              style={{
-                flex: 1,
-                backgroundColor: 'rgba(255, 255, 255, 0.96)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                borderRadius: '24px',
-                padding: '14px 14px 12px 14px',
-                boxShadow: '0 12px 32px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8) inset',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
-              {/* Runner Icon Chip + dotted line */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
-                    backgroundColor: '#F1F5F9',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Footprints size={15} color="#1E293B" />
-                </div>
-                {/* Dotted indicator line */}
-                <div
-                  style={{
-                    flex: 1,
-                    height: '1px',
-                    borderBottom: '1.5px dashed #CBD5E1',
-                    margin: '0 8px',
-                  }}
-                />
-              </div>
-
-              {/* Title: 10 Runners */}
-              <div style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B', marginBottom: '8px' }}>
-                10 Runners
-              </div>
-
-              {/* Overlapping Avatar Stack with 8+ badge */}
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '14px' }}>
-                <div
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    border: '2px solid #FFFFFF',
-                    overflow: 'hidden',
-                    zIndex: 4,
-                  }}
-                >
-                  <img src="/avatar.jpg" alt="r1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    border: '2px solid #FFFFFF',
-                    overflow: 'hidden',
-                    marginLeft: '-8px',
-                    zIndex: 3,
-                  }}
-                >
-                  <img src="/runner_jessica.jpg" alt="r2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    border: '2px solid #FFFFFF',
-                    overflow: 'hidden',
-                    marginLeft: '-8px',
-                    zIndex: 2,
-                  }}
-                >
-                  <img src="/timetrack_woman.jpg" alt="r3" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    border: '2px solid #FFFFFF',
-                    backgroundColor: '#1E293B',
-                    color: '#FFFFFF',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginLeft: '-8px',
-                    zIndex: 1,
-                  }}
-                >
-                  8+
-                </div>
-              </div>
-
-              {/* Bottom Location Sub-row */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  paddingTop: '8px',
-                  borderTop: '1px solid #F1F5F9',
-                }}
-              >
-                <MapPin size={13} color="#1E293B" strokeWidth={2.5} />
-                <span style={{ fontSize: '12px', fontWeight: 600, color: '#1E293B', whiteSpace: 'nowrap' }}>
-                  San Diego, CA
-                </span>
-              </div>
-            </div>
-
-            {/* Right Side: Start Now Button + Distance Card */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {/* Start Now Pill Button */}
-              <button
-                onClick={handleStartRun}
-                style={{
-                  width: '100%',
-                  height: '48px',
-                  borderRadius: '24px',
-                  backgroundColor: '#88DCF0',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  boxShadow: '0 8px 20px rgba(136, 220, 240, 0.45)',
-                  transition: 'transform 0.15s ease',
-                }}
-              >
-                <div
-                  style={{
-                    width: '22px',
-                    height: '22px',
-                    borderRadius: '50%',
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Play size={11} fill="#1E293B" color="#1E293B" style={{ marginLeft: '1px' }} />
-                </div>
-                <span style={{ fontSize: '15px', fontWeight: 700, color: '#1E293B' }}>
-                  Start Now
-                </span>
-              </button>
-
-              {/* Distance Card */}
-              <div
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.96)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  borderRadius: '24px',
-                  padding: '14px 16px',
-                  boxShadow: '0 12px 32px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8) inset',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                  <MapPin size={14} color="#1E293B" strokeWidth={2.5} />
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#1E293B' }}>
-                    Distance
-                  </span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', marginBottom: '2px' }}>
-                  <span style={{ fontSize: '24px', fontWeight: 800, color: '#1E293B', letterSpacing: '-0.5px' }}>
-                    {distance}
-                  </span>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748B' }}>
-                    km
-                  </span>
-                </div>
-
-                <div style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 500 }}>
-                  Route Covered
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* iOS Home Indicator Bar */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '134px',
-              height: '4px',
-              backgroundColor: '#1E293B',
-              borderRadius: '10px',
-              zIndex: 40,
-            }}
-          />
-        </div>
-      )}
-
       {/* ========================================================================= */}
       {/* SCREEN 2: HEY, JESSICA (MAIN RUNNING DASHBOARD)                           */}
       {/* ========================================================================= */}
@@ -615,59 +64,52 @@ export const RunningTrackScreen: React.FC = () => {
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: '#F5F8FA',
+            overflow: 'hidden',
           }}
         >
-          {/* Header Row: Illustrated Avatar + 124k kal Pill, Right Dial Button */}
+          {/* Header Bar: Avatar + 124k kal pill on Left, Dark Dial on Right */}
           <div
             style={{
-              padding: '52px 20px 8px 20px',
+              padding: '52px 20px 6px 20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              zIndex: 20,
+              zIndex: 30,
             }}
           >
-            {/* Left: Avatar + Calories Pill */}
+            {/* Left: Jessica 3D Avatar + 124k kal Pill */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {/* Illustrated Avatar with glasses */}
               <div
-                onClick={() => setActiveTab('home')}
                 style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '38px',
+                  height: '38px',
                   borderRadius: '50%',
                   overflow: 'hidden',
-                  border: '2px solid #FFFFFF',
-                  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.08)',
-                  background: 'linear-gradient(135deg, #FFD166 0%, #F78C6B 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(15, 23, 42, 0.1)',
                   cursor: 'pointer',
+                  border: '1.5px solid #FFFFFF',
+                  flexShrink: 0,
                 }}
-                title="Volver a Inicio"
+                onClick={() => showToast('Perfil de Jessica')}
+                title="Jessica"
               >
-                <img
-                  src="/avatar.jpg"
-                  alt="Jessica"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
+                <JessicaAvatarSVG size={38} />
               </div>
 
               {/* 124k kal Pill */}
               <div
                 style={{
                   backgroundColor: '#FFFFFF',
-                  padding: '7px 14px',
-                  borderRadius: '24px',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+                  padding: '5px 12px',
+                  borderRadius: '20px',
+                  boxShadow: '0 3px 10px rgba(15, 23, 42, 0.05)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px',
+                  border: '1px solid rgba(255, 255, 255, 0.9)',
                 }}
               >
-                <span style={{ fontSize: '14px', fontWeight: 700, color: '#1E293B' }}>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', letterSpacing: '-0.2px' }}>
                   124k
                 </span>
                 <span style={{ fontSize: '11px', fontWeight: 500, color: '#94A3B8' }}>
@@ -676,12 +118,12 @@ export const RunningTrackScreen: React.FC = () => {
               </div>
             </div>
 
-            {/* Right: Dark Circular Button with crescent/dial */}
+            {/* Right: Dark Circular Button with Crescent Dial */}
             <button
-              onClick={() => showToast('Modo concentración activo')}
+              onClick={() => showToast('Temporizador rápido activo 🌙')}
               style={{
-                width: '42px',
-                height: '42px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '50%',
                 backgroundColor: '#1E2024',
                 border: 'none',
@@ -689,33 +131,43 @@ export const RunningTrackScreen: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)',
               }}
               title="Modo / Timer"
             >
-              <Moon size={18} color="#FFFFFF" fill="#FFFFFF" />
+              {/* Crescent dial graphic matching mockup */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.3)" strokeWidth="2.5" />
+                <path
+                  d="M12 3A9 9 0 0 1 21 12"
+                  stroke="#FFFFFF"
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                />
+                <circle cx="12" cy="12" r="3" fill="#FFFFFF" />
+              </svg>
             </button>
           </div>
 
           {/* Title Area: Hey, Jessica + Subtitle + Right Start Button */}
           <div
             style={{
-              padding: '12px 20px 8px 20px',
+              padding: '6px 20px 0 20px',
               display: 'flex',
               alignItems: 'flex-start',
               justifyContent: 'space-between',
-              zIndex: 20,
+              zIndex: 30,
             }}
           >
-            {/* Title & Subtitle */}
-            <div style={{ maxWidth: '230px' }}>
+            <div>
               <h1
                 style={{
-                  fontSize: '28px',
+                  fontSize: '25px',
                   fontWeight: 800,
-                  color: '#111827',
-                  margin: '0 0 6px 0',
+                  color: '#0F172A',
+                  margin: '0 0 4px 0',
                   letterSpacing: '-0.6px',
+                  lineHeight: 1.15,
                 }}
               >
                 Hey, Jessica
@@ -723,136 +175,152 @@ export const RunningTrackScreen: React.FC = () => {
               <p
                 style={{
                   fontSize: '12.5px',
-                  lineHeight: '1.4',
-                  color: '#6B7280',
+                  color: '#64748B',
                   margin: 0,
+                  maxWidth: '200px',
+                  lineHeight: 1.35,
                   fontWeight: 500,
                 }}
               >
-                Crush today's workout goals and celebrate every strong step.
+                Crush today&apos;s workout goals and celebrate every strong step.
               </p>
             </div>
 
-            {/* Right Pill Button: ▶ Start (switches to Screen 1 Map) */}
+            {/* White Start Pill Button (Navigates to Screen 1: Track Activity Map) */}
             <button
               onClick={() => setCurrentScreen('map')}
               style={{
                 backgroundColor: '#FFFFFF',
                 borderRadius: '24px',
-                padding: '9px 16px',
-                border: 'none',
-                cursor: 'pointer',
+                padding: '7px 15px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.9)',
+                cursor: 'pointer',
                 marginTop: '4px',
+                transition: 'transform 0.15s ease',
               }}
-              title="Abrir mapa de running"
+              title="Ir a mapa de running"
             >
-              <Play size={12} fill="#111827" color="#111827" />
-              <span style={{ fontSize: '13px', fontWeight: 700, color: '#111827' }}>
+              <div
+                style={{
+                  width: '0',
+                  height: '0',
+                  borderTop: '4.5px solid transparent',
+                  borderBottom: '4.5px solid transparent',
+                  borderLeft: '7.5px solid #0F172A',
+                }}
+              />
+              <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>
                 Start
               </span>
             </button>
           </div>
 
-          {/* Hero Athlete Image (Jessica in high afro ponytail & mint leggings) */}
+          {/* Hero Section: Runner Athlete + Floating 20 Min Badge */}
           <div
             style={{
               position: 'relative',
               flex: 1,
-              width: '100%',
+              minHeight: 0,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              overflow: 'hidden',
               marginTop: '-10px',
             }}
           >
+            {/* Athlete Photo (Clean, high-res photograph with matching pale cyan background) */}
             <img
-              src="/runner_jessica.jpg"
-              alt="Jessica Running"
+              src="/runner_jessica_clean_bg.jpg"
+              alt="Jessica Running Athlete"
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center 15%',
+                objectFit: 'contain',
+                objectPosition: 'center 35%',
+                display: 'block',
+                pointerEvents: 'none',
               }}
             />
 
-            {/* Floating Badge: ⏱ 20 Min */}
+            {/* Floating 20 Min Badge on athlete's left */}
             <div
               style={{
                 position: 'absolute',
-                top: '32%',
+                top: '28%',
                 left: '20px',
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                borderRadius: '24px',
-                padding: '8px 14px',
-                boxShadow: '0 8px 24px rgba(15, 23, 42, 0.12)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                padding: '6px 12px 6px 9px',
+                borderRadius: '22px',
+                boxShadow: '0 6px 18px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                zIndex: 15,
+                zIndex: 25,
               }}
             >
-              <Clock size={16} color="#1E293B" strokeWidth={2.5} />
-              <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                <span style={{ fontSize: '15px', fontWeight: 800, color: '#1E293B' }}>
+              {/* Stopwatch icon in dark circle */}
+              <div
+                style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
+                  backgroundColor: '#0F172A',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Clock size={13} color="#FFFFFF" strokeWidth={2.5} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '13.5px', fontWeight: 800, color: '#0F172A', lineHeight: 1.1 }}>
                   20
                 </span>
-                <span style={{ fontSize: '9px', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '10px', fontWeight: 600, color: '#94A3B8', lineHeight: 1 }}>
                   Min
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Bottom Frosted Glass Card: Active Stats (Resting directly above home indicator) */}
+          {/* Bottom Card: Frosted Glass Container with Active Stats */}
           <div
             style={{
-              position: 'absolute',
-              bottom: '26px',
-              left: '14px',
-              right: '14px',
-              backgroundColor: 'rgba(255, 255, 255, 0.82)',
+              position: 'relative',
+              backgroundColor: 'rgba(255, 255, 255, 0.72)',
               backdropFilter: 'blur(28px)',
               WebkitBackdropFilter: 'blur(28px)',
-              borderRadius: '32px',
-              padding: '16px 16px 16px 16px',
-              boxShadow: '0 20px 48px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9) inset',
-              zIndex: 30,
+              borderRadius: '32px 32px 0 0',
+              padding: '16px 20px 88px 20px',
+              boxShadow: '0 -10px 32px rgba(15, 23, 42, 0.06), 0 -1px 0 rgba(255, 255, 255, 0.8) inset',
+              zIndex: 35,
+              flexShrink: 0,
             }}
           >
-            {/* Row Title: Active Stats + Light Blue Arrow Button (switches to Screen 3 Time Track) */}
+            {/* Top Row: Active Stats heading + Cyan Circle Arrow Button */}
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                marginBottom: '14px',
+                marginBottom: '12px',
               }}
             >
-              <h2
-                style={{
-                  fontSize: '17px',
-                  fontWeight: 700,
-                  color: '#111827',
-                  margin: 0,
-                  letterSpacing: '-0.3px',
-                }}
-              >
+              <span style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.3px' }}>
                 Active Stats
-              </h2>
+              </span>
 
+              {/* Cyan Circle Arrow Button (Navigates to Screen 3: Time Track) */}
               <button
                 onClick={() => setCurrentScreen('timetrack')}
                 style={{
-                  width: '34px',
-                  height: '34px',
+                  width: '38px',
+                  height: '38px',
                   borderRadius: '50%',
                   backgroundColor: '#88DCF0',
                   border: 'none',
@@ -860,17 +328,17 @@ export const RunningTrackScreen: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(136, 220, 240, 0.4)',
+                  boxShadow: '0 4px 14px rgba(136, 220, 240, 0.45)',
                   transition: 'transform 0.15s ease',
                 }}
                 title="Ver Time Track y Rondas"
               >
-                <ArrowRight size={16} color="#111827" strokeWidth={2.5} />
+                <ArrowRight size={17} color="#0F172A" strokeWidth={2.8} />
               </button>
             </div>
 
-            {/* Two Side-by-Side Stat Cards */}
-            <div style={{ display: 'flex', gap: '10px' }}>
+            {/* Stat Cards Row: Calories & Steps */}
+            <div style={{ display: 'flex', gap: '12px' }}>
               {/* Card 1: Calories */}
               <div
                 style={{
@@ -878,33 +346,20 @@ export const RunningTrackScreen: React.FC = () => {
                   backgroundColor: '#FFFFFF',
                   borderRadius: '22px',
                   padding: '12px 14px',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)',
+                  boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                  <div
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      backgroundColor: '#1E293B',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Flame size={13} color="#FFFFFF" fill="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#1E293B' }}>
+                  <Flame size={15} color="#0F172A" strokeWidth={2.5} />
+                  <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#475569' }}>
                     Calories
                   </span>
                 </div>
-
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                  <span style={{ fontSize: '22px', fontWeight: 800, color: '#111827', letterSpacing: '-0.5px' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.3px' }}>
                     250
                   </span>
-                  <span style={{ fontSize: '12px', fontWeight: 500, color: '#94A3B8' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#94A3B8' }}>
                     kcal
                   </span>
                 </div>
@@ -917,59 +372,436 @@ export const RunningTrackScreen: React.FC = () => {
                   backgroundColor: '#FFFFFF',
                   borderRadius: '22px',
                   padding: '12px 14px',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)',
+                  boxShadow: '0 4px 14px rgba(15, 23, 42, 0.04)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                  <div
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      backgroundColor: '#1E293B',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Footprints size={13} color="#FFFFFF" />
-                  </div>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#1E293B' }}>
+                  <Footprints size={15} color="#0F172A" strokeWidth={2.5} />
+                  <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#475569' }}>
                     Steps
                   </span>
                 </div>
-
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                  <span style={{ fontSize: '20px', fontWeight: 800, color: '#111827', letterSpacing: '-0.5px' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.3px' }}>
                     10,345
                   </span>
-                  <span style={{ fontSize: '12px', fontWeight: 500, color: '#94A3B8' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#94A3B8' }}>
                     steps
                   </span>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* iOS Home Indicator Bar */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '134px',
-              height: '4px',
-              backgroundColor: '#1E293B',
-              borderRadius: '10px',
-              zIndex: 40,
-            }}
-          />
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* SCREEN 3: TIME TRACK (ROUNDS & SMARTWATCH HEART RATE)                     */}
+      {/* SCREEN 1: TRACK ACTIVITY (MAP VIEW)                                       */}
+      {/* ========================================================================= */}
+      {currentScreen === 'map' && (
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Background Vector Map */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 1,
+            }}
+          >
+            <img
+              src="/running_map_hero.jpg"
+              alt="Roadmap"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block',
+              }}
+            />
+
+            {/* Radar Pulse in Center Area */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '49%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '180px',
+                height: '180px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(136, 220, 240, 0.28)',
+                border: '1.5px solid rgba(136, 220, 240, 0.65)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                pointerEvents: 'none',
+              }}
+            >
+              <div
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(136, 220, 240, 0.4)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {/* Red Pin Location Indicator */}
+                <div
+                  style={{
+                    width: '32px',
+                    height: '38px',
+                    filter: 'drop-shadow(0 4px 10px rgba(239, 68, 68, 0.4))',
+                  }}
+                >
+                  <svg width="32" height="38" viewBox="0 0 34 42" fill="none">
+                    <path
+                      d="M17 0C7.61 0 0 7.61 0 17C0 29.75 17 42 17 42C17 42 34 29.75 34 17C34 7.61 26.39 0 17 0Z"
+                      fill="#FF4B4B"
+                    />
+                    <circle cx="17" cy="17" r="9" fill="#0F172A" />
+                    <circle cx="17" cy="17" r="4.5" fill="#FFFFFF" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Runner Pin: Alex (Top Right) */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '20%',
+                right: '15%',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#FFFFFF',
+                padding: '3px 8px 3px 3px',
+                borderRadius: '20px',
+                boxShadow: '0 4px 12px rgba(15, 23, 42, 0.12)',
+                zIndex: 10,
+              }}
+            >
+              <img
+                src="/avatar.jpg"
+                alt="Alex"
+                style={{ width: '22px', height: '22px', borderRadius: '50%', marginRight: '5px', objectFit: 'cover' }}
+              />
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A' }}>Alex</span>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
+            </div>
+
+            {/* Runner Pin: Nyla (Center Left) */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '32%',
+                left: '28%',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#FFFFFF',
+                padding: '3px 8px 3px 3px',
+                borderRadius: '20px',
+                boxShadow: '0 4px 12px rgba(15, 23, 42, 0.12)',
+                zIndex: 10,
+              }}
+            >
+              <div style={{ width: '22px', height: '22px', borderRadius: '50%', marginRight: '5px', overflow: 'hidden' }}>
+                <JessicaAvatarSVG size={22} />
+              </div>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A' }}>Nyla</span>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
+            </div>
+
+            {/* Runner Pin: James (Mid Left) */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '42%',
+                left: '10%',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#FFFFFF',
+                padding: '3px 8px 3px 3px',
+                borderRadius: '20px',
+                boxShadow: '0 4px 12px rgba(15, 23, 42, 0.12)',
+                zIndex: 10,
+              }}
+            >
+              <img
+                src="/hero_athlete.jpg"
+                alt="James"
+                style={{ width: '22px', height: '22px', borderRadius: '50%', marginRight: '5px', objectFit: 'cover' }}
+              />
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A' }}>James</span>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
+            </div>
+
+            {/* Runner Pin: Neloy (Lower Right) */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '52%',
+                right: '12%',
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#FFFFFF',
+                padding: '3px 8px 3px 3px',
+                borderRadius: '20px',
+                boxShadow: '0 4px 12px rgba(15, 23, 42, 0.12)',
+                zIndex: 10,
+              }}
+            >
+              <img
+                src="/trainer_squat.jpg"
+                alt="Neloy"
+                style={{ width: '22px', height: '22px', borderRadius: '50%', marginRight: '5px', objectFit: 'cover' }}
+              />
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A' }}>Neloy</span>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#FF4B4B', marginLeft: '5px' }} />
+            </div>
+          </div>
+
+          {/* Top Header: Back button + Track Activity + Gym bag */}
+          <div
+            style={{
+              padding: '52px 20px 10px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              zIndex: 30,
+              position: 'relative',
+            }}
+          >
+            {/* Back Button -> returns to Hey, Jessica */}
+            <button
+              onClick={() => setCurrentScreen('dashboard')}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.1)',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'transform 0.15s ease',
+              }}
+              title="Volver a Jessica"
+            >
+              <ChevronLeft size={20} color="#0F172A" strokeWidth={2.5} />
+            </button>
+
+            <h1
+              style={{
+                fontSize: '17px',
+                fontWeight: 700,
+                color: '#0F172A',
+                margin: 0,
+                letterSpacing: '-0.3px',
+              }}
+            >
+              Track Activity
+            </h1>
+
+            {/* Right Gym Bag Button */}
+            <button
+              onClick={() => showToast('Mochila de actividad abierta')}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.1)',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title="Casillero"
+            >
+              <ShoppingBag size={17} color="#0F172A" strokeWidth={2.2} />
+            </button>
+          </div>
+
+          {/* Spacer to push floating cards to bottom */}
+          <div style={{ flex: 1 }} />
+
+          {/* Bottom Floating Cards Row (Above BottomDock) */}
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 30,
+              padding: '0 16px 85px 16px',
+              display: 'flex',
+              gap: '12px',
+            }}
+          >
+            {/* Left Card: 10 Runners & San Diego */}
+            <div
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(255, 255, 255, 0.96)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                borderRadius: '24px',
+                padding: '14px',
+                boxShadow: '0 10px 28px rgba(15, 23, 42, 0.12)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <div
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    backgroundColor: '#F1F5F9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Footprints size={14} color="#0F172A" />
+                </div>
+                <div style={{ flex: 1, borderBottom: '1.5px dashed #CBD5E1', margin: '0 8px' }} />
+              </div>
+
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#0F172A', marginBottom: '8px' }}>
+                10 Runners
+              </div>
+
+              {/* Avatar Stack with 8+ */}
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <img
+                  src="/avatar.jpg"
+                  alt="Runner"
+                  style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #FFFFFF', zIndex: 3, objectFit: 'cover' }}
+                />
+                <img
+                  src="/hero_athlete.jpg"
+                  alt="Runner"
+                  style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #FFFFFF', marginLeft: '-6px', zIndex: 2, objectFit: 'cover' }}
+                />
+                <div
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    border: '2px solid #FFFFFF',
+                    backgroundColor: '#0F172A',
+                    color: '#FFFFFF',
+                    fontSize: '9.5px',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: '-6px',
+                    zIndex: 1,
+                  }}
+                >
+                  8+
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', paddingTop: '6px', borderTop: '1px solid #F1F5F9' }}>
+                <MapPin size={13} color="#0F172A" strokeWidth={2.5} />
+                <span style={{ fontSize: '11.5px', fontWeight: 600, color: '#0F172A' }}>
+                  San Diego, CA
+                </span>
+              </div>
+            </div>
+
+            {/* Right Side: Start Now Button + Distance Card */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {/* Start Now Pill Button */}
+              <button
+                onClick={handleStartRun}
+                style={{
+                  width: '100%',
+                  height: '46px',
+                  borderRadius: '24px',
+                  backgroundColor: '#88DCF0',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 6px 18px rgba(136, 220, 240, 0.45)',
+                  transition: 'transform 0.15s ease',
+                }}
+              >
+                <div
+                  style={{
+                    width: '22px',
+                    height: '22px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255, 255, 255, 0.45)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Play size={10} fill="#0F172A" color="#0F172A" style={{ marginLeft: '1px' }} />
+                </div>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#0F172A' }}>
+                  Start Now
+                </span>
+              </button>
+
+              {/* Distance Card */}
+              <div
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.96)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  borderRadius: '24px',
+                  padding: '12px 14px',
+                  boxShadow: '0 10px 28px rgba(15, 23, 42, 0.12)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                  <MapPin size={13} color="#0F172A" strokeWidth={2.5} />
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#0F172A' }}>
+                    Distance
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', marginBottom: '2px' }}>
+                  <span style={{ fontSize: '22px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.5px' }}>
+                    {distance}
+                  </span>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>
+                    km
+                  </span>
+                </div>
+                <div style={{ fontSize: '10.5px', color: '#94A3B8', fontWeight: 500 }}>
+                  Route Covered
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SCREEN 3: TIME TRACK (INTERVALS & SMARTWATCH HEART PULSE)                 */}
       {/* ========================================================================= */}
       {currentScreen === 'timetrack' && (
         <div
@@ -979,28 +811,76 @@ export const RunningTrackScreen: React.FC = () => {
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: '#F5F8FA',
+            overflow: 'hidden',
           }}
         >
-          {/* Header */}
+          {/* Hero Athlete Image (Woman with smartwatch & glowing holographic heart) */}
           <div
             style={{
-              padding: '52px 20px 8px 20px',
+              position: 'absolute',
+              top: '95px',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1,
+            }}
+          >
+            <img
+              src="/timetrack_woman_hero.jpg"
+              alt="Athlete with Smartwatch"
+              style={{
+                width: '100%',
+                height: '56%',
+                objectFit: 'cover',
+                objectPosition: 'center 12%',
+                display: 'block',
+              }}
+            />
+
+            {/* Floating Badge on Right: Heart 70 */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '26%',
+                right: '20px',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                padding: '6px 14px',
+                borderRadius: '22px',
+                boxShadow: '0 6px 20px rgba(15, 23, 42, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                zIndex: 15,
+              }}
+            >
+              <Heart size={15} color="#EF4444" fill="#EF4444" />
+              <span style={{ fontSize: '15px', fontWeight: 800, color: '#0F172A' }}>
+                70
+              </span>
+            </div>
+          </div>
+
+          {/* Top Header: Back button + Time Track + Gym bag */}
+          <div
+            style={{
+              padding: '52px 20px 10px 20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               zIndex: 30,
+              position: 'relative',
             }}
           >
-            {/* Back Button -> returns to Hey, Jessica */}
             <button
               onClick={() => setCurrentScreen('dashboard')}
               style={{
-                width: '42px',
-                height: '42px',
+                width: '40px',
+                height: '40px',
                 borderRadius: '50%',
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.1)',
                 border: 'none',
                 cursor: 'pointer',
                 display: 'flex',
@@ -1008,17 +888,16 @@ export const RunningTrackScreen: React.FC = () => {
                 justifyContent: 'center',
                 transition: 'transform 0.15s ease',
               }}
-              title="Volver a Jessica Dashboard"
+              title="Volver a Jessica"
             >
-              <ChevronLeft size={22} color="#1E293B" strokeWidth={2.5} />
+              <ChevronLeft size={20} color="#0F172A" strokeWidth={2.5} />
             </button>
 
-            {/* Title */}
             <h1
               style={{
                 fontSize: '17px',
                 fontWeight: 700,
-                color: '#1E293B',
+                color: '#0F172A',
                 margin: 0,
                 letterSpacing: '-0.3px',
               }}
@@ -1026,164 +905,99 @@ export const RunningTrackScreen: React.FC = () => {
               Time Track
             </h1>
 
-            {/* Right Action Button (Gym bag/lock) */}
             <button
               onClick={() => showToast('Configuraciones guardadas')}
               style={{
-                width: '42px',
-                height: '42px',
+                width: '40px',
+                height: '40px',
                 borderRadius: '50%',
                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.1)',
                 border: 'none',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              title="Mochila / Casillero"
+              title="Ajustes"
             >
-              <ShoppingBag size={18} color="#1E293B" strokeWidth={2.2} />
+              <ShoppingBag size={17} color="#0F172A" strokeWidth={2.2} />
             </button>
           </div>
 
-          {/* Hero Athlete Image (Woman smiling with hand on chest & Smartwatch) */}
+          {/* Spacer */}
+          <div style={{ flex: 1 }} />
+
+          {/* Bottom Frosted Container: Rounds Selector + 3 Row Cards */}
           <div
             style={{
               position: 'relative',
-              width: '100%',
-              height: '48%',
-              overflow: 'hidden',
-              marginTop: '-10px',
-            }}
-          >
-            <img
-              src="/timetrack_woman.jpg"
-              alt="Athlete Time Track"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center 20%',
-              }}
-            />
-
-            {/* Glowing Heart Rate Hologram over Smartwatch */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '58%',
-                right: '25%',
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(239, 68, 68, 0.25)',
-                border: '1.5px solid rgba(239, 68, 68, 0.7)',
-                boxShadow: '0 0 16px rgba(239, 68, 68, 0.65)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                pointerEvents: 'none',
-              }}
-            >
-              <Heart size={18} color="#FF3B30" fill="#FF3B30" />
-            </div>
-
-            {/* Floating Heart Rate Badge: ❤️ 70 */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '22%',
-                right: '22px',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                borderRadius: '24px',
-                padding: '6px 12px',
-                boxShadow: '0 6px 20px rgba(0, 0, 0, 0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                zIndex: 15,
-              }}
-            >
-              <Heart size={14} color="#FF3B30" fill="#FF3B30" />
-              <span style={{ fontSize: '15px', fontWeight: 800, color: '#1E293B' }}>
-                70
-              </span>
-            </div>
-          </div>
-
-          {/* Bottom Frosted Glass Card: Rounds & Time Intervals (Resting directly above home indicator) */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '26px',
-              left: '14px',
-              right: '14px',
-              backgroundColor: 'rgba(255, 255, 255, 0.88)',
+              backgroundColor: 'rgba(255, 255, 255, 0.82)',
               backdropFilter: 'blur(28px)',
               WebkitBackdropFilter: 'blur(28px)',
-              borderRadius: '34px',
-              padding: '16px 16px 16px 16px',
-              boxShadow: '0 20px 48px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9) inset',
+              borderRadius: '32px 32px 0 0',
+              padding: '14px 20px 85px 20px',
+              boxShadow: '0 -10px 32px rgba(15, 23, 42, 0.08)',
               zIndex: 30,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
             }}
           >
-            {/* Top Pill Header: ⏱ Rounds */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+            {/* Center Pill: Rounds */}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <div
                 style={{
                   backgroundColor: '#FFFFFF',
-                  borderRadius: '20px',
                   padding: '5px 14px',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                  borderRadius: '16px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
+                  boxShadow: '0 2px 8px rgba(15, 23, 42, 0.06)',
                 }}
               >
-                <Clock size={13} color="#1E293B" strokeWidth={2.5} />
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#1E293B' }}>
+                <Timer size={13} color="#0F172A" />
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#0F172A' }}>
                   Rounds
                 </span>
               </div>
             </div>
 
-            {/* Number Selector Row: 10  20  [30]  40  50 */}
+            {/* Rounds Selector: 10 | 20 | [ 30 ] | 40 | 50 */}
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '0 8px',
-                marginBottom: '16px',
+                alignItems: 'center',
+                padding: '4px 6px',
+                marginBottom: '4px',
               }}
             >
               {[10, 20, 30, 40, 50].map((round) => {
-                const isSelected = selectedRound === round;
+                const isSelected = round === selectedRound;
                 return (
                   <button
                     key={round}
                     onClick={() => {
                       setSelectedRound(round);
-                      showToast(`Seleccionado: ${round} Rondas`);
+                      showToast(`Seleccionadas: ${round} Rondas`);
                     }}
                     style={{
-                      border: 'none',
+                      width: '46px',
+                      height: '38px',
+                      borderRadius: isSelected ? '14px' : '10px',
                       backgroundColor: isSelected ? '#88DCF0' : 'transparent',
-                      color: isSelected ? '#1E293B' : '#94A3B8',
-                      fontSize: '15px',
+                      color: '#0F172A',
                       fontWeight: isSelected ? 800 : 600,
-                      width: isSelected ? '46px' : '36px',
-                      height: '34px',
-                      borderRadius: '17px',
+                      fontSize: '14px',
+                      border: 'none',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                      boxShadow: isSelected ? '0 4px 14px rgba(136, 220, 240, 0.5)' : 'none',
+                      boxShadow: isSelected ? '0 4px 12px rgba(136, 220, 240, 0.5)' : 'none',
+                      transition: 'all 0.2s ease',
                     }}
                   >
                     {round}
@@ -1192,182 +1006,154 @@ export const RunningTrackScreen: React.FC = () => {
               })}
             </div>
 
-            {/* Setting List Rows */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {/* Row 1: 2 min 25 sec / Active Duration */}
-              <div
-                onClick={() => showToast('Ajustar duración activa')}
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '20px',
-                  padding: '10px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      backgroundColor: '#1E293B',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Timer size={14} color="#FFFFFF" />
+            {/* Row 1: Active Duration */}
+            <div
+              onClick={() => showToast('Ajustar duración activa')}
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '18px',
+                padding: '11px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                boxShadow: '0 3px 10px rgba(15, 23, 42, 0.04)',
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Clock size={16} color="#0F172A" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', lineHeight: 1.15 }}>
+                    2 min 25 sec
                   </div>
-                  <div>
-                    <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#1E293B' }}>
-                      2 min 25 sec
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 500 }}>
-                      Active Duration
-                    </div>
+                  <div style={{ fontSize: '10.5px', color: '#94A3B8', fontWeight: 500 }}>
+                    Active Duration
                   </div>
-                </div>
-                <div
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    backgroundColor: '#F1F5F9',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <ArrowRight size={13} color="#1E293B" strokeWidth={2.5} />
                 </div>
               </div>
+              <ArrowRight size={14} color="#0F172A" />
+            </div>
 
-              {/* Row 2: 30 sec / Recovery Time */}
-              <div
-                onClick={() => showToast('Ajustar tiempo de recuperación')}
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '20px',
-                  padding: '10px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      backgroundColor: '#1E293B',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Clock size={14} color="#FFFFFF" />
+            {/* Row 2: Recovery Time */}
+            <div
+              onClick={() => showToast('Ajustar tiempo de recuperación')}
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '18px',
+                padding: '11px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                boxShadow: '0 3px 10px rgba(15, 23, 42, 0.04)',
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Timer size={16} color="#0F172A" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', lineHeight: 1.15 }}>
+                    30 sec
                   </div>
-                  <div>
-                    <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#1E293B' }}>
-                      30 sec
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 500 }}>
-                      Recovery Time
-                    </div>
+                  <div style={{ fontSize: '10.5px', color: '#94A3B8', fontWeight: 500 }}>
+                    Recovery Time
                   </div>
-                </div>
-                <div
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    backgroundColor: '#F1F5F9',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <ArrowRight size={13} color="#1E293B" strokeWidth={2.5} />
                 </div>
               </div>
+              <ArrowRight size={14} color="#0F172A" />
+            </div>
 
-              {/* Row 3: Alert Sound / Timer Alert */}
-              <div
-                onClick={() => showToast('Sonido de alerta: Campana')}
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '20px',
-                  padding: '10px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-                  cursor: 'pointer',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      backgroundColor: '#1E293B',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Volume2 size={14} color="#FFFFFF" />
+            {/* Row 3: Alert Sound */}
+            <div
+              onClick={() => showToast('Alerta de sonido activada: Ding 🔔')}
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '18px',
+                padding: '11px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                boxShadow: '0 3px 10px rgba(15, 23, 42, 0.04)',
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Volume2 size={16} color="#0F172A" />
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 800, color: '#0F172A', lineHeight: 1.15 }}>
+                    Alert Sound
                   </div>
-                  <div>
-                    <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#1E293B' }}>
-                      Alert Sound
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 500 }}>
-                      Timer Alert
-                    </div>
+                  <div style={{ fontSize: '10.5px', color: '#94A3B8', fontWeight: 500 }}>
+                    Timer Alert
                   </div>
-                </div>
-                <div
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    borderRadius: '50%',
-                    backgroundColor: '#F1F5F9',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <ArrowRight size={13} color="#1E293B" strokeWidth={2.5} />
                 </div>
               </div>
+              <ArrowRight size={14} color="#0F172A" />
             </div>
           </div>
-
-          {/* iOS Home Indicator Bar */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '134px',
-              height: '4px',
-              backgroundColor: '#1E293B',
-              borderRadius: '10px',
-              zIndex: 40,
-            }}
-          />
         </div>
       )}
+
+      {/* Subtle Native iOS Page Dots (Positioned right above the BottomDock) */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '76px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 55,
+          display: 'flex',
+          gap: '6px',
+          alignItems: 'center',
+          pointerEvents: 'auto',
+          backgroundColor: 'rgba(255, 255, 255, 0.65)',
+          backdropFilter: 'blur(10px)',
+          padding: '4px 8px',
+          borderRadius: '12px',
+        }}
+      >
+        <button
+          onClick={() => setCurrentScreen('map')}
+          style={{
+            width: currentScreen === 'map' ? '16px' : '6px',
+            height: '6px',
+            borderRadius: '4px',
+            backgroundColor: currentScreen === 'map' ? '#0F172A' : '#CBD5E1',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+            transition: 'all 0.25s ease',
+          }}
+          title="Track Activity (Mapa)"
+        />
+        <button
+          onClick={() => setCurrentScreen('dashboard')}
+          style={{
+            width: currentScreen === 'dashboard' ? '16px' : '6px',
+            height: '6px',
+            borderRadius: '4px',
+            backgroundColor: currentScreen === 'dashboard' ? '#0F172A' : '#CBD5E1',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+            transition: 'all 0.25s ease',
+          }}
+          title="Hey, Jessica"
+        />
+        <button
+          onClick={() => setCurrentScreen('timetrack')}
+          style={{
+            width: currentScreen === 'timetrack' ? '16px' : '6px',
+            height: '6px',
+            borderRadius: '4px',
+            backgroundColor: currentScreen === 'timetrack' ? '#0F172A' : '#CBD5E1',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+            transition: 'all 0.25s ease',
+          }}
+          title="Time Track"
+        />
+      </div>
     </div>
   );
 };

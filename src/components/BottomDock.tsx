@@ -30,7 +30,7 @@ const RunnerIcon: React.FC<{ size?: number; color?: string; strokeWidth?: number
 
 export const BottomDock: React.FC = () => {
   const { activeTab, setActiveTab, activeSubView, pushView, theme } = useApp();
-  const isDockHidden = Boolean(activeSubView || activeTab === 'running');
+  const isDockHidden = Boolean(activeSubView);
 
   return (
     <div

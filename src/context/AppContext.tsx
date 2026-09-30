@@ -390,7 +390,7 @@ const initialDiary: DiaryEntry[] = [
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [activeTab, setActiveTabState] = useState<MainTab>('home');
+  const [activeTab, setActiveTabState] = useState<MainTab>('running');
   const [navigationStack, setNavigationStack] = useState<SubView[]>([]);
   const [profile, setProfile] = useState<PatientProfile>(defaultProfile);
   const [adherenceRate, setAdherenceRate] = useState<number>(65);
