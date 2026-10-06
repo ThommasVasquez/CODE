@@ -117,36 +117,51 @@ function AppContent() {
           }}
         />
 
-        {/* Hardware Side Buttons */}
+        {/* Hardware Side Buttons (Action button, Volume up/down, Side power button) */}
         <div
+          className="hardware-side-button"
           style={{
             position: 'absolute',
-            left: '-14px',
+            left: '-8.5px',
             top: '18%',
             width: '3.5px',
-            height: '5.8%',
+            height: '4.5%',
             backgroundColor: '#353940',
             borderRadius: '3px 0 0 3px',
           }}
         />
         <div
+          className="hardware-side-button"
           style={{
             position: 'absolute',
-            left: '-14px',
-            top: '25%',
+            left: '-8.5px',
+            top: '24%',
             width: '3.5px',
-            height: '5.8%',
+            height: '6.2%',
             backgroundColor: '#353940',
             borderRadius: '3px 0 0 3px',
           }}
         />
         <div
+          className="hardware-side-button"
           style={{
             position: 'absolute',
-            right: '-14px',
-            top: '21%',
+            left: '-8.5px',
+            top: '31.5%',
             width: '3.5px',
-            height: '9%',
+            height: '6.2%',
+            backgroundColor: '#353940',
+            borderRadius: '3px 0 0 3px',
+          }}
+        />
+        <div
+          className="hardware-side-button"
+          style={{
+            position: 'absolute',
+            right: '-8.5px',
+            top: '22%',
+            width: '3.5px',
+            height: '9.5%',
             backgroundColor: '#353940',
             borderRadius: '0 3px 3px 0',
           }}

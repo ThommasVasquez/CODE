@@ -199,18 +199,19 @@ input[type="range"]::-webkit-slider-thumb:active {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Device Shell Styles */
+/* Device Shell Styles: Exact iPhone 15 / 16 (393px × 852px screen + 11px bezel) */
+:root {
+  --iphone-h: min(874px, 90vh, calc((100vw - 32px) / 0.474828));
+}
+
 .iphone-frame {
-  height: 90vh;
-  max-height: 90vh;
-  aspect-ratio: 393 / 852;
-  width: min(calc(90vh * (393 / 852)), calc(100vw - 32px));
-  max-width: 410px;
-  min-width: 0;
+  height: var(--iphone-h);
+  width: calc(var(--iphone-h) * 0.474828);
+  aspect-ratio: 415 / 874;
   box-sizing: border-box;
   background: #000000;
-  border-radius: min(56px, 6vh);
-  padding: min(12px, 1.4vh);
+  border-radius: calc(var(--iphone-h) * 0.061785);
+  padding: calc(var(--iphone-h) * 0.012586);
   box-shadow: 
     0 0 0 2px #4B4E54,
     0 0 0 6px #1D1F23,
@@ -219,19 +220,41 @@ input[type="range"]::-webkit-slider-thumb:active {
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
 }
 
 .iphone-screen {
   width: 100%;
   height: 100%;
-  min-width: 0;
+  aspect-ratio: 393 / 852;
   background: var(--device-bg);
-  border-radius: min(46px, 5vh);
+  border-radius: calc(var(--iphone-h) * 0.050343);
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 480px) {
+  .iphone-frame {
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: 100vw !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  .iphone-screen {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+  }
+  .hardware-side-button {
+    display: none !important;
+  }
 }
 
 /* Dynamic Island */
