@@ -21,7 +21,8 @@ export type SubView =
   | 'diet-detail'
   | 'fasting-detail'
   | 'calorie-calc'
-  | 'workout-reminders';
+  | 'workout-reminders'
+  | 'exercise-coach';
 
 export interface PatientProfile {
   name: string;
@@ -151,6 +152,8 @@ interface AppContextType {
   setSelectedRoutine: (r: WorkoutRoutine) => void;
   completedWorkoutsCount: number;
   logWorkoutSession: (routineTitle: string, durationMin: number, caloriesBurned: number) => void;
+  exerciseCoachTarget: WorkoutExercise | null;
+  setExerciseCoachTarget: (ex: WorkoutExercise | null) => void;
 
   // Diets & Nutrition
   dietPlans: DietPlan[];
@@ -402,6 +405,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedRoutine, setSelectedRoutine] = useState<WorkoutRoutine>(initialWorkouts[0]);
   const [completedWorkoutsCount, setCompletedWorkoutsCount] = useState<number>(18);
   const [workoutComplianceRate, setWorkoutComplianceRate] = useState<number>(85);
+  const [exerciseCoachTarget, setExerciseCoachTarget] = useState<WorkoutExercise | null>(null);
 
   // Nutrition & Diets State
   const [dietPlans] = useState<DietPlan[]>(initialDietPlans);
@@ -774,6 +778,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setSelectedRoutine,
         completedWorkoutsCount,
         logWorkoutSession,
+        exerciseCoachTarget,
+        setExerciseCoachTarget,
         dietPlans,
         activeDietPlan,
         setActiveDietPlan,

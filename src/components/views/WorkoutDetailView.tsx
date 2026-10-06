@@ -20,6 +20,7 @@ import {
   Clock,
   CheckCircle2,
   Zap,
+  Eye,
 } from 'lucide-react';
 
 export const WorkoutDetailView: React.FC = () => {
@@ -29,6 +30,8 @@ export const WorkoutDetailView: React.FC = () => {
     setSelectedRoutine,
     logWorkoutSession,
     popView,
+    pushView,
+    setExerciseCoachTarget,
     showToast,
     theme,
   } = useApp();
@@ -469,6 +472,73 @@ export const WorkoutDetailView: React.FC = () => {
           )}
         </button>
 
+        {/* Interactive 3D Avatar Coach Banner */}
+        <div
+          className="workout-screen-item"
+          onClick={() => {
+            setExerciseCoachTarget(activeRoutine.exercises[0]);
+            pushView('exercise-coach');
+          }}
+          style={{
+            borderRadius: '20px',
+            background: 'linear-gradient(135deg, #131824 0%, #1E293B 100%)',
+            border: '1.5px solid rgba(56, 189, 248, 0.4)',
+            padding: '12px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            boxShadow: '0 8px 24px rgba(56, 189, 248, 0.18)',
+            flexShrink: 0,
+            transition: 'transform 0.15s ease',
+          }}
+          title="Ver animación biomecánica de los ejercicios"
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #38BDF8 0%, #0284C7 100%)',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(56, 189, 248, 0.4)',
+                flexShrink: 0,
+              }}
+            >
+              <Sparkles size={18} />
+            </div>
+
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                Avatar Coach 3D <span style={{ fontSize: '9.5px', padding: '2px 6px', borderRadius: '8px', backgroundColor: '#38BDF8', color: '#090C11', fontWeight: 900 }}>ANIMADO</span>
+              </div>
+              <div style={{ fontSize: '10.5px', color: '#94A3B8', marginTop: '1px' }}>
+                Guía técnica de articulaciones y respiración
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: '6px 10px',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              color: '#38BDF8',
+              fontSize: '11px',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <Eye size={13} /> Ver Técnica
+          </div>
+        </div>
+
         {/* Routine Exercises Checklist */}
         <div className="workout-screen-item" style={{ flexShrink: 0, marginTop: '4px' }}>
           <h3 style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '10px' }}>
@@ -534,9 +604,35 @@ export const WorkoutDetailView: React.FC = () => {
                     </div>
                   </div>
 
-                  <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                    {ex.target}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                      {ex.target}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExerciseCoachTarget(ex);
+                        pushView('exercise-coach');
+                      }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '3px',
+                        padding: '4px 8px',
+                        borderRadius: '10px',
+                        border: '1px solid rgba(56, 189, 248, 0.3)',
+                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                        color: '#38BDF8',
+                        fontSize: '9.5px',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                      }}
+                      title="Ver animación de técnica para este ejercicio"
+                    >
+                      <Eye size={11} /> Técnica
+                    </button>
+                  </div>
                 </div>
               );
             })}

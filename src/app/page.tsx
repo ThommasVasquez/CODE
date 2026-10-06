@@ -28,6 +28,7 @@ import { FastingDetailView } from '@/components/views/FastingDetailView';
 import { CalorieCalculatorView } from '@/components/views/CalorieCalculatorView';
 import { WorkoutRemindersView } from '@/components/views/WorkoutRemindersView';
 import { OnboardingView } from '@/components/views/OnboardingView';
+import { ExerciseCoachAvatarView } from '@/components/views/ExerciseCoachAvatarView';
 
 function AppContent() {
   const { activeTab, activeSubView, popView, theme } = useApp();
@@ -73,6 +74,7 @@ function AppContent() {
     if (activeSubView === 'fasting-detail') return <FastingDetailView />;
     if (activeSubView === 'calorie-calc') return <CalorieCalculatorView />;
     if (activeSubView === 'workout-reminders') return <WorkoutRemindersView />;
+    if (activeSubView === 'exercise-coach') return <ExerciseCoachAvatarView />;
 
     // Otherwise render active tab
     if (activeTab === 'home') return <HomeScreen />;

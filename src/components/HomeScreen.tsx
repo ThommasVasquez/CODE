@@ -680,23 +680,51 @@ export const HomeScreen: React.FC = () => {
               Smarter Muscle Growth.
             </p>
 
-            {/* Bottom-left Arrow Button */}
-            <div
-              style={{
-                marginTop: '24px',
-                width: '42px',
-                height: '42px',
-                borderRadius: '50%',
-                backgroundColor: '#FFFFFF',
-                color: '#0F172A',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
-                transition: 'transform 0.15s ease',
-              }}
-            >
-              <ArrowUpRight size={20} strokeWidth={2.5} />
+            {/* Action Row: Open Details + Avatar Coach 3D */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '18px' }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  backgroundColor: '#FFFFFF',
+                  color: '#0F172A',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 6px 16px rgba(0,0,0,0.3)',
+                  flexShrink: 0,
+                }}
+              >
+                <ArrowUpRight size={18} strokeWidth={2.5} />
+              </div>
+
+              <button
+                id="btn-avatar-coach"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  pushView('exercise-coach');
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  padding: '7px 12px',
+                  borderRadius: '16px',
+                  backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                  border: '1px solid rgba(56, 189, 248, 0.5)',
+                  color: '#38BDF8',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  backdropFilter: 'blur(8px)',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 12px rgba(56, 189, 248, 0.25)',
+                }}
+                title="Ver animación de ejercicios con Avatar Coach"
+              >
+                <Sparkles size={12} /> Avatar Coach 3D
+              </button>
             </div>
           </div>
         </div>
