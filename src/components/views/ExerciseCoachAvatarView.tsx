@@ -206,6 +206,45 @@ function matchExerciseToConfig(exerciseName: string): ExerciseKinematicConfig {
   return KINEMATIC_DATABASE.squat;
 }
 
+const ANATOMICAL_3D_ASSETS: Record<string, { up: string; down: string; muscleLabel: string; badge: string }> = {
+  bench: {
+    up: '/coach/chest_press_up.jpg',
+    down: '/coach/chest_press_down.jpg',
+    muscleLabel: 'PECTORALES & DELTOIDES ANTERIOR',
+    badge: '3 X 15',
+  },
+  squat: {
+    up: '/coach/squat_up.jpg',
+    down: '/coach/squat_down.jpg',
+    muscleLabel: 'CUÁDRICEPS & GLÚTEO MAYOR',
+    badge: '3 X 15',
+  },
+  shoulder: {
+    up: '/coach/shoulder_up.jpg',
+    down: '/coach/shoulder_down.jpg',
+    muscleLabel: 'DELTOIDES (HOMBROS) & TRÍCEPS',
+    badge: '3 X 15',
+  },
+  lateral: {
+    up: '/coach/shoulder_up.jpg',
+    down: '/coach/shoulder_down.jpg',
+    muscleLabel: 'DELTOIDES LATERAL (VUELOS)',
+    badge: '3 X 15',
+  },
+  burpee: {
+    up: '/coach/squat_up.jpg',
+    down: '/coach/squat_down.jpg',
+    muscleLabel: 'FULL BODY & POTENCIA',
+    badge: '4 X 12',
+  },
+  plank: {
+    up: '/coach/chest_press_up.jpg',
+    down: '/coach/chest_press_down.jpg',
+    muscleLabel: 'CORE PROFUNDO & ESTABILIDAD',
+    badge: '3 X 45s',
+  },
+};
+
 export const ExerciseCoachAvatarView: React.FC = () => {
   const {
     popView,
@@ -224,6 +263,7 @@ export const ExerciseCoachAvatarView: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [speedMultiplier, setSpeedMultiplier] = useState<number>(1.0); // 0.5x, 1.0x, 1.5x
   const [viewAngle, setViewAngle] = useState<'profile' | 'front'>('profile');
+  const [displayMode, setDisplayMode] = useState<'3d' | 'vector'>('3d');
   const [audioCue, setAudioCue] = useState<boolean>(true);
   const [repsCount, setRepsCount] = useState<number>(0);
 
@@ -249,6 +289,7 @@ export const ExerciseCoachAvatarView: React.FC = () => {
   };
 
   const config = matchExerciseToConfig(currentExercise.name);
+  const current3dAsset = ANATOMICAL_3D_ASSETS[config.id] || ANATOMICAL_3D_ASSETS.bench;
 
   // Animation loop running at configurable speed
   useEffect(() => {
@@ -558,37 +599,166 @@ export const ExerciseCoachAvatarView: React.FC = () => {
             </div>
           </div>
 
-          {/* SVG Animated Biomechanical Coach Avatar Canvas */}
+          {/* Animated Coach Stage Canvas (3D Anatomical CGI Mannequin or Vector Biomechanics) */}
           <div
             style={{
               width: '100%',
-              height: '210px',
+              height: '240px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               position: 'relative',
               zIndex: 2,
-              marginTop: '10px',
+              marginTop: '6px',
+              overflow: 'hidden',
+              borderRadius: '16px',
+              backgroundColor: '#05070B',
             }}
           >
-            <CoachAvatarSVG
-              exerciseId={config.id}
-              cycleProgress={cycleProgress}
-              viewAngle={viewAngle}
-              phaseColor={phaseColor}
-            />
+            {displayMode === '3d' ? (
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* 3D CGI Mannequin Concentric / Top Contraction Frame */}
+                <img
+                  src={current3dAsset.up}
+                  alt={`${currentExercise.name} - Fase Concétrica`}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    filter: 'brightness(1.05) contrast(1.08)',
+                    transform: `scale(${1 + Math.sin(cycleProgress * Math.PI) * 0.02})`,
+                    transition: 'transform 0.08s linear',
+                  }}
+                />
+
+                {/* 3D CGI Mannequin Eccentric / Bottom Stretch Frame (Sinusoidal Opacity Crossfade) */}
+                <img
+                  src={current3dAsset.down}
+                  alt={`${currentExercise.name} - Fase Excéntrica`}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    filter: 'brightness(1.05) contrast(1.08)',
+                    opacity: Math.sin(cycleProgress * Math.PI),
+                    transform: `scale(${1 + Math.sin(cycleProgress * Math.PI) * 0.02})`,
+                    transition: 'opacity 0.06s linear, transform 0.08s linear',
+                  }}
+                />
+
+                {/* Dynamic Muscle Tension Aura / Glow */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: `radial-gradient(circle at 50% 45%, rgba(255, 69, 0, ${0.14 * Math.sin(cycleProgress * Math.PI)}) 0%, transparent 70%)`,
+                    pointerEvents: 'none',
+                    mixBlendMode: 'screen',
+                  }}
+                />
+
+                {/* Video-style Signature Yellow Rep/Set Badge: "3 X 15" */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    backgroundColor: '#FACC15',
+                    color: '#000000',
+                    padding: '3px 10px',
+                    borderRadius: '8px',
+                    fontWeight: 900,
+                    fontSize: '12px',
+                    fontStyle: 'italic',
+                    letterSpacing: '0.6px',
+                    boxShadow: '0 2px 12px rgba(250, 204, 21, 0.5)',
+                    zIndex: 5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  <span>{current3dAsset.badge || '3 X 15'}</span>
+                </div>
+
+                {/* Video-style Active Target Muscle Highlight Badge */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '8px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    backgroundColor: 'rgba(10, 14, 22, 0.88)',
+                    backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255, 69, 0, 0.5)',
+                    color: '#FF6B35',
+                    padding: '3px 11px',
+                    borderRadius: '12px',
+                    fontWeight: 800,
+                    fontSize: '9.5px',
+                    letterSpacing: '0.6px',
+                    textTransform: 'uppercase',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    zIndex: 5,
+                    boxShadow: '0 0 12px rgba(255, 69, 0, 0.35)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <span
+                    style={{
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      backgroundColor: '#FF4500',
+                      boxShadow: '0 0 6px #FF4500',
+                      animation: 'pulse 1s infinite',
+                    }}
+                  />
+                  {current3dAsset.muscleLabel}
+                </div>
+              </div>
+            ) : (
+              <CoachAvatarSVG
+                exerciseId={config.id}
+                cycleProgress={cycleProgress}
+                viewAngle={viewAngle}
+                phaseColor={phaseColor}
+              />
+            )}
 
             {/* Floor Stage Spotlight Oval */}
             <div
               style={{
                 position: 'absolute',
-                bottom: '10px',
-                width: '140px',
+                bottom: '8px',
+                width: '160px',
                 height: '14px',
                 borderRadius: '50%',
-                background: 'radial-gradient(ellipse at center, rgba(56, 189, 248, 0.25) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 80%)',
-                filter: 'blur(3px)',
+                background:
+                  displayMode === '3d'
+                    ? 'radial-gradient(ellipse at center, rgba(255, 69, 0, 0.25) 0%, rgba(255, 69, 0, 0.05) 50%, transparent 80%)'
+                    : 'radial-gradient(ellipse at center, rgba(56, 189, 248, 0.25) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 80%)',
+                filter: 'blur(4px)',
                 zIndex: 1,
+                pointerEvents: 'none',
               }}
             />
           </div>
@@ -659,26 +829,51 @@ export const ExerciseCoachAvatarView: React.FC = () => {
               )}
             </button>
 
-            {/* View Angle Switcher: Profile vs Frontal */}
-            <button
-              onClick={() => setViewAngle(viewAngle === 'profile' ? 'front' : 'profile')}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '4px 9px',
-                borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                color: '#CBD5E1',
-                fontSize: '10px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-              title="Cambiar perspectiva de cámara"
-            >
-              <Compass size={11} color="#38BDF8" /> {viewAngle === 'profile' ? 'Perfil' : 'Frente'}
-            </button>
+            {/* View Controls: 3D vs Vector Toggle & Camera Angle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <button
+                onClick={() => setDisplayMode(displayMode === '3d' ? 'vector' : '3d')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '4px 9px',
+                  borderRadius: '12px',
+                  border: displayMode === '3d' ? '1px solid rgba(250, 204, 21, 0.4)' : '1px solid rgba(56, 189, 248, 0.4)',
+                  backgroundColor: displayMode === '3d' ? 'rgba(250, 204, 21, 0.12)' : 'rgba(56, 189, 248, 0.12)',
+                  color: displayMode === '3d' ? '#FACC15' : '#38BDF8',
+                  fontSize: '10px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                title="Alternar entre Maniquí Anatómico 3D y Biomecánica Vectorial"
+              >
+                {displayMode === '3d' ? '🧬 3D Anatómico' : '📐 Biomecánico'}
+              </button>
+
+              {displayMode === 'vector' && (
+                <button
+                  onClick={() => setViewAngle(viewAngle === 'profile' ? 'front' : 'profile')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 8px',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    color: '#CBD5E1',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                  title="Cambiar perspectiva de cámara"
+                >
+                  <Compass size={11} color="#38BDF8" /> {viewAngle === 'profile' ? 'Perfil' : 'Frente'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
